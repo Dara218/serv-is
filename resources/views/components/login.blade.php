@@ -18,7 +18,7 @@
 
                 <button type="submit" class="w-full my-8 text-white bg-slate-500 hover:bg-slate-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-slate-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Login</button>
 
-                <p class="text-center font-medium text-slate-800">Don't have an account? <a href="#" class="text-slate-500 font-bold italic underline">Sign Up</a></p>
+                <p class="text-center font-medium text-slate-800">Don't have an account? <a href="{{ route('register.create') }}" class="text-slate-500 font-bold italic underline">Sign Up</a></p>
             </form>
         </div>
     </div>
