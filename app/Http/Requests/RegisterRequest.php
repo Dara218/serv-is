@@ -29,10 +29,10 @@ class RegisterRequest extends FormRequest
                 'min:4',
                 'max:20'
             ],
-            'email' => [
+            'email_address' => [
                 'email',
                 'required',
-                'unique:users,email',
+                'unique:users,email_address',
                 'min:4',
                 'max:20'
             ],

@@ -23,7 +23,7 @@ class RegisterController extends Controller
         User::create([
             'fullname' => $userDetails['fullname'],
             'username' => $userDetails['username'],
-            'email' => $userDetails['email'],
+            'email_address' => $userDetails['email_address'],
             'contact_no' => $userDetails['contact_no'],
             'password' => $userDetails['password'],
             'region' => $userDetails['region'],
