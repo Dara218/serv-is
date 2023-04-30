@@ -22,4 +22,7 @@
             </form>
         </div>
     </div>
+
+    @include('sweetalert::alert');
+
 </x-layout>

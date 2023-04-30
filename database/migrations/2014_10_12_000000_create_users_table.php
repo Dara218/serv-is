@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('email_address')->unique();
             $table->integer('contact_no')->unique();
             $table->string('password');
-            $table->string('current_balance');
+            $table->string('current_balance')->default(0);
             $table->string('address');
-            $table->string('country');
+            $table->string('region');
             $table->string('profile_picture')->nullable();
             $table->string('id_picture')->nullable();
             $table->boolean('is_active')->default(1);
