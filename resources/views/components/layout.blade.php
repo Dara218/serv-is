@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         @vite('resources/css/app.css')
 
-        <title>Serv-is</title>
+        <title>Serv &#9679; is</title>
 
     </head>
 
