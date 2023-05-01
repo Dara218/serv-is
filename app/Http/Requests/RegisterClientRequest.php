@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class RegisterClientRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,18 +25,18 @@ class RegisterRequest extends FormRequest
             'fullname' => 'required',
             'username' => [
                 'required',
-                'unique:users,username',
+                'unique:agents,username',
                 'min:4',
                 'max:20'
             ],
             'email_address' => [
                 'email',
                 'required',
-                'unique:users,email_address',
+                'unique:agents,email_address',
                 'min:4',
                 'max:20'
             ],
-            'contact_no' => 'required|numeric|unique:users,contact_no,',
+            'contact_no' => 'required|numeric|unique:agents,contact_no,',
             'password' => [
                 'required',
                 'min:8',              // minimum length of 8 characters
@@ -48,12 +48,12 @@ class RegisterRequest extends FormRequest
             ],
             'address' => 'required',
             'region' => 'required',
-            // 'photo_id' => 'required',
-            // 'nbi_clearance' => 'required',
-            // 'police_clearance' => 'required',
-            // 'birth_certificate' => 'required',
-            // 'cert_of_employment' => 'required',
-            // 'other_valid_id' => 'required',
+            'photo_id' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'nbi_clearance' => 'required|mimes:jpeg,png,jpg,txt,pdf,docs|max:2048',
+            'police_clearance' => 'required|mimes:jpeg,png,jpg,txt,pdf,docs|max:2048',
+            'birth_certificate' => 'required|mimes:jpeg,png,jpg,txt,pdf,docs|max:2048',
+            'cert_of_employment' => 'required|mimes:jpeg,png,jpg,txt,pdf,docs|max:2048',
+            'other_valid_id' => 'required|mimes:jpeg,png,jpg,txt,pdf,docs|max:2048',
         ];
     }
 }

@@ -16,9 +16,10 @@ Route::middleware(['guest'])->group(function(){
     Route::prefix('register')->name('register.')->group(function(){
         Route::get('/register', [RegisterController::class, 'create'])->name('create');
         Route::post('/register-store', [RegisterController::class, 'store'])->name('store');
+        Route::post('/register-storeAgent', [RegisterController::class, 'storeAgent'])->name('storeAgent');
     });
 
-    Route::prefix('login')->name('login.')->group(function(){
+    Route::prefix('session')->name('session.')->group(function(){
         Route::post('/login-store', [SessionController::class, 'store'])->name('store');
     });
 });
@@ -27,6 +28,10 @@ Route::middleware(['auth'])->group(function(){
 
     Route::prefix('home')->name('home.')->group(function(){
         Route::get('/home', [HomeController::class, 'index'])->name('index');
+    });
+
+    Route::prefix('session')->name('session.')->group(function(){
+        Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
     });
 
 });

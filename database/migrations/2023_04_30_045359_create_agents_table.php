@@ -13,16 +13,21 @@ return new class extends Migration
     {
         Schema::create('agents', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('fullname');
             $table->string('username')->unique();
-            $table->string('email')->unique();
-            $table->integer('contact_no')->unique();
+            $table->string('email_address')->unique();
+            $table->bigInteger('contact_no')->unique();
             $table->string('password');
             $table->string('address');
-            $table->string('country');
+            $table->string('region');
             $table->string('profile_picture')->nullable();
-            $table->string('id_picture')->nullable();
-            $table->integer('user_type');
+            $table->string('photo_id');
+            $table->string('nbi_clearance');
+            $table->string('police_clearance');
+            $table->string('birth_certificate');
+            $table->string('cert_of_employment');
+            $table->string('other_valid_id');
+            $table->integer('user_type')->default(2);
             $table->boolean('is_active')->default(1);
             $table->rememberToken();
             $table->timestamps();

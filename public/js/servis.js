@@ -1,5 +1,12 @@
 $(document).ready(function(){
 
+    // $('.id-imgs').hide()
+    checkUserType()
+
+    $('#user_type').on('change', function(){
+        checkUserType()
+    })
+
     axios.get('https://ph-locations-api.buonzz.com/v1/regions')
     .then(function(res){
 
@@ -9,11 +16,22 @@ $(document).ready(function(){
             $('.loading').remove();
             $('.region-options').append(
                 `
-                    <option value="${eachRes.name}">${eachRes.name}</option>
+                    <option value="${eachRes.name}" {{ old('region') === '${eachRes.name}' ? 'selected' : '' }}>${eachRes.name}</option>
                 `
             )
         })
     })
     .catch(err => console.error(err))
+
+    function checkUserType(){
+        if($('#user_type').val() === 'Customer'){
+            $('.id-imgs').hide()
+            $('.register').attr('action', `/register/register-store`)
+        }
+        if($('#user_type').val() === 'Client'){
+            $('.id-imgs').show()
+            $('.register').attr('action', `/register/register-storeAgent`)
+        }
+    }
 
 })

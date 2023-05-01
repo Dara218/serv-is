@@ -22,6 +22,10 @@ class SessionController extends Controller
 
         session()->regenerate();
         return redirect()->route('home.index');
+    }
 
+    public function logout(){
+        Auth::logout();
+        return redirect('/');
     }
 }
