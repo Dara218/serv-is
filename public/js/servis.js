@@ -34,4 +34,12 @@ $(document).ready(function(){
         }
     }
 
+    function checkUserLogin(){
+        if($('#user_type').val() === 'Customer'){
+            $('.form-login').attr('action', `/session/login-store`)
+        }
+        if($('#user_type').val() === 'Client'){
+            $('.form-login').attr('action', `/session/login-storeClient`)
+        }
+    }
 })
