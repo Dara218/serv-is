@@ -2,9 +2,14 @@ $(document).ready(function(){
 
     // $('.id-imgs').hide()
     checkUserType()
+    checkUserLogin()
 
-    $('#user_type').on('change', function(){
+    $('.user_type-options').on('change', function(){
         checkUserType()
+    })
+
+    $('.user_type-options-client').on('change', function(){
+        checkUserLogin()
     })
 
     axios.get('https://ph-locations-api.buonzz.com/v1/regions')
@@ -24,22 +29,22 @@ $(document).ready(function(){
     .catch(err => console.error(err))
 
     function checkUserType(){
-        if($('#user_type').val() === 'Customer'){
+        if($('.user_type-options').val() === 'Customer'){
             $('.id-imgs').hide()
             $('.register').attr('action', `/register/register-store`)
         }
-        if($('#user_type').val() === 'Client'){
+        if($('.user_type-options').val() === 'Client'){
             $('.id-imgs').show()
             $('.register').attr('action', `/register/register-storeAgent`)
         }
     }
 
     function checkUserLogin(){
-        if($('#user_type').val() === 'Customer'){
+        if($('.user_type-options').val() === 'Customer'){
             $('.form-login').attr('action', `/session/login-store`)
         }
-        if($('#user_type').val() === 'Client'){
-            $('.form-login').attr('action', `/session/login-storeClient`)
+        if($('.user_type-options').val() === 'Client'){
+            $('.form-login').attr('action', `/session/login-store-client`)
         }
     }
 })

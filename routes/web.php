@@ -21,6 +21,7 @@ Route::middleware(['guest'])->group(function(){
 
     Route::prefix('session')->name('session.')->group(function(){
         Route::post('/login-store', [SessionController::class, 'store'])->name('store');
+        Route::post('/login-store-client', [SessionController::class, 'storeClient'])->name('storeClient');
     });
 });
 
