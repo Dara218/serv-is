@@ -25,18 +25,18 @@ class RegisterClientRequest extends FormRequest
             'fullname' => 'required',
             'username' => [
                 'required',
-                'unique:agents,username',
+                'unique:users,username',
                 'min:4',
                 'max:20'
             ],
             'email_address' => [
                 'email',
                 'required',
-                'unique:agents,email_address',
+                'unique:users,email_address',
                 'min:4',
                 'max:20'
             ],
-            'contact_no' => 'required|numeric|unique:agents,contact_no,',
+            'contact_no' => 'required|numeric|unique:users,contact_no,',
             'password' => [
                 'required',
                 'min:8',              // minimum length of 8 characters
