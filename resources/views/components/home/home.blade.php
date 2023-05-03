@@ -7,8 +7,6 @@
             <x-home.categories :services="$services"/>
         </div>
 
-
-
         {{-- </div> --}}
     {{-- </div> --}}
 </x-layout>
