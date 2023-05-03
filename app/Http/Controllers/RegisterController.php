@@ -6,6 +6,7 @@ use App\Http\Requests\RegisterClientRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Agent;
 use App\Models\User;
+use App\Models\ValidDocument;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -16,8 +17,9 @@ class RegisterController extends Controller
         return view('components.register.register');
     }
 
-    public function store(RegisterRequest $request){
 
+    public function store(RegisterRequest $request)
+    {
         $userDetails = $request->validated();
 
         $userDetails['password'] = bcrypt($userDetails['password']);
@@ -29,52 +31,58 @@ class RegisterController extends Controller
             'contact_no' => $userDetails['contact_no'],
             'password' => $userDetails['password'],
             'address' => $userDetails['address'],
-            'region' => $userDetails['region']
+            'region' => $userDetails['region'],
+            'user_type' => 3,
         ]);
 
-        Alert::success('Success', 'Registration successful');
+        Alert::success('Success', 'Registration completed.');
         return redirect('/');
     }
 
     public function storeAgent(RegisterClientRequest $request)
-{
-    $userDetails = $request->validated();
+    {
+        $userDetails = $request->validated();
 
-    $userDetails['password'] = bcrypt($userDetails['password']);
+        $userDetails['password'] = bcrypt($userDetails['password']);
 
-    $agent = new Agent([
-        'fullname' => $userDetails['fullname'],
-        'username' => $userDetails['username'],
-        'email_address' => $userDetails['email_address'],
-        'contact_no' => $userDetails['contact_no'],
-        'password' => $userDetails['password'],
-        'address' => $userDetails['address'],
-        'region' => $userDetails['region'],
-    ]);
+        $user = User::create([
+            'fullname' => $userDetails['fullname'],
+            'username' => $userDetails['username'],
+            'email_address' => $userDetails['email_address'],
+            'contact_no' => $userDetails['contact_no'],
+            'password' => $userDetails['password'],
+            'address' => $userDetails['address'],
+            'region' => $userDetails['region'],
+            'user_type' => 2,
+        ]);
 
-    // Handle file uploads
-    $fileFields = [
-        'photo_id',
-        'nbi_clearance',
-        'police_clearance',
-        'birth_certificate',
-        'cert_of_employment',
-        'other_valid_id',
-    ];
+        if ($request->user_type === 'Client') {
+            $validDocuments = [];
+            $fileFields = [
+                'photo_id',
+                'nbi_clearance',
+                'police_clearance',
+                'birth_certificate',
+                'cert_of_employment',
+                'other_valid_id',
+            ];
 
-    foreach ($fileFields as $field) {
-        if ($request->hasFile($field)) {
-            $file = $request->file($field);
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/uploads', $fileName);
-            $agent->{$field} = '/storage/uploads/' . $fileName;
+            foreach ($fileFields as $field) {
+                if ($request->hasFile($field)) {
+                    $file = $request->file($field);
+                    $fileName = time() . '_' . $file->getClientOriginalName();
+                    $file->storeAs('public/uploads', $fileName);
+                    $validDocuments[$field] = '/storage/uploads/' . $fileName;
+                }
+            }
+
+            $validDocuments['user_id'] = $user->id;
+
+            ValidDocument::create($validDocuments);
         }
+
+        Alert::success('Success', 'Registration completed.');
+        return redirect('/');
     }
-
-    $agent->save();
-
-    Alert::success('Success', 'Registration successful');
-    return redirect('/');
-}
 
 }
