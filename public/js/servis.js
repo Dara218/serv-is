@@ -2,15 +2,15 @@ $(document).ready(function(){
 
     // $('.id-imgs').hide()
     checkUserType()
-    checkUserLogin()
+    // checkUserLogin()
 
     $('.user_type-options').on('change', function(){
         checkUserType()
     })
 
-    $('.user_type-options-client').on('change', function(){
-        checkUserLogin()
-    })
+    // $('.user_type-options-client').on('change', function(){
+    //     checkUserLogin()
+    // })
 
     axios.get('https://ph-locations-api.buonzz.com/v1/regions')
     .then(function(res){
@@ -39,12 +39,12 @@ $(document).ready(function(){
         }
     }
 
-    function checkUserLogin(){
-        if($('.user_type-options').val() === 'Customer'){
-            $('.form-login').attr('action', `/session/login-store`)
-        }
-        if($('.user_type-options').val() === 'Client'){
-            $('.form-login').attr('action', `/session/login-store-client`)
-        }
-    }
+    // function checkUserLogin(){
+    //     if($('.user_type-options').val() === 'Customer'){
+    //         $('.form-login').attr('action', `/session/login-store`)
+    //     }
+    //     if($('.user_type-options').val() === 'Client'){
+    //         $('.form-login').attr('action', `/session/login-store-client`)
+    //     }
+    // }
 })
