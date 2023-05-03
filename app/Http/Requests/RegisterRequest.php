@@ -48,12 +48,6 @@ class RegisterRequest extends FormRequest
             ],
             'address' => 'required',
             'region' => 'required',
-            // 'photo_id' => 'required',
-            // 'nbi_clearance' => 'required',
-            // 'police_clearance' => 'required',
-            // 'birth_certificate' => 'required',
-            // 'cert_of_employment' => 'required',
-            // 'other_valid_id' => 'required',
         ];
     }
 }
