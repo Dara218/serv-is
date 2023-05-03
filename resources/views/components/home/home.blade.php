@@ -5,6 +5,8 @@
         {{-- <div class="md:w-1/2 w-11/12 flex flex-col justify-center items-center"> --}}
         <div class="px-16 mt-20">
             <x-home.categories :services="$services"/>
+
+            <x-home.wallet-transaction/>
         </div>
 
         {{-- </div> --}}
