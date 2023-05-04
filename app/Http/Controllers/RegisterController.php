@@ -77,6 +77,7 @@ class RegisterController extends Controller
             }
 
             $validDocuments['user_id'] = $user->id;
+            $validDocuments['user_type'] = 2;
 
             ValidDocument::create($validDocuments);
         }
