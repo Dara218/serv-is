@@ -15,6 +15,8 @@ class HomeController extends Controller
 
         }
 
+        // TODO:: MOVE THE CODE BELOW TO NAVBAR FROM HOME.
+
         return view('components.home.home', ['services' => Service::all(),
                                             'admin' => $admin]);
     }
@@ -25,6 +27,10 @@ class HomeController extends Controller
 
     public function indexAdmin(){
         return view('components.home_admin.index');
+    }
+
+    public function showEditProfile(){
+        return view('components.home.edit-profile');
     }
 
 }
