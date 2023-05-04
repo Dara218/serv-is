@@ -1,12 +1,14 @@
 <x-layout>
-    @include('partials.navbar')
+    @include('partials.navbar', ['admin' => $admin])
 
     {{-- <div class="flex flex-col items-center justify-center min-h-screen my-10"> --}}
         {{-- <div class="md:w-1/2 w-11/12 flex flex-col justify-center items-center"> --}}
-        <div class="px-16 mt-20">
+        <div class="px-16 mt-20 flex flex-col gap-8">
             <x-home.categories :services="$services"/>
 
             <x-home.wallet-transaction/>
+
+            <x-home.services/>
         </div>
 
         {{-- </div> --}}
