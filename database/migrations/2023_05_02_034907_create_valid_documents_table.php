@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('birth_certificate');
             $table->string('cert_of_employment');
             $table->string('other_valid_id');
+            $table->integer('user_type');
             $table->rememberToken();
             $table->timestamps();
         });
