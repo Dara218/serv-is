@@ -1,6 +1,5 @@
 <div>
-    <span class="text-2xl font-bold text-slate-400">Categories</span>
-    <div class="grid grid-cols-2 gap-4 mt-4">
+    <div class="flex flex-col md:grid grid-cols-2 gap-4 mt-4">
 
         <div class="p-10 h-auto grid-cols-span-1 border border-slate-300 rounded-xl text-center flex justify-between">
             <div class="flex flex-col text-left">
