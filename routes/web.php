@@ -29,6 +29,12 @@ Route::prefix('session')->name('session.')->group(function(){
     Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
 });
 
+Route::middleware(['auth'])->group(function(){
+    Route::prefix('home')->name('home.')->group(function(){
+    Route::get('/edit-profile', [HomeController::class, 'showEditProfile'])->name('showEditProfile');
+    });
+});
+
 Route::middleware(['customer'])->group(function(){
     Route::prefix('home')->name('home.')->group(function(){
         Route::get('/home', [HomeController::class, 'index'])->name('index');
