@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class ValidDocument extends Model
 {
     use HasFactory;
+
+    public function users(){
+        return $this->hasOne(User::class, 'id');
+    }
 }
