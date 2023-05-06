@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
@@ -31,8 +32,13 @@ Route::prefix('session')->name('session.')->group(function(){
 
 Route::middleware(['auth'])->group(function(){
     Route::prefix('home')->name('home.')->group(function(){
-    Route::get('/edit-profile', [HomeController::class, 'showEditProfile'])->name('showEditProfile');
+        Route::get('/edit-profile', [HomeController::class, 'showEditProfile'])->name('showEditProfile');
+        Route::put('/edit-profile-process', [ProfileController::class, 'update'])->name('editProfile');
+        Route::get('/my-wallet', [ProfileController::class, 'showWallet'])->name('showWallet');
+        Route::get('/service-provider', [ProfileController::class, 'showServiceProvider'])->name('showServiceProvider');
+        Route::get('/employee-profile/{user}', [ProfileController::class, 'showEmployeeProfile'])->name('showEmployeeProfile');
     });
+
 });
 
 Route::middleware(['customer'])->group(function(){
