@@ -9,16 +9,7 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     public function index(){
-
-        $admins = ValidDocument::where('user_type', 1)->get();
-        foreach($admins as $admin){
-
-        }
-
-        // TODO:: MOVE THE CODE BELOW TO NAVBAR FROM HOME.
-
-        return view('components.home.home', ['services' => Service::all(),
-                                            'admin' => $admin]);
+        return view('components.home.home', ['services' => Service::all()]);
     }
 
     public function indexAgent(){
