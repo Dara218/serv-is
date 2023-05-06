@@ -39,6 +39,18 @@ $(document).ready(function(){
         }
     }
 
+    $('.dots').on('click', function() {
+        var index = $(this).index('.dots') // Get the index of the clicked element
+        $('.view-profile').eq(index).toggle() // Show the element with the corresponding index
+        
+    });
+    
+    $(document).click(function(event) {
+        if(!$(event.target).closest('.view-profile, .dots').length) {
+            $('.view-profile').hide();
+        }        
+    });
+
     // function checkUserLogin(){
     //     if($('.user_type-options').val() === 'Customer'){
     //         $('.form-login').attr('action', `/session/login-store`)
