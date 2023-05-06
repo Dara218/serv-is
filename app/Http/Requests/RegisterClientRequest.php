@@ -34,7 +34,7 @@ class RegisterClientRequest extends FormRequest
                 'required',
                 'unique:users,email_address',
                 'min:4',
-                'max:20'
+                'max:50'
             ],
             'contact_no' => 'required|numeric|unique:users,contact_no,',
             'password' => [
