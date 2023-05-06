@@ -8,7 +8,7 @@
     <div class="flex md:order-2">
         <div>
 
-            @include('partials.notification', ['admin' => $admin])
+            @include('partials.notification')
 
             {{-- @dd($admin) --}}
 
@@ -19,10 +19,10 @@
                     <a href="{{ route('home.showEditProfile') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit Profile</a>
                   </li>
                   <li>
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My Wallet</a>
+                    <a href="{{ route('home.showWallet') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My Wallet</a>
                   </li>
                   <li>
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Service Provider</a>
+                    <a href="{{ route('home.showServiceProvider') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Service Provider</a>
                   </li>
                   <li>
                     <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Service Address</a>
