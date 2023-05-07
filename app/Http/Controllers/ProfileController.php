@@ -47,4 +47,12 @@ class ProfileController extends Controller
     public function showEmployeeProfile(User $user){
         return view('components.home.employee-profile', ['users' => User::where('id', $user->id)->with('validDocuments')->get()]);
     }
+
+    public function showServiceAddress(){
+        return view('components.home.service-address', ['userAddress' => Auth::user()->address]);
+    }
+
+    public function showRewards(){
+        return view('components.home.rewards');
+    }
 }
