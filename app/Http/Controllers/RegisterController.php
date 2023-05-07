@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RegisterClientRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Agent;
+use App\Models\ServiceAddress;
 use App\Models\User;
 use App\Models\ValidDocument;
 use Illuminate\Http\Request;
@@ -24,15 +25,21 @@ class RegisterController extends Controller
 
         $userDetails['password'] = bcrypt($userDetails['password']);
 
-        User::create([
+        $user = User::create([
             'fullname' => $userDetails['fullname'],
             'username' => $userDetails['username'],
             'email_address' => $userDetails['email_address'],
             'contact_no' => $userDetails['contact_no'],
             'password' => $userDetails['password'],
-            'address' => $userDetails['address'],
+            // 'address' => $userDetails['address'],
             'region' => $userDetails['region'],
             'user_type' => 3,
+        ]);
+
+        ServiceAddress::create([
+            'user_id' => $user->id,
+            'address' => $userDetails['address'],
+            'is_active' => true
         ]);
 
         Alert::success('Success', 'Registration completed.');
@@ -51,9 +58,15 @@ class RegisterController extends Controller
             'email_address' => $userDetails['email_address'],
             'contact_no' => $userDetails['contact_no'],
             'password' => $userDetails['password'],
-            'address' => $userDetails['address'],
+            // 'address' => $userDetails['address'],
             'region' => $userDetails['region'],
             'user_type' => 2,
+        ]);
+
+        ServiceAddress::create([
+            'user_id' => $user->id,
+            'address' => $userDetails['address'],
+            'is_active' => true
         ]);
 
         if ($request->user_type === 'Client') {
