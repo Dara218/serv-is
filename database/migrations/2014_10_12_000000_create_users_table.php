@@ -19,7 +19,7 @@ return new class extends Migration
             $table->bigInteger('contact_no')->unique();
             $table->string('password');
             $table->string('current_balance')->default(0);
-            $table->string('address');
+            // $table->string('address');
             $table->string('region');
             $table->string('profile_picture')->nullable();
             $table->integer('user_type');
