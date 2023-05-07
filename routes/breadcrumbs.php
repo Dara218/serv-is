@@ -33,6 +33,16 @@ Breadcrumbs::for('service-provider', function(BreadcrumbTrail $trail){
 });
 
 Breadcrumbs::for('employee-profile', function(BreadcrumbTrail $trail, User $user){
-    $trail->parent('home');
+    $trail->parent('service-provider');
     $trail->push(ucwords($user->fullname), route('home.showServiceProvider'));
+});
+
+Breadcrumbs::for('service-address', function(BreadcrumbTrail $trail){
+    $trail->parent('home');
+    $trail->push('Add Service Address', route('home.showServiceAddress'));
+});
+
+Breadcrumbs::for('awards', function(BreadcrumbTrail $trail){
+    $trail->parent('home');
+    $trail->push('Awards and Discounts', route('home.showRewards'));
 });
