@@ -22,7 +22,9 @@
                                 <span class="font-semibold text-xl">WELCOMEUSER</span>
                                 <small>50% Free Shipping Service</small>
                             </div>
-                            <button type="button" class="col-span-1 shadow-lg bg-[#2FA5D8] rounded md:py-3 px-1 md:px-6 text-white hover:bg-[#2b8cb6] w-auto md:w-56 text-xs md:text-md h-12">Use Voucher</button>
+                            <div class="flex justify-center items-center">
+                                <button type="button" class="col-span-1 shadow-lg bg-[#2FA5D8] rounded md:py-3 px-1 md:px-6 text-white hover:bg-[#2b8cb6] w-auto md:w-56 text-xs md:text-md h-12">Use Voucher</button>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-3 border rounded border-slate-200 px-2 py-4 md:p-8 gap-3">
@@ -30,7 +32,9 @@
                                 <span class="font-semibold text-xl">SERVICEDISCOUNT</span>
                                 <small>P80 off discount for any services booked</small>
                             </div>
-                            <button type="button" class="col-span-1 shadow-lg bg-slate-500 rounded md:py-3 px-1 md:px-6 text-white hover:bg-slate-600 w-auto md:w-56 text-xs md:text-md h-12">200PTS</button>
+                            <div class="flex justify-center items-center">
+                                <button type="button" class="col-span-1 shadow-lg bg-slate-500 rounded md:py-3 px-1 md:px-6 text-white hover:bg-slate-600 w-auto md:w-56 text-xs md:text-md h-12">200PTS</button>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-3 border rounded border-slate-200 px-2 py-4 md:p-8 gap-3">
@@ -38,7 +42,9 @@
                                 <span class="font-semibold text-xl">CLEANINGSERVE</span>
                                 <small>Free cleaning service after booking any technical repair service</small>
                             </div>
-                            <button type="button" class="col-span-1 shadow-lg bg-slate-500 rounded md:py-3 px-1 md:px-6 text-white hover:bg-slate-600 w-auto md:w-56 text-xs md:text-md h-12">200PTS</button>
+                            <div class="flex justify-center items-center">
+                                <button type="button" class="col-span-1 shadow-lg bg-slate-500 rounded md:py-3 px-1 md:px-6 text-white hover:bg-slate-600 w-auto md:w-56 text-xs md:text-md h-12">200PTS</button>
+                            </div>
                         </div>
                     </div>
                     
