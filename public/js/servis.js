@@ -42,14 +42,22 @@ $(document).ready(function(){
     $('.dots').on('click', function() {
         var index = $(this).index('.dots') // Get the index of the clicked element
         $('.view-profile').eq(index).toggle() // Show the element with the corresponding index
-        
+
     });
-    
+
     $(document).click(function(event) {
         if(!$(event.target).closest('.view-profile, .dots').length) {
             $('.view-profile').hide();
-        }        
+        }
     });
+
+    $('.add-address').on('click', function(){
+        $('.address-modal').fadeIn()
+    })
+
+    $('.close-address-modal').on('click', function(){
+        $('.add-address-form').fadeOut()
+    })
 
     // function checkUserLogin(){
     //     if($('.user_type-options').val() === 'Customer'){
