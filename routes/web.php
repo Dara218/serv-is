@@ -37,6 +37,8 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/my-wallet', [ProfileController::class, 'showWallet'])->name('showWallet');
         Route::get('/service-provider', [ProfileController::class, 'showServiceProvider'])->name('showServiceProvider');
         Route::get('/employee-profile/{user}', [ProfileController::class, 'showEmployeeProfile'])->name('showEmployeeProfile');
+        Route::get('/service-address', [ProfileController::class, 'showServiceAddress'])->name('showServiceAddress');
+        Route::get('/rewards', [ProfileController::class, 'showRewards'])->name('showRewards');
     });
 
 });
