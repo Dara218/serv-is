@@ -45,9 +45,13 @@ $(document).ready(function(){
 
     });
 
-    $(document).click(function(event) {
-        if(!$(event.target).closest('.view-profile, .dots').length) {
+    $(document).click(function(e) {
+        if(! $(e.target).closest('.view-profile, .dots').length) {
             $('.view-profile').hide();
+        }
+
+        if(! $(e.target).closest('.contact-us-modal, .btn-contact-us' ).length){
+            $('.contact-us-modal').hide()
         }
     });
 
@@ -57,6 +61,14 @@ $(document).ready(function(){
 
     $('.close-address-modal').on('click', function(){
         $('.add-address-form').fadeOut()
+    })
+
+    $('.btn-contact-us').on('click', function(){
+        $('.contact-us-modal').show()
+    })
+
+    $('.close-contact-us-modal').on('click', function(){
+        $('.contact-us-modal').hide()
     })
 
     // function checkUserLogin(){
