@@ -27,9 +27,9 @@
                             <span>View Profile</span>
                         </a>
 
-                        <div class="flex justify-evenly gap-2">
+                        <div class="flex justify-between gap-2">
                             <img src="{{ $employee->validDocuments->photo_id }}" alt="user id photo" class="h-1/2 w-16 rounded-full">
-                            <div class="flex flex-col items-start gap-2">
+                            <div class="flex flex-col w-full items-start gap-2">
                                 <span class="font-semibold">{{ ucwords($employee->fullname) }}</span>
                                 <span class="flex items-center gap-2">
                                     <span class="material-symbols-outlined">
