@@ -46,3 +46,13 @@ Breadcrumbs::for('awards', function(BreadcrumbTrail $trail){
     $trail->parent('home');
     $trail->push('Awards and Discounts', route('home.showRewards'));
 });
+
+Breadcrumbs::for('transaction-history', function(BreadcrumbTrail $trail){
+    $trail->parent('home');
+    $trail->push('My transactions', route('home.showTransactionHistory'));
+});
+
+Breadcrumbs::for('faqs', function(BreadcrumbTrail $trail){
+    $trail->parent('home');
+    $trail->push('FaQs', route('home.showFaqs'));
+});
