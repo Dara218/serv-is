@@ -45,4 +45,8 @@ class User extends Authenticatable
     public function validDocuments(){
         return $this->hasOne(ValidDocument::class, 'user_id');
     }
+
+    public function transaction(){
+        return $this->hasMany(Transaction::class, 'id');
+    }
 }
