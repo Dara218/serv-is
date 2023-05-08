@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileRequest;
+use App\Models\Faq;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\ValidDocument;
 use Illuminate\Http\Request;
@@ -55,4 +57,14 @@ class ProfileController extends Controller
     public function showRewards(){
         return view('components.home.rewards');
     }
+
+    public function showTransactionHistory(){
+        return view('components.home.transaction-history', ['transactions' => Transaction::where('id', Auth::user()->id)]);
+    }
+
+    public function showFaqs(){
+        return view('components.home.faqs', ['faqs' => Faq::all()]);
+    }
+
+    // TODO: Fixed service provider. make it from flex to grid. changed http://127.0.0.1:8000/home/employee-profile/1 to http://127.0.0.1:8000/home/employee-profile/username
 }
