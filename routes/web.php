@@ -40,7 +40,8 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/service-address', [ProfileController::class, 'showServiceAddress'])->name('showServiceAddress');
         Route::get('/rewards', [ProfileController::class, 'showRewards'])->name('showRewards');
         Route::get('/transaction-history', [ProfileController::class, 'showTransactionHistory'])->name('showTransactionHistory');
-         Route::get('/faqs', [ProfileController::class, 'showFaqs'])->name('showFaqs');
+        Route::get('/faqs', [ProfileController::class, 'showFaqs'])->name('showFaqs');
+        Route::get('/agenda', [ProfileController::class, 'showAgenda'])->name('showAgenda');
     });
 
 });
