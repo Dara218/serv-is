@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
+use App\Models\ServiceAddress;
+use App\Models\UserPhoto;
 use App\Models\ValidDocument;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -21,7 +24,10 @@ class HomeController extends Controller
     }
 
     public function showEditProfile(){
-        return view('components.home.edit-profile');
+        // return UserPhoto::where('user_id', Auth::user()->id)->get();
+        return view('components.home.edit-profile', ['users' => UserPhoto::where('user_id', Auth::user()->id)->get(),
+                                                    'useraddresses' => ServiceAddress::where('user_id', Auth::user()->id)->get()
+        ]);
     }
 
 }
