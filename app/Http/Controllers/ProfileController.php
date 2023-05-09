@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileRequest;
 use App\Models\Faq;
+use App\Models\ServiceAddress;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\UserPhoto;
 use App\Models\ValidDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +16,8 @@ use RealRashid\SweetAlert\Facades\Alert;
 class ProfileController extends Controller
 {
     public function update(ProfileRequest $request){
-        $user = User::where('id', Auth::user()->id);
+        // $user = User::where('id', Auth::user()->id);
+        $user = User::find(Auth::user()->id);
 
         $userDetails = $request->validated();
 
@@ -32,7 +35,38 @@ class ProfileController extends Controller
 
         $userDetails['password'] = bcrypt($userDetails['password']);
 
+        $photoId = 'profile_picture';
+
+        if ($request->hasFile($photoId)) {
+            $file = $request->file($photoId);
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/uploads', $fileName);
+            $photoId = '/storage/uploads/' . $fileName;
+        }
+
+        $userProfilePicture = UserPhoto::where('user_id', Auth::user()->id)->first();
+
+        if($userProfilePicture){
+            $userProfilePicture->update([
+                'profile_picture' => $photoId,
+            ]);
+        }
+        else {
+            UserPhoto::create([
+                'user_id' => Auth::user()->id,
+                'profile_picture' => $photoId,
+                'user_type' => Auth::user()->user_type
+            ]);
+        }
+
         $user->update($userDetails);
+
+        $userAddress = ServiceAddress::find(Auth::user()->id);
+        $userAddress->update([
+            'user_id' => Auth::user()->id,
+            'address' => $request->address,
+            'is_active' => true
+        ]);
 
         Alert::success('Success', 'Your changes has been saved.');
         return back();
@@ -66,5 +100,7 @@ class ProfileController extends Controller
         return view('components.home.faqs', ['faqs' => Faq::all()]);
     }
 
-    // TODO: Fixed service provider. make it from flex to grid. changed http://127.0.0.1:8000/home/employee-profile/1 to http://127.0.0.1:8000/home/employee-profile/username
+    public function showAgenda(){
+        return view('components.home.agenda');
+    }
 }
