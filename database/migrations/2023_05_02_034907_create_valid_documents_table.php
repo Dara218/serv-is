@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('valid_documents', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('photo_id');
+            // $table->string('photo_id');
             $table->string('nbi_clearance');
             $table->string('police_clearance');
             $table->string('birth_certificate');
