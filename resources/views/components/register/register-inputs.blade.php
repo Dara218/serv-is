@@ -32,7 +32,7 @@
     @enderror
 </div>
 <div class="mb-6">
-    <input type="text" id="address" class="bg-gray-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 border-none" placeholder="Address" name="address" value="{{ Auth::check() ? Auth::user()->address : old('address') }}">
+    <input type="text" id="address" class="bg-gray-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 border-none" placeholder="Address" name="address" value="{{ Auth::check() ? $useraddress->address : old('address') }}">
     @error('address')
         <p id="filled_error_help" class="mt-2 text-xs text-red-600 dark:text-red-400"><span class="font-medium">{{ $message }}</span></p>
     @enderror
@@ -41,6 +41,9 @@
 <div class="mb-6">
     <label for="years" class="block mb-2 text-sm font-medium text-slate-500 dark:text-white">Select your region</label>
     <select id="region" class="region-options bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="region" required>
+        @if ( Auth::check() )
+            <option selected value="{{ Auth::user()->region }}">{{ Auth::user()->region }}</option>
+        @endif
         <option class="loading">Loading...</option>
     </select>
 </div>
