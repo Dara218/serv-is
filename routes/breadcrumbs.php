@@ -56,3 +56,8 @@ Breadcrumbs::for('faqs', function(BreadcrumbTrail $trail){
     $trail->parent('home');
     $trail->push('FaQs', route('home.showFaqs'));
 });
+
+Breadcrumbs::for('agenda', function(BreadcrumbTrail $trail){
+    $trail->parent('home');
+    $trail->push('Agenda', route('home.showAgenda'));
+});
