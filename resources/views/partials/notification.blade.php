@@ -11,7 +11,7 @@
             <li class="flex justify-between bg-slate-100 p-1">
 
                 <div class="flex gap-2">
-                    <img style="width:50px; heigth:auto;" src="{{ $admin->photo_id }}" alt="admin photo" class="hidden md:block rounded">
+                    <img style="width:60px; heigth:auto;" src="{{ $admin->profile_picture }}" alt="admin photo" class="hidden md:block rounded">
                     <div class="flex flex-col gap-1 justify-center w-full">
                         <span class="font-bold">Welcome!</span>
                         <span>Welcome to Serv-Is, {{ Auth::user()->username }}</span>
