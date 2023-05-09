@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Models\Agent;
 use App\Models\ServiceAddress;
 use App\Models\User;
+use App\Models\UserPhoto;
 use App\Models\ValidDocument;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -59,6 +60,7 @@ class RegisterController extends Controller
             'contact_no' => $userDetails['contact_no'],
             'password' => $userDetails['password'],
             // 'address' => $userDetails['address'],
+
             'region' => $userDetails['region'],
             'user_type' => 2,
         ]);
@@ -72,13 +74,15 @@ class RegisterController extends Controller
         if ($request->user_type === 'Client') {
             $validDocuments = [];
             $fileFields = [
-                'photo_id',
+                // 'photo_id',
                 'nbi_clearance',
                 'police_clearance',
                 'birth_certificate',
                 'cert_of_employment',
                 'other_valid_id',
             ];
+
+            $photoId = 'photo_id';
 
             foreach ($fileFields as $field) {
                 if ($request->hasFile($field)) {
@@ -89,10 +93,24 @@ class RegisterController extends Controller
                 }
             }
 
+            if ($request->hasFile($photoId)) {
+                $file = $request->file($photoId);
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('public/uploads', $fileName);
+                $photoId = '/storage/uploads/' . $fileName;
+            }
+
             $validDocuments['user_id'] = $user->id;
             $validDocuments['user_type'] = 2;
 
+            UserPhoto::create([
+                'user_id' => $user->id,
+                'profile_picture' => $photoId,
+                'user_type' => 2
+            ]);
+
             ValidDocument::create($validDocuments);
+
         }
 
         Alert::success('Success', 'Registration completed.');
