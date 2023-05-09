@@ -36,7 +36,7 @@ class ProfileRequest extends FormRequest
                 'unique:users,email_address,'.$userId,
                 'required',
                 'min:4',
-                'max:20'
+                'max:50'
             ],
             'contact_no' => 'required|numeric','unique:users,contact_no,'.$userId,
             'password' => [
@@ -48,7 +48,7 @@ class ProfileRequest extends FormRequest
                 'regex:/[0-9]/',      // must contain at least one digit
                 'regex:/[@$!%*#?&]/', // must contain at least one special character
             ],
-            'address' => 'required',
+            // 'address' => 'required',
             'region' => 'required',
         ];
     }
