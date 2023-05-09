@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\UserPhoto;
 use App\Models\ValidDocument;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
@@ -25,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
         Model::unguard();
 
         View::composer('partials.navbar', function($view){
-            $admins = ValidDocument::where('user_type', 1)->get();
+            $admins = UserPhoto::where('user_type', 1)->get();
 
             foreach($admins as $admin){
                 $view->with('admin', $admin);
