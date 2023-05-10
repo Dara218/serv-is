@@ -71,6 +71,19 @@ $(document).ready(function(){
         $('.contact-us-modal').hide()
     })
 
+    $('.profile_picture').on('change', function(e){
+        const file = e.target.files[0]
+
+        if(file){
+            const reader = new FileReader()
+
+            reader.onload = function(e){
+                $('.user-profile-el').attr('src', e.target.result)
+            }
+            reader.readAsDataURL(file)
+        }
+    })
+
     // function checkUserLogin(){
     //     if($('.user_type-options').val() === 'Customer'){
     //         $('.form-login').attr('action', `/session/login-store`)
