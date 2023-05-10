@@ -21,20 +21,20 @@
                                     edit
                                 </span>
                             </label>
-                            <input id="file-input" type="file" class="hidden" name="profile_picture">
+                            <input id="file-input" type="file" class="hidden profile_picture" name="profile_picture">
                         </div>
 
                         @else
                             <div class="flex justify-center items-center mb-6">
                                 @foreach ($users as $user)
-                                    <img src="{{ $user->profile_picture  }}" alt="User profile picture" class="rounded-full border-2 border-slate-500 w-32 h-auto">
+                                    <img src="{{ $user->profile_picture  }}" alt="User profile picture" class="user-profile-el rounded-full border-2 border-slate-500 w-32 h-auto">
                                 @endforeach
                                 <label for="file-input">
                                     <span class="material-symbols-outlined">
                                         edit
                                     </span>
                                 </label>
-                                <input id="file-input" type="file" class="hidden" name="profile_picture">
+                                <input id="file-input" type="file" class="hidden profile_picture" name="profile_picture">
                             </div>
 
                     @endif
