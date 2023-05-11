@@ -84,6 +84,25 @@ $(document).ready(function(){
         }
     })
 
+    var initialInputValues = {}
+
+    $('input:not([type="password"])').each(function(){
+        var input = $(this)
+        initialInputValues[input.attr('id')] = input.val()
+    })
+
+    $('input:not([type="password"])').on('input', function(){
+        var input = $(this)
+        var inputId = input.attr('id')
+
+        if(input.val() !== initialInputValues[inputId]){
+            $('.unsave-changes-el').show()
+        }
+        else{
+            $('.unsave-changes-el').hide()
+        }
+    })
+
     // function checkUserLogin(){
     //     if($('.user_type-options').val() === 'Customer'){
     //         $('.form-login').attr('action', `/session/login-store`)
