@@ -96,10 +96,10 @@ $(document).ready(function(){
         var inputId = input.attr('id')
 
         if(input.val() !== initialInputValues[inputId]){
-            $('.unsave-changes-el').show()
+            $('.unsaved-changes-el').show()
         }
         else{
-            $('.unsave-changes-el').hide()
+            $('.unsaved-changes-el').hide()
         }
     })
 
