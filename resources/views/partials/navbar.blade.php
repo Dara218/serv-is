@@ -32,14 +32,17 @@
                   </li>
                   <li>
                     <a href="{{ route('home.showTransactionHistory') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Transaction History</a>
-
                   </li>
                   <li>
                     <a href="{{ route('home.showFaqs') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Customer Support</a>
                   </li>
                   <li>
                     <a href="{{ route('home.showAgenda') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Agenda</a>
-                  </li>                </ul>
+                  </li>
+                  <li>
+                    <a href="{{ route('home.showChat') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Chat</a>
+                  </li>
+                </ul>
                 <form class="py-1 w-full" action="{{ route('session.logout') }}" method="post">
                     @csrf
                     <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">Sign out</button>
