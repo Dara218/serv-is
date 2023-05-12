@@ -14,7 +14,7 @@
 
                         <div class="flex flex-col gap-6 items-start">
                             <div class="flex gap-4">
-                                <img src="{{ $user->validDocuments->photo_id }}" alt="user id photo" class="h-1/2 w-16 rounded-full">
+                                <img src="{{ $user->userPhoto->profile_picture }}" alt="user id photo" class="h-1/2 w-16 rounded-full">
                                 <div class="flex flex-col gap-2">
                                     <span class="font-semibold">{{ ucwords($user->fullname) }}</span>
                                     <span class="text-slate-700">Painting Expert</span>
