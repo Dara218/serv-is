@@ -77,11 +77,11 @@ class ProfileController extends Controller
     }
 
     public function showServiceProvider(){
-        return view('components.home.service-provider', ['employees' => User::where('user_type', 2)->with('validDocuments')->get()]);
+        return view('components.home.service-provider', ['employees' => User::where('user_type', 2)->with('userPhoto')->get()]);
     }
 
     public function showEmployeeProfile(User $user){
-        return view('components.home.employee-profile', ['users' => User::where('id', $user->id)->with('validDocuments')->get()]);
+        return view('components.home.employee-profile', ['users' => User::where('id', $user->id)->with('userPhoto')->get()]);
     }
 
     public function showServiceAddress(){
@@ -102,5 +102,9 @@ class ProfileController extends Controller
 
     public function showAgenda(){
         return view('components.home.agenda');
+    }
+
+    public function showChat(){
+        return view('components.home.chat', ['agents' => User::where('user_type',2)->with('userPhoto')->get()]);
     }
 }
