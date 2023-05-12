@@ -36,12 +36,13 @@ Route::middleware(['auth'])->group(function(){
         Route::put('/edit-profile-process', [ProfileController::class, 'update'])->name('editProfile');
         Route::get('/my-wallet', [ProfileController::class, 'showWallet'])->name('showWallet');
         Route::get('/service-provider', [ProfileController::class, 'showServiceProvider'])->name('showServiceProvider');
-        Route::get('/employee-profile/{user}', [ProfileController::class, 'showEmployeeProfile'])->name('showEmployeeProfile');
+        Route::get('/employee-profile/{user:username}', [ProfileController::class, 'showEmployeeProfile'])->name('showEmployeeProfile');
         Route::get('/service-address', [ProfileController::class, 'showServiceAddress'])->name('showServiceAddress');
         Route::get('/rewards', [ProfileController::class, 'showRewards'])->name('showRewards');
         Route::get('/transaction-history', [ProfileController::class, 'showTransactionHistory'])->name('showTransactionHistory');
         Route::get('/faqs', [ProfileController::class, 'showFaqs'])->name('showFaqs');
         Route::get('/agenda', [ProfileController::class, 'showAgenda'])->name('showAgenda');
+        Route::get('/chat', [ProfileController::class, 'showChat'])->name('showChat');
     });
 
 });
