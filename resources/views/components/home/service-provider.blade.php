@@ -23,12 +23,12 @@
                             more_horiz
                         </span>
 
-                        <a href="{{ route('home.showEmployeeProfile', ['user' => $employee->id]) }}" class="view-profile hidden bg-white rounded w-1/2 h-auto p-2 absolute top-8 right-2 cursor-pointer shadow-md hover:bg-gray-50">
+                        <a href="{{ route('home.showEmployeeProfile', ['user' => $employee->username]) }}" class="view-profile hidden bg-white rounded w-1/2 h-auto p-2 absolute top-8 right-2 cursor-pointer shadow-md hover:bg-gray-50">
                             <span>View Profile</span>
                         </a>
 
                         <div class="flex justify-between gap-2">
-                            <img src="{{ $employee->validDocuments->photo_id }}" alt="user id photo" class="h-1/2 w-16 rounded-full">
+                            <img src="{{ $employee->userPhoto->profile_picture }}" alt="user id photo" class="h-1/2 w-16 rounded-full">
                             <div class="flex flex-col w-full items-start gap-2">
                                 <span class="font-semibold">{{ ucwords($employee->fullname) }}</span>
                                 <span class="flex items-center gap-2">
