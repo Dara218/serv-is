@@ -45,6 +45,10 @@ $(document).ready(function(){
 
     });
 
+    $('.btn-chat-open').on('click', function(){
+        $('.chat-modal').slideToggle()
+    })
+
     $(document).click(function(e) {
         if(! $(e.target).closest('.view-profile, .dots').length) {
             $('.view-profile').hide();
@@ -52,6 +56,10 @@ $(document).ready(function(){
 
         if(! $(e.target).closest('.contact-us-modal, .btn-contact-us' ).length){
             $('.contact-us-modal').hide()
+        }
+
+        if(! $(e.target).closest('.chat-modal, .btn-chat-open').length){
+            $('.chat-modal').slideUp()
         }
     });
 
@@ -71,6 +79,7 @@ $(document).ready(function(){
         $('.contact-us-modal').hide()
     })
 
+    // Preview profile photo edit
     $('.profile_picture').on('change', function(e){
         const file = e.target.files[0]
 
@@ -96,10 +105,10 @@ $(document).ready(function(){
         var inputId = input.attr('id')
 
         if(input.val() !== initialInputValues[inputId]){
-            $('.unsaved-changes-el').show()
+            $('.unsaved-changes-el').fadeIn()
         }
         else{
-            $('.unsaved-changes-el').hide()
+            $('.unsaved-changes-el').fadeOut()
         }
     })
 
