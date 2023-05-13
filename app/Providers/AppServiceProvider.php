@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use App\Models\UserPhoto;
 use App\Models\ValidDocument;
 use Illuminate\Database\Eloquent\Model;
@@ -32,6 +33,12 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('admin', $admin);
             }
 
+        });
+
+        View::composer('partials.chat', function($view){
+            $agents = User::where('user_type', 2)->get();
+
+            $view->with('agents', $agents);
         });
     }
 }
