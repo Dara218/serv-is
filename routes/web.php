@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionController;
@@ -43,6 +44,7 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/faqs', [ProfileController::class, 'showFaqs'])->name('showFaqs');
         Route::get('/agenda', [ProfileController::class, 'showAgenda'])->name('showAgenda');
         Route::get('/chat', [ProfileController::class, 'showChat'])->name('showChat');
+        Route::post('/handle-message', [MessageController::class, 'handleMessage'])->name('handleMessage');
     });
 
 });
