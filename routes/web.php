@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/faqs', [ProfileController::class, 'showFaqs'])->name('showFaqs');
         Route::get('/agenda', [ProfileController::class, 'showAgenda'])->name('showAgenda');
         Route::get('/chat', [ProfileController::class, 'showChat'])->name('showChat');
+        Route::post('/get-user-chat', [ProfileController::class, 'getUserChat'])->name('getUserChat');
         Route::post('/handle-message', [MessageController::class, 'handleMessage'])->name('handleMessage');
     });
 
