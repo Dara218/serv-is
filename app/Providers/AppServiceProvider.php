@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserPhoto;
 use App\Models\ValidDocument;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -36,9 +37,23 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('partials.chat', function($view){
-            $agents = User::where('user_type', 2)->get();
 
-            $view->with('agents', $agents);
+            if(Auth::check()){
+                if(Auth::user()->user_type == 3){
+                    $agents = User::where('user_type', 2)->get();
+                    $view->with('agents', $agents);
+                }
+
+                if(Auth::user()->user_type == 2){
+                    $agents = User::where('user_type', 3)->get();
+                    $view->with('agents', $agents);
+                }
+            }
+
+            else{
+                $agents = User::where('user_type', 3)->get();
+                $view->with('agents', $agents);
+            }
         });
     }
 }
