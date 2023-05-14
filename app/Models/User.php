@@ -54,7 +54,11 @@ class User extends Authenticatable
         return $this->hasOne(UserPhoto::class, 'user_id');
     }
 
-    public function message(){
-        return $this->hasMany(Message::class, 'id');
+    public function messageFromSender(){
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function messageFromReceiver(){
+        return $this->hasMany(Message::class, 'receiver_id');
     }
 }
