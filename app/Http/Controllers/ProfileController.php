@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileRequest;
 use App\Models\Faq;
+use App\Models\Message;
 use App\Models\ServiceAddress;
 use App\Models\Transaction;
 use App\Models\User;
@@ -106,5 +107,25 @@ class ProfileController extends Controller
 
     public function showChat(){
         return view('components.home.chat', ['agents' => User::where('user_type',2)->with('userPhoto')->get()]);
+    }
+
+    public function tryChat(Request $request){
+        // return $request;
+        $receiver = User::where('username', $request->receiver_hidden)->first();
+        $receiverId = $receiver->id;
+        return $receiver->id;
+    }
+
+    public function getUserChat(Request $request){
+        $user = User::where('username', $request->receiver)->first();
+
+        $userChat = Message::where('sender_id', Auth::user()->id)
+                            ->where('receiver_id', $user->id)
+                            ->orWhere('sender_id', $user->id)
+                            ->where('receiver_id', Auth::user()->id)
+                            ->with('sender', 'receiver')
+                            ->get();
+
+        return response()->json($userChat);
     }
 }
