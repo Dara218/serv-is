@@ -112,6 +112,29 @@ $(document).ready(function(){
         }
     })
 
+    // const username = $('#username')
+    // const message = $('#message')
+
+    // $('.form-chat').on('submit', function(e){
+    //     e.preventDefault()
+
+    //     if(message.val() === ''){
+    //         return
+    //     }
+
+    //     axios.post({
+    //         method: 'post',
+    //         url: '/handle-message',
+    //         data: {
+    //             message: message.val()
+    //         }
+    //     })
+    // })
+
+    // window.Echo.channel('chat').listen('.message', (e) => {
+    //     console.log(e);
+    // })
+
     // function checkUserLogin(){
     //     if($('.user_type-options').val() === 'Customer'){
     //         $('.form-login').attr('action', `/session/login-store`)
