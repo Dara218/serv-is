@@ -5,10 +5,12 @@
 
             @foreach ($agents as $agent)
 
-                <li class="flex gap-1 receiver-el cursor-pointer"><img src="https://images.pexels.com/photos/7841717/pexels-photo-7841717.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="user id photo" class="h-8 w-8 mb-2" style="border-radius: 50%"><span class="md:block hidden receiver-chat-heads">{{ $agent->username }}</span></li>
+                <li class="flex gap-1 receiver-el cursor-pointer" data-id="{{ $agent->id }}"><img src="https://images.pexels.com/photos/7841717/pexels-photo-7841717.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="user id photo" class="h-8 w-8 mb-2" style="border-radius: 50%"><span class="md:block hidden receiver-chat-heads">{{ $agent->username }}</span></li>
 
                 <form class="form-chat-head">
                     @csrf
+                    <input type="text" name="user_id" class="user-id-hidden">
+                    {{-- <input type="hidden" name="username" id="username-hidden"> --}}
                     <input type="hidden" name="receiver_hidden" id="receiver-chat-head">
                     <button type="submit" class="hidden">submit</button>
                 </form>
@@ -33,7 +35,7 @@
         <form class="w-full mt-6 sticky bottom-0 form-chat">
             @csrf
             <div class="flex">
-                <input type="hidden" name="username" id="username-hidden">
+                <input type="hidden" name="username">
                 <input type="hidden" name="receiver_hidden" id="receiver-hidden">
 
                 <input type="text" name="message" id="message" class="w-full border border-slate-300 rounded">
