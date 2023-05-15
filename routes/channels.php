@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -15,4 +16,19 @@ use Illuminate\Support\Facades\Broadcast;
 
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
+    // return Auth::check();
+    // return true;
 });
+
+Broadcast::channel('chat.{receiver_hidden}', function ($user, $receiver_hidden) {
+    // Add your authentication logic here
+    // Return true if the user is authenticated and allowed to access the private channel
+    // Return false if the user is not authenticated or not allowed to access the private channel
+
+    // return $user->username === $receiver_hidden;
+    // Auth::check();
+
+    // return $user->username === $receiver_hidden;
+    return true;
+});
+
