@@ -9,33 +9,32 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class SessionController extends Controller
 {
-    public function store(Request $request){
-        // return $request;
+    public function store(Request $request)
+    {
         $userDetails = $request->validate([
             'username' => 'required',
             'password' => 'required'
         ]);
 
-        if(! Auth::attempt($userDetails))
-        {
+        if (!Auth::attempt($userDetails)) {
             Alert::error('Failed', 'Invalid login details.');
             return back();
         }
 
         session()->regenerate();
 
-        if($request->user_type === 'Customer' && User::where('username', $request->username)->exists()) {
+        if ($request->user_type === 'Customer' && User::where('username', $request->username)->exists()) {
             return redirect()->route('home.index');
         }
 
         if ($request->user_type === 'Client' && User::where('username', $request->username)->exists()) {
-            if(User::where('username', $request->username)->where('user_type', 1)->exists()) {
+            if (User::where('username', $request->username)->where('user_type', 1)->exists()) {
                 return redirect()->route('home.indexAdmin');
             }
             return redirect()->route('home.indexAgent');
         }
-
     }
+
 
     public function logout(){
         Auth::logout();
