@@ -8,12 +8,11 @@ use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
 
-
 Route::middleware(['guest'])->group(function(){
 
     Route::get('/', function () {
         return view('components.login');
-    });
+    })->name('login');
 
     Route::prefix('register')->name('register.')->group(function(){
         Route::get('/register', [RegisterController::class, 'create'])->name('create');
@@ -25,10 +24,6 @@ Route::middleware(['guest'])->group(function(){
         Route::post('/login-store', [SessionController::class, 'store'])->name('store');
         Route::post('/login-store-client', [SessionController::class, 'storeClient'])->name('storeClient');
     });
-});
-
-Route::prefix('session')->name('session.')->group(function(){
-    Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
 });
 
 Route::middleware(['auth'])->group(function(){
@@ -46,6 +41,10 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/chat', [ProfileController::class, 'showChat'])->name('showChat');
         Route::post('/get-user-chat', [ProfileController::class, 'getUserChat'])->name('getUserChat');
         Route::post('/handle-message', [MessageController::class, 'handleMessage'])->name('handleMessage');
+    });
+
+    Route::prefix('session')->name('session.')->group(function(){
+        Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
     });
 
 });
@@ -67,9 +66,3 @@ Route::middleware(['admin'])->group(function(){
         Route::get('/home-admin', [HomeController::class, 'indexAdmin'])->name('indexAdmin');
     });
 });
-
-// Route::middleware(['customer', 'agent'])->group(function(){
-//     Route::prefix('session')->name('session.')->group(function(){
-//         Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
-//     });
-// });
