@@ -20,15 +20,15 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     // return true;
 });
 
-Broadcast::channel('chat.{receiver_hidden}', function ($user, $receiver_hidden) {
+Broadcast::channel('chat.{id}', function ($user, $id) {
     // Add your authentication logic here
     // Return true if the user is authenticated and allowed to access the private channel
     // Return false if the user is not authenticated or not allowed to access the private channel
 
-    // return $user->username === $receiver_hidden;
+    // return $user->id === $id;
     // Auth::check();
 
-    // return $user->username === $receiver_hidden;
+    // return $user->username === $id;
     return true;
 });
 
