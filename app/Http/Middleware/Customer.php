@@ -17,7 +17,7 @@ class Customer
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->user_type == 2)
+        if(! Auth::check() || Auth::user()->user_type == 2)
         {
             Auth::logout();
             Alert::error('Failed', 'Invalid login details.');

@@ -17,7 +17,7 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->user_type == 2 || Auth::user()->user_type == 3)
+        if(! Auth::check() || Auth::user()->user_type == 2 || Auth::user()->user_type == 3)
         {
             Auth::logout();
             Alert::error('Failed', 'Invalid login details.');
