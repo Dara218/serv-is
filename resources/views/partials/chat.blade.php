@@ -1,3 +1,4 @@
+@if (Auth::check())
 <div class="chat-modal md:grid grid-cols-3 bg-slate-100 w-11/12 md:w-1/2 h-96 fixed bottom-12 right-4 rounded shadow flex flex-col gap-2" style="display:none;">
     <div class="flex flex-col gap-1 col-span-1 bg-slate-200 p-3">
         <span class="font-semibold">Chats</span>
@@ -9,8 +10,9 @@
 
                 <form class="form-chat-head">
                     @csrf
-                    <input type="text" name="user_id" class="user-id-hidden">
-                    {{-- <input type="hidden" name="username" id="username-hidden"> --}}
+                    <input type="hidden" name="user_id" class="user-id-hidden">
+                    <input type="hidden" name="username" id="username-hidden" value="{{ Auth::user()->id }}">
+                    <input type="text" name="chatId" class="chat-id">
                     <input type="hidden" name="receiver_hidden" id="receiver-chat-head">
                     <button type="submit" class="hidden">submit</button>
                 </form>
@@ -35,7 +37,7 @@
         <form class="w-full mt-6 sticky bottom-0 form-chat">
             @csrf
             <div class="flex">
-                <input type="hidden" name="username">
+                <input type="hidden" name="username" value="{{ Auth::user()->id }}">
                 <input type="hidden" name="receiver_hidden" id="receiver-hidden">
 
                 <input type="text" name="message" id="message" class="w-full border border-slate-300 rounded">
@@ -49,3 +51,5 @@
     </div>
 
 </div>
+
+@endif
