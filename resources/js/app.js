@@ -1,74 +1,95 @@
 import './bootstrap';
 
-    const username = $('#username')
-    const message = $('#message')
-    const receiver = $('#receiver-hidden')
+const username = $('#username-hidden');
+const message = $('#message');
+const receiver = $('#receiver-hidden');
+let messageAppended = false; // Flag variable
 
-    $('.receiver-el').on('click', function(e){
-        receiver.val($(e.target).text())
-        $('.current-chat-name').text($(e.target).text())
-        $('#receiver-chat-head').val($(e.target).text())
+// Click the chat head
+$('.receiver-el').on('click', function(e){
+    receiver.val($(e.target).text());
 
-        // console.log($('#receiver-chat-head').val());
+    $('.current-chat-name').text($(e.target).text());
+    $('#receiver-chat-head').val($(e.target).text());
 
-        $('.form-chat-head').submit()
+    var receiverId = $(this).data('id');
+    $('.user-id-hidden').val(receiverId);
+
+    $('.form-chat-head').submit();
+});
+
+// Sends info to server, displays chats
+$('.form-chat-head').on('submit', function(e){
+    e.preventDefault();
+
+    axios.post('get-user-chat', {
+        receiver: $('#receiver-chat-head').val(),
+        sender: username.val()
     })
+    .then(response => {
+        $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
+        $('.message-container').empty();
+        $('.chat-id').val(response.data[1].id);
 
-    $('.form-chat-head').on('submit', function(e){
-        e.preventDefault()
+        console.log(response);
 
-        axios.post('get-user-chat', {
-            receiver: $('#receiver-chat-head').val()
-        })
-        .then(response => {
-            // console.log(response);
-            $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
+        response.data[0].forEach(function(eachResponse){
+            const formattedDate = moment(eachResponse.created_at).fromNow();
+            $('.message-container').append(`
+                <small class="font-semibold text-slate-400 mt-2">${eachResponse.sender.fullname}</small>
+                <span class="w-auto col-span-4 message-el bg-slate-300 rounded-full py-2 px-3">${eachResponse.message}</span>
+                <small class="font-semibold text-slate-400">${formattedDate}</small>
+            `);
+        });
 
-            $('.message-container').empty()
-
-            response.data.forEach(function(eachResponse){
-                const formattedDate = moment(eachResponse.created_at).fromNow()
-
+        // Only append messages if not already appended
+        if (!messageAppended) {
+            sendMessage()
+            response.data[0].forEach(function(eachResponse){
+                const formattedDate = moment(eachResponse.created_at).fromNow();
                 $('.message-container').append(`
                     <small class="font-semibold text-slate-400 mt-2">${eachResponse.sender.fullname}</small>
-                    <span class="w-auto col-span-4 message-el">${eachResponse.message}</span>
+                    <span class="w-auto col-span-4 message-el bg-slate-300 rounded-full py-2 px-3">${eachResponse.message}</span>
                     <small class="font-semibold text-slate-400">${formattedDate}</small>
-                `)
-            })
-        })
-        .catch(err => console.error(err))
-    })
-
-    $('.form-chat').on('submit', function(e){
-
-        e.preventDefault()
-
-        console.log(receiver.val());
-
-        if(message.val() === ''){
-            return
+                `);
+            });
+            messageAppended = true; // Set the flag to true after appending messages
         }
-
-        axios.post('handle-message', {
-            // data: {
-                message: message.val(),
-                receiver_hidden: receiver.val()
-            // }
-        })
-        .then(response => {
-            console.log(response);
-        })
-        .catch(err => console.error(err))
-
-        message.val('')
     })
+    .catch(err => console.error(err));
+});
 
-    window.Echo.channel('chat')
-        .listen('.message', (e) => {
-            console.log(e);
+// Sends message
+$('.form-chat').on('submit', function(e){
+    e.preventDefault();
+
+    if(message.val() === ''){
+        return;
+    }
+
+    axios.post('handle-message', {
+        message: message.val(),
+        username: username.val(),
+        receiver_hidden: receiver.val(),
+        chatId: $('.chat-id').val()
+    })
+    .then(response => {
+        console.log(response);
+    })
+    .catch(err => console.error(err));
+
+    message.val('');
+});
+
+function sendMessage(){
+    Echo.join('chat.'+$('.chat-id').val())
+    .listen('.message', (e) => {
+        console.log(e);
+
         $('.message-container').append(`
             <small class="font-semibold text-slate-400 mt-2">${e.username}</small>
-            <span class="w-auto col-span-4 message-el">${e.message}</span>
+            <span class="w-auto col-span-4 message-el bg-slate-300 rounded-full py-2 px-3">${e.message}</span>
             <small class="font-semibold text-slate-400">3/21/2000, 2 mins ago</small>
-        `)
-    })
+        `);
+    });
+}
