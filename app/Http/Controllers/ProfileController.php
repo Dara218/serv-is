@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileRequest;
+use App\Models\Chat;
 use App\Models\Faq;
 use App\Models\Message;
 use App\Models\ServiceAddress;
@@ -119,13 +120,49 @@ class ProfileController extends Controller
     public function getUserChat(Request $request){
         $user = User::where('username', $request->receiver)->first();
 
-        $userChat = Message::where('sender_id', Auth::user()->id)
-                            ->where('receiver_id', $user->id)
-                            ->orWhere('sender_id', $user->id)
-                            ->where('receiver_id', Auth::user()->id)
-                            ->with('sender', 'receiver')
-                            ->get();
+        $authUser = Auth::user();
 
-        return response()->json($userChat);
+        // $userChat = Message::where('sender_id', Auth::user()->id)
+        //                     ->where('receiver_id', $user->id)
+        //                     ->orWhere('sender_id', $user->id)
+        //                     ->where('receiver_id', Auth::user()->id)
+        //                     ->with('sender', 'receiver')
+        //                     ->get();
+
+        $userChat = Message::where(function ($query) use ($authUser, $user){
+                    $query->where('sender_id', $authUser->id)
+                          ->where('receiver_id', $user->id);
+                })->orWhere(function ($query) use ($authUser, $user){
+                    $query->where('sender_id', $user->id)
+                          ->where('receiver_id', $authUser->id);
+                })
+                ->with('sender', 'receiver')
+                ->get();
+
+        // $chatRoom = Chat::where('sender_id', Auth::user()->id)
+        //                 ->where('receiver_id', $user->id)
+        //                 ->orWhere('sender_id', $user->id)
+        //                 ->where('receiver_id', Auth::user()->id)
+        //                 ->first();
+
+        $chatRoom = Chat::where(function ($query) use ($authUser, $user){
+                    $query->where('sender_id', $authUser->id)
+                          ->where('receiver_id', $user->id);
+                })->orWhere(function ($query) use ($authUser, $user){
+                    $query->where('sender_id', $user->id)
+                          ->where('receiver_id', $authUser->id);
+                })
+                ->first();
+
+        if(! $chatRoom){
+            $chatRoom = Chat::create([
+                'sender_id' => Auth::user()->id,
+                'receiver_id' => $user->id
+            ]);
+        }
+
+        $responseData = [$userChat, $chatRoom];
+
+        return response()->json($responseData);
     }
 }
