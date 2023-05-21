@@ -5,18 +5,21 @@
         <ol class="flex md:flex-col gap-2">
 
             @foreach ($agents as $agent)
-
-                <li class="flex gap-1 receiver-el cursor-pointer" data-id="{{ $agent->id }}"><img src="https://images.pexels.com/photos/7841717/pexels-photo-7841717.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="user id photo" class="h-8 w-8 mb-2" style="border-radius: 50%"><span class="md:block hidden receiver-chat-heads">{{ $agent->username }}</span></li>
-
-                <form class="form-chat-head">
-                    @csrf
-                    <input type="hidden" name="user_id" class="user-id-hidden">
-                    <input type="hidden" name="username" id="username-hidden" value="{{ Auth::user()->id }}">
-                    <input type="text" name="chatId" class="chat-id">
-                    <input type="hidden" name="receiver_hidden" id="receiver-chat-head">
-                    <button type="submit" class="hidden">submit</button>
-                </form>
+                <li class="flex gap-1 receiver-el cursor-pointer" data-id="{{ $agent->id }}">
+                    <img src="https://images.pexels.com/photos/7841717/pexels-photo-7841717.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="user id photo" class="h-8 w-8 mb-2" style="border-radius: 50%">
+                    <span class="md:block hidden receiver-chat-heads">{{ $agent->username }}</span>
+                </li>
             @endforeach
+
+            <form class="form-chat-head">
+                @csrf
+                <input type="hidden" name="user_id" class="user-id-hidden">
+                <input type="hidden" name="username" id="username-hidden" value="{{ Auth::user()->id }}">
+                <input type="hidden" name="chatId" class="chat-id">
+                <input type="hidden" name="receiver_hidden" id="receiver-chat-head">
+                <button type="submit" class="hidden">submit</button>
+            </form>
+
         </ol>
     </div>
 
