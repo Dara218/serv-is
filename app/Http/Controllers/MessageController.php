@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\Message;
+use App\Models\Chat;
 use App\Models\Message as ModelsMessage;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,22 +16,43 @@ class MessageController extends Controller
         $sender = Auth::user();
         $receiver = User::where('username', $request->receiver_hidden)->first();
 
-        // dd($receiver);
-        // return $receiver;
+        // $chatRoom = Chat::where('sender_id', $sender->id)
+        //                 ->where('receiver_id', $receiver->id)
+        //                 ->orWhere('sender_id', $receiver->id)
+        //                 ->where('receiver_id', $sender->id)
+        //                 ->first();
 
-        event(new Message(
-            $sender->username,
-            $request->message,
-            $receiver->id
-            // $request->input('username'),
-        ));
+        $chatRoom = Chat::where(function ($query) use ($sender, $receiver) {
+                    $query->where('sender_id', $sender->id)
+                          ->where('receiver_id', $receiver->id);
+                })->orWhere(function ($query) use ($sender, $receiver) {
+                    $query->where('sender_id', $receiver->id)
+                          ->where('receiver_id', $sender->id);
+                })->first();
+
+        // if(! $chatRoom){
+        //     Chat::create([
+        //         'sender_id' => $sender->id,
+        //         'receiver_id' => $receiver->id
+        //     ]);
+        // }
 
         ModelsMessage::create([
             'sender_id' => $sender->id,
             'receiver_id' => $receiver->id,
-            'message' => $request->message
+            'message' => $request->message,
         ]);
 
-        return ['success' => true];
+        //toOthers() prevent sender from getting appends after sending.
+        broadcast(new Message(
+            $sender->username,
+            $request->message,
+            $receiver->id,
+            $chatRoom->id
+        ));
+
+        $appendMessageContent = [$request->message, $sender->username];
+
+        return [$appendMessageContent];
     }
 }
