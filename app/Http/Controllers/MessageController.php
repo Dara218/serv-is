@@ -16,12 +16,6 @@ class MessageController extends Controller
         $sender = Auth::user();
         $receiver = User::where('username', $request->receiver_hidden)->first();
 
-        // $chatRoom = Chat::where('sender_id', $sender->id)
-        //                 ->where('receiver_id', $receiver->id)
-        //                 ->orWhere('sender_id', $receiver->id)
-        //                 ->where('receiver_id', $sender->id)
-        //                 ->first();
-
         $chatRoom = Chat::where(function ($query) use ($sender, $receiver) {
                     $query->where('sender_id', $sender->id)
                           ->where('receiver_id', $receiver->id);
@@ -29,13 +23,6 @@ class MessageController extends Controller
                     $query->where('sender_id', $receiver->id)
                           ->where('receiver_id', $sender->id);
                 })->first();
-
-        // if(! $chatRoom){
-        //     Chat::create([
-        //         'sender_id' => $sender->id,
-        //         'receiver_id' => $receiver->id
-        //     ]);
-        // }
 
         ModelsMessage::create([
             'sender_id' => $sender->id,
