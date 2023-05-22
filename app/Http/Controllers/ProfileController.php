@@ -122,13 +122,6 @@ class ProfileController extends Controller
 
         $authUser = Auth::user();
 
-        // $userChat = Message::where('sender_id', Auth::user()->id)
-        //                     ->where('receiver_id', $user->id)
-        //                     ->orWhere('sender_id', $user->id)
-        //                     ->where('receiver_id', Auth::user()->id)
-        //                     ->with('sender', 'receiver')
-        //                     ->get();
-
         $userChat = Message::where(function ($query) use ($authUser, $user){
                     $query->where('sender_id', $authUser->id)
                           ->where('receiver_id', $user->id);
@@ -138,12 +131,6 @@ class ProfileController extends Controller
                 })
                 ->with('sender', 'receiver')
                 ->get();
-
-        // $chatRoom = Chat::where('sender_id', Auth::user()->id)
-        //                 ->where('receiver_id', $user->id)
-        //                 ->orWhere('sender_id', $user->id)
-        //                 ->where('receiver_id', Auth::user()->id)
-        //                 ->first();
 
         $chatRoom = Chat::where(function ($query) use ($authUser, $user){
                     $query->where('sender_id', $authUser->id)
