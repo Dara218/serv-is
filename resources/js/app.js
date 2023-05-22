@@ -3,10 +3,9 @@ import './bootstrap';
 const username = $('#username-hidden');
 const message = $('#message');
 const receiver = $('#receiver-hidden');
-let messageAppended = false; // Flag variable
 
 // Click the chat head
-$('.receiver-el').on('click', function(e){
+$('.receiver-el').on('click', function(e) {
     receiver.val($(e.target).text());
 
     $('.current-chat-name').text($(e.target).text());
@@ -18,52 +17,11 @@ $('.receiver-el').on('click', function(e){
     $('.form-chat-head').submit();
 });
 
-// Sends info to server, displays chats
-$('.form-chat-head').on('submit', function(e){
-    e.preventDefault();
-
-    axios.post('get-user-chat', {
-        receiver: $('#receiver-chat-head').val(),
-        sender: username.val()
-    })
-    .then(response => {
-        $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
-        $('.message-container').empty();
-        $('.chat-id').val(response.data[1].id);
-
-        console.log(response);
-
-        response.data[0].forEach(function(eachResponse){
-            const formattedDate = moment(eachResponse.created_at).fromNow();
-            $('.message-container').append(`
-                <small class="font-semibold text-slate-400 mt-2">${eachResponse.sender.fullname}</small>
-                <span class="w-auto col-span-4 message-el bg-slate-300 rounded-full py-2 px-3">${eachResponse.message}</span>
-                <small class="font-semibold text-slate-400">${formattedDate}</small>
-            `);
-        });
-
-        // Only append messages if not already appended
-        if (!messageAppended) {
-            sendMessage()
-            response.data[0].forEach(function(eachResponse){
-                const formattedDate = moment(eachResponse.created_at).fromNow();
-                $('.message-container').append(`
-                    <small class="font-semibold text-slate-400 mt-2">${eachResponse.sender.fullname}</small>
-                    <span class="w-auto col-span-4 message-el bg-slate-300 rounded-full py-2 px-3">${eachResponse.message}</span>
-                    <small class="font-semibold text-slate-400">${formattedDate}</small>
-                `);
-            });
-            messageAppended = true; // Set the flag to true after appending messages
-        }
-    })
-    .catch(err => console.error(err));
-});
-
 // Sends message
-$('.form-chat').on('submit', function(e){
+$('.form-chat').on('submit', function(e) {
     e.preventDefault();
 
-    if(message.val() === ''){
+    if (message.val() === '') {
         return;
     }
 
@@ -81,8 +39,40 @@ $('.form-chat').on('submit', function(e){
     message.val('');
 });
 
-function sendMessage(){
-    Echo.join('chat.'+$('.chat-id').val())
+// Sends info to server, displays chats
+$('.form-chat-head').on('submit', function(e) {
+    e.preventDefault();
+
+    axios.post('get-user-chat', {
+        receiver: $('#receiver-chat-head').val(),
+        sender: username.val()
+    })
+    .then(response => {
+        $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
+        $('.message-container').empty();
+        $('.chat-id').val(response.data[1].id);
+
+        console.log(response);
+        subscribeToChat();
+
+        response.data[0].forEach(function(eachResponse) {
+            const formattedDate = moment(eachResponse.created_at).fromNow();
+            $('.message-container').append(`
+                <small class="font-semibold text-slate-400 mt-2">${eachResponse.sender.fullname}</small>
+                <span class="w-auto col-span-4 message-el bg-slate-300 rounded-full py-2 px-3">${eachResponse.message}</span>
+                <small class="font-semibold text-slate-400">${formattedDate}</small>
+            `);
+        });
+    })
+    .catch(err => console.error(err));
+});
+
+function subscribeToChat() {
+    const chatId = $('.chat-id').val();
+
+    Echo.leave(`chat.${chatId}`); // Leave the previous channel (if any)
+
+    Echo.join(`chat.${chatId}`)
     .listen('.message', (e) => {
         console.log(e);
 
@@ -91,5 +81,7 @@ function sendMessage(){
             <span class="w-auto col-span-4 message-el bg-slate-300 rounded-full py-2 px-3">${e.message}</span>
             <small class="font-semibold text-slate-400">3/21/2000, 2 mins ago</small>
         `);
+
+        $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
     });
 }
