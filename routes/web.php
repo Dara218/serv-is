@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/chat', [ProfileController::class, 'showChat'])->name('showChat');
         Route::post('/get-user-chat', [ProfileController::class, 'getUserChat'])->name('getUserChat');
         Route::post('/handle-message', [MessageController::class, 'handleMessage'])->name('handleMessage');
+        Route::get('/pricing-plan/{user}', [ProfileController::class, 'showPricingPlan'])->name('showPricingPlan');
     });
 
     Route::prefix('session')->name('session.')->group(function(){
