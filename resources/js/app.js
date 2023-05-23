@@ -6,7 +6,7 @@ const receiver = $('#receiver-hidden')
 
 // Click the chat head
 $('.receiver-el').on('click', function(e) {
-    console.log($(e.target).text());
+    // console.log($(e.target).text());
     receiver.val($(e.target).text())
 
     $('.current-chat-name').show()
@@ -21,7 +21,7 @@ $('.receiver-el').on('click', function(e) {
 })
 
 $('.receiver-chat-head-click').on('click', function(e){
-    console.log($(e.target).data('username'));
+    // console.log($(e.target).data('username'));
     receiver.val($(e.target).data('username'))
 
     $('.current-chat-name').show()
@@ -58,6 +58,9 @@ $('.form-chat').on('submit', function(e) {
 })
 
 // Sends info to server, displays chats
+// Define a variable to keep track of the active chat room
+let activeChatRoom = null
+
 $('.form-chat-head').on('submit', function(e) {
     e.preventDefault()
 
@@ -71,44 +74,83 @@ $('.form-chat-head').on('submit', function(e) {
         $('.chat-id').val(response.data[1].id)
         let messageToShow = 10
 
-        console.log(response)
         subscribeToChat()
 
         // Load messages when chat room is clicked
-        loadMoreMessage(response.data[0].reverse().slice(0, messageToShow))
+        // console.log(response.data[0]);
 
-        // Load more messages on back read
-        $('.chat-container').on('scroll', function(){
-            const scrollTop = $(this).scrollTop()
+        if(response.data[0].length == 0)
+        {
+            $('.message-container').html(`
+                <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
+                    Good morning, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="/home/pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
+                </p>
+            `)
+        }
+        else{
+            loadMoreMessage(response.data[0].reverse().slice(0, messageToShow))
+        }
 
-            if(scrollTop == 0)
-            {
+        // Remove previous scroll event listener if exists
+        if (activeChatRoom !== null) {
+            $(activeChatRoom).off('scroll')
+        }
+
+        // Add new scroll event listener
+        activeChatRoom = $('.chat-container')
+        activeChatRoom.on('scroll', function() {
+        const scrollTop = $(this).scrollTop()
+
+            if (scrollTop == 0) {
+                $('.load-more').css('cursor', 'pointer')
                 $('.load-more').show()
 
                 let currentMessageCount = messageToShow
-
                 messageToShow += 5
                 const messages = response.data[0].slice(currentMessageCount, messageToShow)
 
+                if(messages.length == 0){
+                    $('.load-more').text('Nothing to load.').css('cursor', 'default')
+                }
+                else{
+                    $('.load-more').html(`
+                        <span>Load More</span>
+                        <span class="material-symbols-outlined">
+                            arrow_upward
+                        </span>`)
+                }
+
                 loadMoreMessage(messages)
 
-                $('.load-more').on('click', function(){
+                $('.load-more').on('click', function(e) {
+                    e.stopPropagation()
+
+                    $('.load-more').css('cursor', 'pointer')
                     let currentMessageCount = messageToShow
                     messageToShow += 5
                     const messages = response.data[0].slice(currentMessageCount, messageToShow)
 
+                    if(messages.length == 0){
+                        $('.load-more').text('Nothing to load.').css('cursor', 'default')
+                    }
+                    else{
+                        $('.load-more').html(`
+                            <span>Load More</span>
+                            <span class="material-symbols-outlined">
+                                arrow_upward
+                            </span>`)
+                    }
+
                     loadMoreMessage(messages)
                 })
-            }
-            else
-            {
+            } else {
                 $('.load-more').hide()
             }
         })
     })
     .catch(err => console.error(err))
+});
 
-})
 
 function loadMoreMessage(moreMessage){
     moreMessage.forEach(function(eachResponse) {
