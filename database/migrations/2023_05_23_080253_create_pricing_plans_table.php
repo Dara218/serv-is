@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pricing_plans', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
+            $table->integer('type');
             $table->integer('price');
             $table->timestamps();
         });
