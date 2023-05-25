@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PricingPlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionController;
@@ -41,7 +42,8 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/chat', [ProfileController::class, 'showChat'])->name('showChat');
         Route::post('/get-user-chat', [ProfileController::class, 'getUserChat'])->name('getUserChat');
         Route::post('/handle-message', [MessageController::class, 'handleMessage'])->name('handleMessage');
-        Route::get('/pricing-plan/{user}', [ProfileController::class, 'showPricingPlan'])->name('showPricingPlan');
+        Route::get('/pricing-plan/{user}', [PricingPlanController::class, 'showPricingPlan'])->name('showPricingPlan');
+        Route::post('/pricing-plan-store', [PricingPlanController::class, 'storePricing'])->name('storePricing');
     });
 
     Route::prefix('session')->name('session.')->group(function(){
