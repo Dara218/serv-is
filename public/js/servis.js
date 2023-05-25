@@ -112,35 +112,19 @@ $(document).ready(function(){
         }
     })
 
-    // const username = $('#username')
-    // const message = $('#message')
+    $('.form-pricing').on('submit', function(e){
 
-    // $('.form-chat').on('submit', function(e){
-    //     e.preventDefault()
+        const basicEl = $('#basic')
+        const advanceEl = $('#advance')
+        const errorEl = $('.error-pricing-plan')
 
-    //     if(message.val() === ''){
-    //         return
-    //     }
-
-    //     axios.post({
-    //         method: 'post',
-    //         url: '/handle-message',
-    //         data: {
-    //             message: message.val()
-    //         }
-    //     })
-    // })
-
-    // window.Echo.channel('chat').listen('.message', (e) => {
-    //     console.log(e);
-    // })
-
-    // function checkUserLogin(){
-    //     if($('.user_type-options').val() === 'Customer'){
-    //         $('.form-login').attr('action', `/session/login-store`)
-    //     }
-    //     if($('.user_type-options').val() === 'Client'){
-    //         $('.form-login').attr('action', `/session/login-store-client`)
-    //     }
-    // }
+        if(!basicEl.is(':checked') && !advanceEl.is(':checked')){
+            $('.label-pricing').css('border', '1px solid red')
+            errorEl.show()
+            e.preventDefault()
+        }
+        else{
+            errorEl.hide()
+        }
+    })
 })
