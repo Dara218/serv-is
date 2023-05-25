@@ -153,7 +153,4 @@ class ProfileController extends Controller
         return response()->json($responseData);
     }
 
-    public function showPricingPlan(User $user){
-        return view('components.home.pricing-plan', ['clientToBeAvail' => $user]);
-    }
 }
