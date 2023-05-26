@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('address');
+            $table->boolean('is_primary');
             $table->boolean('is_active');
             $table->timestamps();
         });
