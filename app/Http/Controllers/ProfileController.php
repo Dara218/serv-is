@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileRequest;
+use App\Models\AvailedPricingPlan;
 use App\Models\Chat;
 use App\Models\Faq;
 use App\Models\Message;
@@ -75,7 +76,7 @@ class ProfileController extends Controller
     }
 
     public function showWallet(){
-        return view('components.home.my-wallet');
+        return view('components.home.my-wallet', ['userBalance' => Auth::user()->current_balance]);
     }
 
     public function showServiceProvider(){
@@ -87,7 +88,9 @@ class ProfileController extends Controller
     }
 
     public function showServiceAddress(){
-        return view('components.home.service-address', ['userAddress' => Auth::user()->address]);
+        return view('components.home.service-address',
+        ['primaryAddress' => ServiceAddress::where('user_id', Auth::user()->id)->where('is_primary', 1)->first(),
+        'secondaryAddresses' => ServiceAddress::where('user_id', Auth::user()->id)->where('is_primary', 0)->get()]);
     }
 
     public function showRewards(){
@@ -148,7 +151,16 @@ class ProfileController extends Controller
             ]);
         }
 
-        $responseData = [$userChat, $chatRoom];
+        $checkIfUserHasAvailed = AvailedPricingPlan::where('availed_to_id', $user->id)
+                                    ->where('availed_by_id', $authUser->id)
+                                    ->exists();
+
+        $responseData = [
+            $userChat,
+            $chatRoom,
+            $checkIfUserHasAvailed,
+            $authUser->username
+        ];
 
         return response()->json($responseData);
     }
