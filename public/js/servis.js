@@ -127,4 +127,27 @@ $(document).ready(function(){
             errorEl.hide()
         }
     })
+
+    $('#checkbox-primary').on('click', function(e) {
+
+        $('.form-primary-address-checkbox').submit()
+
+        console.log($('#checkbox-primary').is(':checked'));
+
+        var userId = $('#logged-user').val();
+        var isChecked = $('#checkbox-primary').is(':checked');
+
+        axios.put(`address-primary-update/${userId}`,{
+            address: isChecked
+        })
+        .then(function(response){
+            console.log(response);
+        })
+        .catch(err => console.error(err))
+
+    })
+
+    $('.form-primary-address-checkbox').on('submit', function(e){
+        e.preventDefault()
+    })
 })
