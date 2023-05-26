@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PricingPlanController;
 use App\Http\Controllers\ProfileController;
@@ -44,6 +45,9 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/handle-message', [MessageController::class, 'handleMessage'])->name('handleMessage');
         Route::get('/pricing-plan/{user}', [PricingPlanController::class, 'showPricingPlan'])->name('showPricingPlan');
         Route::post('/pricing-plan-store', [PricingPlanController::class, 'storePricing'])->name('storePricing');
+        Route::post('/pricing-plan-add-chat/{user}', [PricingPlanController::class, 'storeChat'])->name('storeChat');
+        Route::post('/store-address', [AddressController::class, 'storeAddress'])->name('storeAddress');
+        Route::put('/address-primary-update/{serviceaddress}', [AddressController::class, 'updatePrimaryAddress'])->name('updatePrimaryAddress');
     });
 
     Route::prefix('session')->name('session.')->group(function(){
