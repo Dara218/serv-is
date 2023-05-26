@@ -10,7 +10,7 @@
                         <span class="font-semibold">Current Balance</span>
                         <div class="p-4 rounded flex justify-between items-center border border-slate-300">
                             <div class="flex flex-col">
-                                <span class="font-semibold">P98.00</span>
+                                <span class="font-semibold">P{{ $userBalance }}.00</span>
                                 <small>Current Balance Wallet</small>
                             </div>
                             <div>
