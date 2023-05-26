@@ -13,9 +13,16 @@
                     <div class="w-full mb-6 bg-slate-100 rounded-md py-6 px-4">
 
                         <div class="flex items-center justify-between mb-2">
-                            <span class="font-semibold text-lg">Manila, Philippines</span>
+                            <span class="font-semibold text-lg">{{ $primaryAddress->address }}</span>
                             <label class="relative inline-flex items-center mr-5 cursor-pointer">
-                                <input type="checkbox" value="" class="sr-only peer" checked>
+
+                                <form class="form-primary-address-checkbox">
+                                    @csrf
+                                    <input type="hidden" name="logged_user" id="logged-user" value="{{ Auth::user()->id }}">
+                                </form>
+
+                                <input type="checkbox" value="" class="sr-only peer" id="checkbox-primary" name="checkBox">
+
                                 <div class="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-slate-700 peer-focus:ring-4 peer-focus:ring-teal-300 dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
                               </label>
                         </div>
@@ -27,7 +34,25 @@
                         </div>
                     </div>
 
-                    <form action="#" method="post" class="flex flex-col gap-4 address-modal w-full add-address-form" style="display:none;">
+                    @foreach ($secondaryAddresses as $secondaryAddress)
+                        <div class="w-full mb-6 bg-slate-100 rounded-md py-6 px-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-semibold text-lg">{{ $secondaryAddress->address }}</span>
+                                <label class="relative inline-flex items-center mr-5 cursor-pointer">
+                                    <input type="checkbox" value="" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-slate-700 peer-focus:ring-4 peer-focus:ring-teal-300 dark:peer-focus:ring-teal-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
+                                </label>
+                            </div>
+                            <div>
+                                <span>
+                                    <a href="#" class="mr-2 hover:text-slate-500">Edit</a>
+                                    <a href="#" class="hover:text-slate-500">Delete</a>
+                                </span>
+                            </div>
+                        </div>
+                    @endforeach
+
+                    <form action="{{ route('home.storeAddress') }}" method="post" class="flex flex-col gap-4 address-modal w-full add-address-form" style="display:none;">
                         @csrf
 
                         <div class="flex justify-between bg-slate-500 text-white p-4 rounded-t-xl">
@@ -48,9 +73,7 @@
                             <button type="submit" class="w-full text-white bg-slate-500 hover:bg-slate-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-slate-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Confirm</button>
                         </div>
                     </form>
-
                 </div>
-
             </div>
         </div>
 
