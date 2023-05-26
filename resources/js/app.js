@@ -77,15 +77,25 @@ $('.form-chat-head').on('submit', function(e) {
         subscribeToChat()
 
         // Load messages when chat room is clicked
-        // console.log(response.data[0]);
+        // console.log(response.data);
 
-        if(response.data[0].length == 0)
+        if(response.data[0].length == 0 && response.data[2] == false)
         {
             $('.message-container').html(`
                 <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                     Good morning, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="/home/pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
                 </p>
             `)
+            $('.input-message').prop('disabled', true)
+        }
+        else if(response.data[0].length == 0 && response.data[2] == true)
+        {
+            $('.message-container').html(`
+                <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
+                    Welcome to Serv-is ${response.data[3]}! Thank you for availing my service.
+                </p>
+            `)
+            $('.input-message').prop('disabled', false)
         }
         else{
             loadMoreMessage(response.data[0].reverse().slice(0, messageToShow))
