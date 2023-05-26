@@ -5,17 +5,17 @@
         <ol class="flex md:flex-col gap-2">
 
             @foreach ($agents as $agent)
-                <li class="flex gap-1 receiver-el cursor-pointer shadow-md" data-id="{{ $agent->id }}">
+                <li class="flex gap-1 receiver-el cursor-pointer shadow-md" data-id="{{ $agent->user->id }}">
                     <img
                         src="https://images.pexels.com/photos/7841717/pexels-photo-7841717.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                         alt="user id photo"
                         class="h-8 w-8 mb-2 receiver-chat-head-click"
                         style="border-radius: 50%"
-                        data-id="{{ $agent->id }}"
-                        data-username="{{ $agent->username }}"
+                        data-id="{{ $agent->user->id }}"
+                        data-username="{{ $agent->user->username }}"
                     >
 
-                    <span class="md:block hidden receiver-chat-heads">{{ $agent->username }}</span>
+                    <span class="md:block hidden receiver-chat-heads">{{ $agent->user->username }}</span>
                 </li>
             @endforeach
 
