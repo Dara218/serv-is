@@ -47,7 +47,15 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/pricing-plan-store', [PricingPlanController::class, 'storePricing'])->name('storePricing');
         Route::post('/pricing-plan-add-chat/{user}', [PricingPlanController::class, 'storeChat'])->name('storeChat');
         Route::post('/store-address', [AddressController::class, 'storeAddress'])->name('storeAddress');
+
+        Route::put('/address-changed-update/{serviceaddress}', [AddressController::class, 'updateChangeAddress'])->name('updateChangeAddress');
+        Route::put('/address-changed-secondary-update/{serviceaddress}', [AddressController::class, 'updateChangeSecondaryAddress'])->name('updateChangeSecondaryAddress');
+
         Route::put('/address-primary-update/{serviceaddress}', [AddressController::class, 'updatePrimaryAddress'])->name('updatePrimaryAddress');
+        Route::put('/address-secondary-update/{serviceaddress}', [AddressController::class, 'updateSecondaryAddress'])->name('updateSecondaryAddress');
+
+        Route::put('/address-to-primary-update/{id}', [AddressController::class, 'updateToPrimaryAddress'])->name('updateToPrimaryAddress');
+        Route::delete('/address-primary-destroy/{id}', [AddressController::class, 'destroyPrimaryAddress'])->name('destroyPrimaryAddress');
     });
 
     Route::prefix('session')->name('session.')->group(function(){
