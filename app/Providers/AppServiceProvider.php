@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\AvailedUser;
 use App\Models\User;
 use App\Models\UserPhoto;
 use App\Models\ValidDocument;
@@ -40,13 +41,22 @@ class AppServiceProvider extends ServiceProvider
 
             if(Auth::check()){
                 if(Auth::user()->user_type == 3){
-                    $agents = User::where('user_type', 2)->get();
+                    // $agents = User::where('user_type', 2)->get();
+                    // $view->with('agents', $agents);
+
+                    // make new table availed_users that contains user id, client id DONE
+                    // check if true above, select all user_availed where auth user is present
+
+                    $agents = AvailedUser::where('availed_by', Auth::user()->id)->with('user')->get();
                     $view->with('agents', $agents);
                 }
 
                 if(Auth::user()->user_type == 2){
-                    $agents = User::where('user_type', 3)->get();
+                    $agents = AvailedUser::where('availed_to', Auth::user()->id)->with('user')->get();
                     $view->with('agents', $agents);
+
+                    // $agents = User::where('user_type', 3)->get();
+                    // $view->with('agents', $agents);
                 }
                 if(Auth::user()->user_type == 1){
                     $agents = User::where('user_type', 2)
