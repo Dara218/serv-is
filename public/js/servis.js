@@ -215,30 +215,30 @@ $(document).ready(function(){
           })
     })
 
-    $('.edit-secondary-address').on('click', function(){
-        const secondaryAddressId = $('.secondary-address').data('id')
+    $('.edit-secondary-address').on('click', function(e){
+        const secondaryAddressId = $(e.target).data('id')
 
-          Swal.fire({
+        Swal.fire({
             title: 'Edit your secondary address',
             input: 'text',
-            inputValue: $('.secondary-address').text(),
+            inputValue: $(e.target).data('address'),
             inputPlaceholder: 'Enter your secondary address',
             inputValidator: (value) => {
                 if (! value){
                     return 'You need to write something.'
                 }
             }
-          })
-          .then((result) => {
+        })
+        .then((result) => {
 
-            const secondaryAddress = result.value
+        const secondaryAddress = result.value
 
             Swal.fire({
                 title: 'Do you want to save the changes?',
                 showCancelButton: true,
                 confirmButtonText: 'Save',
-              })
-              .then((result) => {
+            })
+            .then((result) => {
                 if (result.isConfirmed)
                 {
                     axios.put(`address-secondary-update/${secondaryAddressId}`,{
@@ -246,7 +246,7 @@ $(document).ready(function(){
                         secondaryAddress: secondaryAddress
                     })
                     .then(function(response){
-                        console.log(response)
+                        // console.log(response)
                     })
                     .catch(err => console.error(err))
 
@@ -266,17 +266,17 @@ $(document).ready(function(){
                 {
                     Swal.fire('Changes are not saved', '', 'info')
                 }
-              })
-          })
+            })
+        })
     })
 
-    $('.delete-primary-address').on('click', function(){
+    $('.delete-address').on('click', function(e){
 
-        const primaryAddressId = $('.primary-address').data('id')
-        console.log(primaryAddressId);
+        const addressId = $(e.target).data('id')
+        const addressType = $(e.target).data('type')
 
         Swal.fire({
-            title: 'Delete primary address?',
+            title: `Delete ${addressType} address?`,
             icon: 'warning',
             inputLabel: 'Are you sure you want to delete this address?',
             showConfirmButton: true,
@@ -285,16 +285,18 @@ $(document).ready(function(){
         .then((result) => {
             if(result.isConfirmed)
             {
-                axios.delete(`address-primary-destroy/${primaryAddressId}`)
+                axios.delete(`address-destroy/${addressId}`)
                 .then(function(response){
-                    console.log(response);
-                    axios.put(`address-to-primary-update/${primaryAddressId}`,{
-                        secondaryAddressId: primaryAddressId,
+
+                    axios.put(`address-to-${addressType}-update/${addressId}`,{
+                        secondaryAddressId: addressId,
                     })
                     .then(function(response){
-                        console.log(response);
+
+                        const ucAddressType = addressType.toUpperCase()
+
                         Swal.fire({
-                            title: 'Primary address has been deleted',
+                            title: `${ucAddressType} address has been deleted`,
                             icon: 'success',
                             confirmButtonText: 'Okay',
                             allowOutsideClick: false
