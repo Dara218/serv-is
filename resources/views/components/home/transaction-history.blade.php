@@ -26,25 +26,25 @@
                                 </thead>
                                 <tbody>
                                     @if ($transactions->count() == 0)
-
                                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <td class="px-6 py-4">
                                                 <span>No recent transaction.</span>
                                             </td>
                                         </tr>
-
-                                        @else
-                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                            <td class="px-6 py-4">
-                                                Silver
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                Laptop
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                Laptop
-                                            </td>
-                                        </tr>
+                                    @else
+                                        @foreach ($transactions as $transaction)
+                                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                <td class="px-6 py-4">
+                                                    {{ $transaction->service }}
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    P {{ $transaction->amount_paid }}
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    {{ $transaction->created_at->format('F j, Y g:i A') }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     @endif
 
                                 </tbody>
