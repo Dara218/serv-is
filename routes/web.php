@@ -55,7 +55,9 @@ Route::middleware(['auth'])->group(function(){
         Route::put('/address-secondary-update/{serviceaddress}', [AddressController::class, 'updateSecondaryAddress'])->name('updateSecondaryAddress');
 
         Route::put('/address-to-primary-update/{id}', [AddressController::class, 'updateToPrimaryAddress'])->name('updateToPrimaryAddress');
-        Route::delete('/address-primary-destroy/{id}', [AddressController::class, 'destroyPrimaryAddress'])->name('destroyPrimaryAddress');
+        Route::put('/address-to-secondary-update/{id}', [AddressController::class, 'updateToSecondaryAddress'])->name('updateToSecondaryAddress');
+
+        Route::delete('/address-destroy/{id}', [AddressController::class, 'destroyAddress'])->name('destroyAddress');
     });
 
     Route::prefix('session')->name('session.')->group(function(){
