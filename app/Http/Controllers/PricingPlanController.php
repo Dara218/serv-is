@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AvailedPricingPlan;
 use App\Models\AvailedUser;
 use App\Models\PricingPlan;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -50,16 +51,36 @@ class PricingPlanController extends Controller
         }
 
         if(! $user){
-            AvailedPricingPlan::create([ //has error
+            AvailedPricingPlan::create([
                 'availed_to_id' => $agent,
                 'availed_by_id' => $customer->id,
                 'pricing_plan_type' => $request->plan
             ]);
-
-
         }
 
+        $transactionType = null;
+
+        if ($request->plan == 1)
+        {
+            $transactionType = 'Basic';
+        }
+        else if ($request->plan == 2){
+            $transactionType = 'Advance';
+        }
+
+        $this->storeTransaction($customer, $transactionType, $pricingPlanBalance);
+
+        Alert::success('Success', 'Transaction successful.');
         return redirect()->route('home.index');
+    }
+
+    public function storeTransaction($customer, $transactionType, $pricingPlanBalance){
+        // return $pricingPlanBalance;
+        Transaction::create([
+            'user_id' => $customer->id,
+            'service' => $transactionType,
+            'amount_paid' => $pricingPlanBalance->price
+        ]);
     }
 
     public function storeChat(User $user){
