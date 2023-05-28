@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('message');
             $table->string('service');
+            $table->integer('budget');
             $table->string('deadline');
             $table->timestamps();
         });
