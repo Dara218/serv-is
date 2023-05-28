@@ -79,7 +79,7 @@ $('.form-chat-head').on('submit', function(e) {
         // Load messages when chat room is clicked
         // console.log(response.data);
 
-        if(response.data[0].length == 0 && response.data[2] == false)
+        if(response.data[0].length == 0 && response.data[2] == false && response.data[4] == true)
         {
             $('.message-container').html(`
                 <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
@@ -88,7 +88,16 @@ $('.form-chat-head').on('submit', function(e) {
             `)
             $('.input-message').prop('disabled', true)
         }
-        else if(response.data[0].length == 0 && response.data[2] == true)
+        else if(response.data[0].length == 0 && response.data[2] == true && response.data[4] == true)
+        {
+            $('.message-container').html(`
+                <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
+                    Welcome to Serv-is ${response.data[3]}! Thank you for availing my service.
+                </p>
+            `)
+            $('.input-message').prop('disabled', false)
+        }
+        else if(response.data[0].length == 0 && (response.data[4] == false))
         {
             $('.message-container').html(`
                 <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
