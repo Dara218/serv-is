@@ -155,11 +155,21 @@ class ProfileController extends Controller
                                     ->where('availed_by_id', $authUser->id)
                                     ->exists();
 
+        $checkIfAgentOrAdmin = User::find($authUser->id);
+
+        $confirmNotAgent = false;
+
+        if($checkIfAgentOrAdmin->user_type == 3)
+        {
+            $confirmNotAgent = true;
+        }
+
         $responseData = [
             $userChat,
             $chatRoom,
             $checkIfUserHasAvailed,
-            $authUser->username
+            $authUser->username,
+            $confirmNotAgent
         ];
 
         return response()->json($responseData);
