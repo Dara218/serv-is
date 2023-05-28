@@ -14,7 +14,7 @@
                         <div class="bg-slate-500 h-16 w-full"></div>
                         <button type="button" class="btn-contact-us bg-[#F6F7F9] w-1/2 h-16 -mt-10 rounded-lg shadow-xl font-semibold text-slate-500 cursor-pointer hover:bg-[#eeeeee]">Contact Us</button>
 
-                        <form action="#" method="post" class="contact-us-modal border border-slate-400 rounded-md shadow-md absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white overflow-hidden hidden w-11/12 md:w-2/5">
+                        <form action="{{ route('home.storeContactMessage') }}" method="post" class="contact-us-modal border border-slate-400 rounded-md shadow-md absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white overflow-hidden hidden w-11/12 md:w-2/5">
                             @csrf
 
                             {{-- TODO: STAY ON MIDDLE KAHIT SCROLL YUNG CONTACT US MODAL --}}
@@ -44,9 +44,14 @@
                                     @enderror
                                 </div>
 
-                                <textarea id="message" rows="4" class="mb-6 block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your message here..."></textarea>
+                                <div class="mb-6">
+                                    <textarea id="message" rows="4" class="mb-6 block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your message here..." name="message"></textarea>
+                                    @error('message')
+                                        <p id="filled_error_help" class="mt-2 text-xs text-red-600 dark:text-red-400"><span class="font-medium">{{ $message }}</span></p>
+                                    @enderror
+                                </div>
 
-                                <button type="submit" class="w-full mb-6 text-white bg-slate-500 hover:bg-slate-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-slate-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Send</button>
+                                <button type="submit" class="w-full mb-6 text-white bg-slate-500 hover:bg-slate-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-5 py-2.5 mr-2 dark:bg-slate-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Send</button>
                             </div>
                         </form>
 
@@ -74,7 +79,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
+        @include('sweetalert::alert')
 </x-layout>
