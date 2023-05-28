@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileRequest;
+use App\Models\Service;
 use App\Models\AvailedPricingPlan;
 use App\Models\Chat;
 use App\Models\Faq;
@@ -98,7 +99,7 @@ class ProfileController extends Controller
     }
 
     public function showTransactionHistory(){
-        return view('components.home.transaction-history', ['transactions' => Transaction::where('id', Auth::user()->id)]);
+        return view('components.home.transaction-history', ['transactions' => Transaction::where('id', Auth::user()->id)->get()]);
     }
 
     public function showFaqs(){
@@ -106,7 +107,7 @@ class ProfileController extends Controller
     }
 
     public function showAgenda(){
-        return view('components.home.agenda');
+        return view('components.home.agenda', ['services' => Service::all()]);
     }
 
     public function showChat(){
