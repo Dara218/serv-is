@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\MessageController;
@@ -58,6 +60,11 @@ Route::middleware(['auth'])->group(function(){
         Route::put('/address-to-secondary-update/{id}', [AddressController::class, 'updateToSecondaryAddress'])->name('updateToSecondaryAddress');
 
         Route::delete('/address-destroy/{id}', [AddressController::class, 'destroyAddress'])->name('destroyAddress');
+
+        Route::post('/store-contact-message', [ContactUsController::class, 'storeContactMessage'])->name('storeContactMessage');
+
+        Route::post('/store-agenda', [AgendaController::class, 'storeAgenda'])->name('storeAgenda');
+        Route::get('/get-services', [AgendaController::class, 'getServices'])->name('getServices');
     });
 
     Route::prefix('session')->name('session.')->group(function(){
