@@ -100,9 +100,26 @@ class AddressController extends Controller
         return response()->json($request->secondaryAddressId);
     }
 
-    public function destroyPrimaryAddress(Request $request){
+    public function destroyAddress(Request $request){
         ServiceAddress::destroy($request->id);
 
         return response()->json($request->id);
+    }
+
+    public function updateToSecondaryAddress(Request $request){
+
+        $checkPrimaryAddress = ServiceAddress::where('user_id', Auth::user()->id)
+                        ->where('is_primary', 1)
+                        ->exists();
+
+        if(! $checkPrimaryAddress)
+        {
+            ServiceAddress::where('is_primary', 0)->first()->update([
+                'is_primary' => 1,
+                'is_active' => 1
+            ]);
+        }
+
+        return response()->json($request->secondaryAddressId);
     }
 }
