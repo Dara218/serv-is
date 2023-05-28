@@ -149,7 +149,7 @@ $(document).ready(function(){
         var userId = $('#logged-user').val();
         var isChecked = $('.checkbox-secondary').is(':checked');
         var secondaryAddressId = $(e.target).data('id')
-        console.log(secondaryAddressId);
+        // console.log(secondaryAddressId);
 
         axios.put(`address-changed-secondary-update/${userId}`,{
             secondaryAddressId: secondaryAddressId,
@@ -165,54 +165,49 @@ $(document).ready(function(){
     $('.edit-primary-address').on('click', function(){
         const primaryAddressId = $('.primary-address').data('id')
 
-          Swal.fire({
-            title: 'Edit your primary address',
-            input: 'text',
-            inputValue: $('.primary-address').text(),
-            inputPlaceholder: 'Enter your primary address',
+        Swal.fire({
+            title: "Edit your primary address",
+            input: "text",
+            inputValue: $(".primary-address").text(),
+            inputPlaceholder: "Enter your primary address",
             inputValidator: (value) => {
-                if (! value){
-                    return 'You need to write something.'
+                if (!value) {
+                    return "You need to write something."
                 }
-            }
-          })
-          .then((result) => {
+            },
+        }).then((result) => {
             const primaryAddress = result.value
             Swal.fire({
-                title: 'Do you want to save the changes?',
+                title: "Do you want to save the changes?",
                 showCancelButton: true,
-                confirmButtonText: 'Save',
-              })
-              .then((result) => {
-                if (result.isConfirmed)
-                {
-                    axios.put(`address-primary-update/${primaryAddressId}`,{
-                        primaryAddressId: primaryAddressId,
-                        primaryAddress: primaryAddress
-                    })
-                    .then(function(response){
-                        console.log(response)
-                    })
-                    .catch(err => console.error(err))
+                confirmButtonText: "Save",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios
+                        .put(`address-primary-update/${primaryAddressId}`, {
+                            primaryAddressId: primaryAddressId,
+                            primaryAddress: primaryAddress,
+                        })
+                        .then(function (response) {
+                            // console.log(response)
+                        })
+                        .catch((err) => console.error(err))
 
                     Swal.fire({
-                        title: 'Primary address has been saved',
-                        icon: 'success',
-                        confirmButtonText: 'Okay',
-                        allowOutsideClick: false
-                    })
-                    .then((result) => {
-                        if(result.isConfirmed){
+                        title: "Primary address has been saved",
+                        icon: "success",
+                        confirmButtonText: "Okay",
+                        allowOutsideClick: false,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
                             location.reload()
                         }
                     })
+                } else if (result.isDenied) {
+                    Swal.fire("Changes are not saved", "", "info")
                 }
-                else if (result.isDenied)
-                {
-                    Swal.fire('Changes are not saved', '', 'info')
-                }
-              })
-          })
+            })
+        })
     })
 
     $('.edit-secondary-address').on('click', function(e){
@@ -293,7 +288,7 @@ $(document).ready(function(){
                     })
                     .then(function(response){
 
-                        const ucAddressType = addressType.toUpperCase()
+                        const ucAddressType = addressType.charAt(0).toUpperCase() + addressType.slice(1).toLowerCase()
 
                         Swal.fire({
                             title: `${ucAddressType} address has been deleted`,
