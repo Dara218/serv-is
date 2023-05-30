@@ -41,7 +41,7 @@
                                     <span class="material-symbols-outlined">
                                         location_on
                                     </span>
-                                    {{ $employee->address }}
+                                    {{ $address->address }}
                                 </span>
                                 <span class="flex items-center gap-2">
                                     <span class="material-symbols-outlined">
