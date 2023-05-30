@@ -29,4 +29,19 @@ class AgendaController extends Controller
 
     }
 
+    public function updateAgenda(Agenda $agenda, AgendaRequest $request){
+
+        $agendaDetails = $request->validated();
+
+        Agenda::where('id', $agenda->id)->update([
+            'message' => $agendaDetails['message'],
+            'service' => $agendaDetails['service'],
+            'budget' => $agendaDetails['budget'],
+            'deadline' => $agendaDetails['deadline']
+        ]);
+        
+        Alert::success('Success', 'Agenda successfully updated.');
+        return back();
+    }
+
 }
