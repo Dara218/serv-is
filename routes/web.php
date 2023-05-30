@@ -65,6 +65,8 @@ Route::middleware(['auth'])->group(function(){
 
         Route::post('/store-agenda', [AgendaController::class, 'storeAgenda'])->name('storeAgenda');
         Route::get('/get-services', [AgendaController::class, 'getServices'])->name('getServices');
+
+        Route::put('/update-agenda/{agenda}', [AgendaController::class, 'updateAgenda'])->name('updateAgenda');
     });
 
     Route::prefix('session')->name('session.')->group(function(){
