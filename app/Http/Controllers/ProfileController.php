@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileRequest;
+use App\Models\Agenda;
 use App\Models\Service;
 use App\Models\AvailedPricingPlan;
 use App\Models\Chat;
@@ -19,6 +20,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class ProfileController extends Controller
 {
+
     public function update(ProfileRequest $request){
         // $user = User::where('id', Auth::user()->id);
         $user = User::find(Auth::user()->id);
@@ -81,11 +83,23 @@ class ProfileController extends Controller
     }
 
     public function showServiceProvider(){
-        return view('components.home.service-provider', ['employees' => User::where('user_type', 2)->with('userPhoto')->get()]);
+        $serviceAddress =  ServiceAddress::where('user_id', Auth::user()->id)
+        ->where('is_primary', 1)
+        ->first();
+
+        return view('components.home.service-provider', 
+        ['employees' => User::where('user_type', 2)->with('userPhoto')->get(), 
+        'address' => $serviceAddress]);
     }
 
     public function showEmployeeProfile(User $user){
-        return view('components.home.employee-profile', ['users' => User::where('id', $user->id)->with('userPhoto')->get()]);
+        $serviceAddress =  ServiceAddress::where('user_id', Auth::user()->id)
+        ->where('is_primary', 1)
+        ->first();
+        
+        return view('components.home.employee-profile', 
+        ['users' => User::where('id', $user->id)->with('userPhoto')->get(),
+        'address' => $serviceAddress]);
     }
 
     public function showServiceAddress(){
@@ -107,7 +121,9 @@ class ProfileController extends Controller
     }
 
     public function showAgenda(){
-        return view('components.home.agenda', ['services' => Service::all()]);
+        return view('components.home.agenda',
+        ['services' => Service::all(),
+        'agendas' => Agenda::where('user_id', Auth::user()->id)->with('user', 'userPhoto')->get()]);
     }
 
     public function showChat(){
