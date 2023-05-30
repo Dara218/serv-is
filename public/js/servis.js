@@ -1,17 +1,10 @@
 $(document).ready(function(){
 
-    // $('.id-imgs').hide()
     checkUserType()
-    // checkUserLogin()
 
     $('.user_type-options').on('change', function(){
         checkUserType()
     })
-
-    // $('.user_type-options-client').on('change', function(){
-    //     checkUserLogin()
-    // })
-
     axios.get('https://ph-locations-api.buonzz.com/v1/regions')
     .then(function(res){
 
@@ -265,6 +258,7 @@ $(document).ready(function(){
         })
     })
 
+    // Delete primary or secondary address
     $('.delete-address').on('click', function(e){
 
         const addressId = $(e.target).data('id')
@@ -310,4 +304,33 @@ $(document).ready(function(){
             }
         })
     })
+
+    // Update agenda
+    $('.btn-edit-agenda').on('click', function(e){
+        const idData = $(e.target).data('id')
+        const messageData = $(e.target).data('message')
+        const serviceData = $(e.target).data('service')
+        const budgetData = $(e.target).data('budget')
+        const deadlineData = $(e.target).data('deadline')
+
+        $('.edit-agenda-message').text(messageData)
+        $('.edit-agenda-service-option').val(serviceData)
+        $('.edit-agenda-budget').val(budgetData)
+        $('.edit-agenda-deadline').val(deadlineData) 
+
+        $(`#edit-agenda-modal-${idData}`).slideDown()
+
+        $('.btn-close-agenda').on('click', function(){
+            $(`#edit-agenda-modal-${idData}`).slideUp()
+        })
+    })
+    
+    $('.btn-add-agenda').on('click', function(){
+        $('.form-agenda-modal').slideToggle()
+    })
+
+    $('.btn-close-agenda').on('click', function(){
+        $('.form-agenda-modal').slideToggle()
+    })
+
 })
