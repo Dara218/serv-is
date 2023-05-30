@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Agenda extends Model
 {
     use HasFactory;
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function userPhoto(){
+        return $this->belongsTo(UserPhoto::class, 'user_id');
+    }
 }
