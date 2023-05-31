@@ -1,0 +1,6 @@
+
+@media (min-width: 768px) {
+    .category-photo{
+        aspect-ratio: 3/2;
+    }
+}
