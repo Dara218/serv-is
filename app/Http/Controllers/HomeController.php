@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Service;
 use App\Models\ServiceAddress;
+use App\Models\Transaction;
 use App\Models\UserPhoto;
 use App\Models\ValidDocument;
 use Illuminate\Http\Request;
@@ -12,7 +14,12 @@ use Illuminate\Support\Facades\Auth;
 class HomeController extends Controller
 {
     public function index(){
-        return view('components.home.home', ['services' => Service::all()]);
+        return view('components.home.home',
+        [
+            'services' => Service::all(), 'categories' => Category::all(),
+            'balance' => Auth::user()->current_balance,
+            'transaction' => Transaction::where('user_id', Auth::user()->id)->count()
+        ]);
     }
 
     public function indexAgent(){
@@ -24,10 +31,11 @@ class HomeController extends Controller
     }
 
     public function showEditProfile(){
-        // return UserPhoto::where('user_id', Auth::user()->id)->get();
-        return view('components.home.edit-profile', ['users' => UserPhoto::where('user_id', Auth::user()->id)->get(),
-                                                    'useraddresses' => ServiceAddress::where('user_id', Auth::user()->id)->get()
-        ]);
+        return view('components.home.edit-profile',
+            [
+                'users' => UserPhoto::where('user_id', Auth::user()->id)->get(),
+                'useraddresses' => ServiceAddress::where('user_id', Auth::user()->id)->get()
+            ]);
     }
 
 }
