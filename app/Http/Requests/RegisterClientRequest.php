@@ -54,6 +54,7 @@ class RegisterClientRequest extends FormRequest
             'birth_certificate' => 'required|mimes:jpeg,png,jpg,txt,pdf,docs|max:2048',
             'cert_of_employment' => 'required|mimes:jpeg,png,jpg,txt,pdf,docs|max:2048',
             'other_valid_id' => 'required|mimes:jpeg,png,jpg,txt,pdf,docs|max:2048',
+            'service' => 'required'
         ];
     }
 }
