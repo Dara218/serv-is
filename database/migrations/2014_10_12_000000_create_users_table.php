@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('current_balance')->default(0);
             // $table->string('address');
             $table->string('region');
+            $table->string('service')->nullable();
             // $table->string('profile_picture')->nullable();
             $table->integer('user_type');
             $table->boolean('is_active')->default(1);
