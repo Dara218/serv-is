@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\HomeController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PricingPlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
@@ -67,6 +69,10 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/get-services', [AgendaController::class, 'getServices'])->name('getServices');
 
         Route::put('/update-agenda/{agenda}', [AgendaController::class, 'updateAgenda'])->name('updateAgenda');
+        Route::delete('/agenda-destroy/{agenda}', [AgendaController::class, 'destroyAgenda'])->name('destroyAgenda');
+
+        Route::get('/get-categories', [CategoryController::class, 'getCategories'])->name('getCategories');
+        Route::get('/get-services', [ServiceController::class, 'getServices'])->name('getServices');
     });
 
     Route::prefix('session')->name('session.')->group(function(){
