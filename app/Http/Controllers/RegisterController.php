@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RegisterClientRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Agent;
+use App\Models\Service;
 use App\Models\ServiceAddress;
 use App\Models\User;
 use App\Models\UserPhoto;
@@ -16,9 +17,8 @@ class RegisterController extends Controller
 {
     public function create(){
 
-        return view('components.register.register');
+        return view('components.register.register', ['services' => Service::all()]);
     }
-
 
     public function store(RegisterRequest $request)
     {
@@ -61,6 +61,7 @@ class RegisterController extends Controller
             'password' => $userDetails['password'],
             // 'address' => $userDetails['address'],
 
+            'service' => $userDetails['service'],
             'region' => $userDetails['region'],
             'user_type' => 2,
         ]);
@@ -68,7 +69,8 @@ class RegisterController extends Controller
         ServiceAddress::create([
             'user_id' => $user->id,
             'address' => $userDetails['address'],
-            'is_active' => true
+            'is_active' => true,
+            'is_primary' => true
         ]);
 
         if ($request->user_type === 'Client') {
