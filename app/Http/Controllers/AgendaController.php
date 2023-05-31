@@ -14,8 +14,6 @@ class AgendaController extends Controller
     public function storeAgenda(AgendaRequest $request){
         $agendaDetails = $request->validated();
 
-        // todo: show agenda on bottom, agent and admin cant see, user cant
-
         Agenda::create([
             'user_id' => Auth::user()->id,
             'message' => $agendaDetails['message'],
@@ -25,7 +23,7 @@ class AgendaController extends Controller
         ]);
 
         Alert::success('Success', 'Agenda successfully posted');
-        return redirect()->route('home.index');
+        return back();
 
     }
 
@@ -39,9 +37,14 @@ class AgendaController extends Controller
             'budget' => $agendaDetails['budget'],
             'deadline' => $agendaDetails['deadline']
         ]);
-        
+
         Alert::success('Success', 'Agenda successfully updated.');
         return back();
+    }
+
+    public function destroyAgenda(Agenda $agenda){
+        Agenda::destroy($agenda->id);
+        return response()->json($agenda);
     }
 
 }
