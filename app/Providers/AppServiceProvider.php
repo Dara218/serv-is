@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\AvailedUser;
+use App\Models\Notification;
 use App\Models\User;
 use App\Models\UserPhoto;
 use App\Models\ValidDocument;
@@ -37,6 +38,13 @@ class AppServiceProvider extends ServiceProvider
 
         });
 
+        View::composer('partials.notification', function($view){
+            $notifications = Notification::where('user_id', Auth::user()->id)->get();
+
+            $view->with('notifications', $notifications);
+
+        });
+
         View::composer('partials.chat', function($view){
 
             if(Auth::check()){
@@ -52,7 +60,7 @@ class AppServiceProvider extends ServiceProvider
                 }
 
                 if(Auth::user()->user_type == 2){
-                    $agents = AvailedUser::where('availed_to', Auth::user()->id)->with('user')->get();
+                    $agents = AvailedUser::where('availed_to', Auth::user()->id)->with('user', 'availedBy')->get();
                     $view->with('agents', $agents);
 
                     // $agents = User::where('user_type', 3)->get();
