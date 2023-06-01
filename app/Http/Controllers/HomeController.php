@@ -23,7 +23,11 @@ class HomeController extends Controller
     }
 
     public function indexAgent(){
-        return view('components.home_agent.index');
+        return view('components.home_agent.index',
+        [
+            'balance' => Auth::user()->current_balance,
+            'total_services' => Transaction::where('user_id', Auth::user()->id)->count()
+        ]);
     }
 
     public function indexAdmin(){
