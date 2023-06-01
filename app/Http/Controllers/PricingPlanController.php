@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationEvent;
 use App\Models\AvailedPricingPlan;
 use App\Models\AvailedUser;
+use App\Models\Notification;
 use App\Models\PricingPlan;
 use App\Models\Transaction;
 use App\Models\User;
@@ -86,7 +88,22 @@ class PricingPlanController extends Controller
     public function storeChat(User $user){
         AvailedUser::create([
             'availed_by' => Auth::user()->id,
-            'availed_to' => $user->id
+            'availed_to' => $user->id,
+            'is_accepted' => false
+        ]);
+
+        $notificationMessage = $user->username . ' ' . 'wants to avail your service.';
+
+        event(new NotificationEvent(
+            $user->username,
+            $user->id,
+            $notificationMessage
+        ));
+
+        Notification::create([
+            'user_id' => $user->id,
+            'username' => $user->username,
+            'message' => $notificationMessage,
         ]);
 
         return redirect()->route('home.index');
