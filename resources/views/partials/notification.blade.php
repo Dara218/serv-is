@@ -7,9 +7,20 @@
 
     <!-- Dropdown menu -->
     <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-1/2 md:w-80 dark:bg-gray-700">
-        <ul class="w-full p-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-            <li class="flex justify-between bg-slate-100 p-1">
+        <ul class="flex flex-col gap-2 w-full p-2 text-sm text-gray-700 dark:text-gray-200 notification-parent" aria-labelledby="dropdownDefaultButton">
 
+            @foreach ($notifications as $notification)
+                <li class="flex justify-between bg-slate-100 py-4 px-2">
+                    <div class="flex gap-2">
+                        <div class="flex flex-col gap-1 justify-center w-full">
+                            <span class="font-bold">{{ $notification->username }}</span>
+                            <span>{{ $notification->message }}</span>
+                        </div>
+                    </div>
+                </li>
+            @endforeach
+
+            <li class="flex justify-between bg-slate-100 p-1">
                 <div class="flex gap-2">
                     <img style="width:60px; heigth:auto;" src="{{ $admin->profile_picture }}" alt="admin photo" class="hidden md:block rounded">
                     <div class="flex flex-col gap-1 justify-center w-full">
@@ -19,7 +30,6 @@
                 </div>
 
                 <small>{{ Auth::user()->created_at->diffForHumans() }}</small>
-
             </li>
         </ul>
     </div>
