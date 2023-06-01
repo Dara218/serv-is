@@ -15,7 +15,7 @@
                         data-username="{{ $agent->user->username }}"
                     >
 
-                    <span class="md:block hidden receiver-chat-heads">{{ $agent->user->username }}</span>
+                    <span class="md:block hidden receiver-chat-heads">{{ Auth::user()->user_type == 3 ? $agent->user->username :  (Auth::user()->user_type == 2 ? $agent->availedBy->username : '') }}</span>
                 </li>
             @endforeach
 
