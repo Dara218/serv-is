@@ -79,16 +79,33 @@ $('.form-chat-head').on('submit', function(e) {
         // Load messages when chat room is clicked
         // console.log(response.data);
 
-        if(response.data[0].length == 0 && response.data[2] == false && response.data[4] == true)
-        {
+        if(response.data[0].length == 0 && response.data[2] == false && (response.data[4] == false || response.data[4] == true) && response.data[5] == false){
             $('.message-container').html(`
                 <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
-                    Good morning, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="/home/pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
+                    Good day! Please wait for the agent to accept your booking. You'll get notified later on.
                 </p>
             `)
             $('.input-message').prop('disabled', true)
         }
-        else if(response.data[0].length == 0 && response.data[2] == true && response.data[4] == true)
+        else if(response.data[0].length == 0 && response.data[2] == false && response.data[4] == false && response.data[5] == true)
+        {
+            $('.message-container').html(`
+                <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
+                    Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="/home/pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
+                </p>
+            `)
+            $('.input-message').prop('disabled', true)
+        }
+        else if(response.data[0].length == 0 && response.data[2] == false && response.data[4] == true && response.data[5] == true)
+        {
+            $('.message-container').html(`
+                <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
+                    Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="/home/pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
+                </p>
+            `)
+            $('.input-message').prop('disabled', true)
+        }
+        else if(response.data[0].length == 0 && response.data[2] == true && response.data[4] == true && response.data[5] == true)
         {
             $('.message-container').html(`
                 <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
@@ -97,7 +114,7 @@ $('.form-chat-head').on('submit', function(e) {
             `)
             $('.input-message').prop('disabled', false)
         }
-        else if(response.data[0].length == 0 && (response.data[4] == false))
+        else if(response.data[0].length == 0 && response.data[4] == false && response.data[5] == true)
         {
             $('.message-container').html(`
                 <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
@@ -200,3 +217,25 @@ function subscribeToChat() {
         $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight)
     })
 }
+
+const userId = $('#current-user-id').val()
+
+// changed notif, add accept or reject
+
+Echo.private(`notifications.${userId}`)
+.listen('.user.notif', (e) => {
+    // console.log(e);
+
+    $('.notification-parent').prepend(`
+        <li class="flex justify-between bg-slate-100 p-1">
+
+            <div class="flex gap-2">
+                <div class="flex flex-col gap-1 justify-center w-full">
+                    <span class="font-bold">${e.username}</span>
+                    <span>${e.notificationMessage}</span>
+                </div>
+            </div>
+
+        </li>
+    `)
+})
