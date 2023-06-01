@@ -12,4 +12,8 @@ class AvailedUser extends Model
     public function user(){
         return $this->belongsTo(User::class, 'availed_to');
     }
+
+    public function availedBy(){
+        return $this->belongsTo(User::class, 'availed_by');
+    }
 }
