@@ -6,6 +6,7 @@ use App\Http\Requests\ProfileRequest;
 use App\Models\Agenda;
 use App\Models\Service;
 use App\Models\AvailedPricingPlan;
+use App\Models\AvailedUser;
 use App\Models\Chat;
 use App\Models\Faq;
 use App\Models\Message;
@@ -87,8 +88,8 @@ class ProfileController extends Controller
         ->where('is_primary', 1)
         ->first();
 
-        return view('components.home.service-provider', 
-        ['employees' => User::where('user_type', 2)->with('userPhoto')->get(), 
+        return view('components.home.service-provider',
+        ['employees' => User::where('user_type', 2)->with('userPhoto')->get(),
         'address' => $serviceAddress]);
     }
 
@@ -96,8 +97,8 @@ class ProfileController extends Controller
         $serviceAddress =  ServiceAddress::where('user_id', Auth::user()->id)
         ->where('is_primary', 1)
         ->first();
-        
-        return view('components.home.employee-profile', 
+
+        return view('components.home.employee-profile',
         ['users' => User::where('id', $user->id)->with('userPhoto')->get(),
         'address' => $serviceAddress]);
     }
@@ -168,17 +169,37 @@ class ProfileController extends Controller
             ]);
         }
 
-        $checkIfUserHasAvailed = AvailedPricingPlan::where('availed_to_id', $user->id)
-                                    ->where('availed_by_id', $authUser->id)
-                                    ->exists();
+        $checkIfUserHasAvailed = AvailedPricingPlan::where(function($query) use($user, $authUser){
+            $query->where('availed_to_id', $user->id)
+                    ->where('availed_by_id', $authUser->id);
+        })->orWhere(function($query) use ($user, $authUser){
+            $query->where('availed_by_id', $authUser->id)
+                    ->where('availed_to_id', $user->id);
+        })
+        ->exists();
+
+        $checkIsAccepted = AvailedUser::where(function($query) use($user, $authUser){
+            $query->where('availed_to', $user->id)
+                    ->where('availed_by', $authUser->id)
+                    ->where('is_accepted', true);
+                })->orWhere(function($subQuery) use ($user, $authUser){
+            $subQuery->where('availed_to', $authUser->id)
+                    ->where('availed_by', $user->id)
+                    ->where('is_accepted', true);
+        })
+        ->exists();
 
         $checkIfAgentOrAdmin = User::find($authUser->id);
-
         $confirmNotAgent = false;
+
+        $isAccepted = false;
 
         if($checkIfAgentOrAdmin->user_type == 3)
         {
             $confirmNotAgent = true;
+        }
+        if($checkIsAccepted){
+            $isAccepted = true;
         }
 
         $responseData = [
@@ -186,7 +207,9 @@ class ProfileController extends Controller
             $chatRoom,
             $checkIfUserHasAvailed,
             $authUser->username,
-            $confirmNotAgent
+            $confirmNotAgent,
+            $checkIsAccepted,
+            $request->sender
         ];
 
         return response()->json($responseData);
