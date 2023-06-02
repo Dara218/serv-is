@@ -77,7 +77,6 @@ class PricingPlanController extends Controller
     }
 
     public function storeTransaction($customer, $transactionType, $pricingPlanBalance){
-        // return $pricingPlanBalance;
         Transaction::create([
             'user_id' => $customer->id,
             'service' => $transactionType,
@@ -92,18 +91,23 @@ class PricingPlanController extends Controller
             'is_accepted' => false
         ]);
 
-        $notificationMessage = $user->username . ' ' . 'wants to avail your service.';
+        $notificationMessage = $user->username . ' ' . 'requested to avail your service.';
+        $notificationType = 1;
 
         event(new NotificationEvent(
             $user->username,
             $user->id,
-            $notificationMessage
+            $notificationMessage,
+            $notificationType
         ));
 
         Notification::create([
             'user_id' => $user->id,
             'username' => $user->username,
             'message' => $notificationMessage,
+            'is_unread' => true,
+            'status' => 0,
+            'type' => 1
         ]);
 
         return redirect()->route('home.index');
