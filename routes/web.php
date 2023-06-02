@@ -6,6 +6,7 @@ use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PricingPlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
@@ -51,18 +52,14 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/pricing-plan-store', [PricingPlanController::class, 'storePricing'])->name('storePricing');
         Route::post('/pricing-plan-add-chat/{user}', [PricingPlanController::class, 'storeChat'])->name('storeChat');
         Route::post('/store-address', [AddressController::class, 'storeAddress'])->name('storeAddress');
-
         Route::put('/address-changed-update/{serviceaddress}', [AddressController::class, 'updateChangeAddress'])->name('updateChangeAddress');
         Route::put('/address-changed-secondary-update/{serviceaddress}', [AddressController::class, 'updateChangeSecondaryAddress'])->name('updateChangeSecondaryAddress');
-
         Route::put('/address-primary-update/{serviceaddress}', [AddressController::class, 'updatePrimaryAddress'])->name('updatePrimaryAddress');
         Route::put('/address-secondary-update/{serviceaddress}', [AddressController::class, 'updateSecondaryAddress'])->name('updateSecondaryAddress');
-
         Route::put('/address-to-primary-update/{id}', [AddressController::class, 'updateToPrimaryAddress'])->name('updateToPrimaryAddress');
         Route::put('/address-to-secondary-update/{id}', [AddressController::class, 'updateToSecondaryAddress'])->name('updateToSecondaryAddress');
 
         Route::delete('/address-destroy/{id}', [AddressController::class, 'destroyAddress'])->name('destroyAddress');
-
         Route::post('/store-contact-message', [ContactUsController::class, 'storeContactMessage'])->name('storeContactMessage');
 
         Route::post('/store-agenda', [AgendaController::class, 'storeAgenda'])->name('storeAgenda');
@@ -73,6 +70,10 @@ Route::middleware(['auth'])->group(function(){
 
         Route::get('/get-categories', [CategoryController::class, 'getCategories'])->name('getCategories');
         Route::get('/get-services', [ServiceController::class, 'getServices'])->name('getServices');
+
+        Route::put('/update-notification-count/{id}', [NotificationController::class, 'updateNotificationCount'])->name('updateNotificationCount');
+        Route::put('/update-notification-accept/{notification}', [NotificationController::class, 'updateNotificationAccept'])->name('updateNotificationAccept');
+        Route::put('/update-notification-reject/{notification}', [NotificationController::class, 'updateNotificationReject'])->name('updateNotificationReject');
     });
 
     Route::prefix('session')->name('session.')->group(function(){
