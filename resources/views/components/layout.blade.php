@@ -28,6 +28,7 @@
             </div>
         @endif
 
+        @include('partials.toast')
         @include('partials.chat')
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/datepicker.min.js"></script>
