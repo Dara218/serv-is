@@ -223,19 +223,100 @@ const userId = $('#current-user-id').val()
 // changed notif, add accept or reject
 
 Echo.private(`notifications.${userId}`)
-.listen('.user.notif', (e) => {
-    // console.log(e);
+.listen('.user.notif', (e) =>
+{
+    let count = parseInt($('.notif-count-hidden').text())
+    $('.notif-count-hidden').text(count + 1)
 
-    $('.notification-parent').prepend(`
-        <li class="flex justify-between bg-slate-100 p-1">
+    $('.notif-count-hidden').show()
 
+    if(e.notificationType == 1)
+    {
+        $('.notification-parent').prepend(`
+            <li class="flex flex-col py-4 px-2 bg-slate-200">
+                <div class="flex gap-2">
+                    <div class="flex flex-col gap-1 justify-center w-full">
+                        <span class="font-bold">${e.username}</span>
+                        <span>${e.notificationMessage}</span>
+                    </div>
+                </div>
+                <div class="flex gap-4 justify-center">
+                    <a href="#" data-id="{{ $notification->id }}" class="material-symbols-outlined cursor-pointer bnt-accept-notif">
+                        check_circle
+                    </a>
+                    <a href="#" data-id="{{ $notification->id }}" class="material-symbols-outlined cursor-pointer bnt-reject-notif">
+                        cancel
+                    </a>
+                </div>
+            </li>
+        `)
+    }
+    $('.toast-notification-message').text(e.notificationMessage)
+    $('.toast-notification').show()
+})
+
+$('.notification-bell').on('click', function(){
+
+    $('.notif-count-hidden').hide()
+
+    axios.put(`update-notification-count/${userId}`)
+    .then(function(response){
+        // console.log(response)
+    })
+    .catch((err) => console.error(err))
+})
+
+$('.bnt-accept-notif').on('click', function(e){
+    const notificationId = $(e.target).data('id');
+    const notificationItem = $(this).parentsUntil('.notification-parent');
+    const username = $(e.target).data('username')
+    const message = $(e.target).data('message')
+    let status = 1
+
+    axios.put(`update-notification-accept/${notificationId}`)
+    .then(function(response){
+        updateNotificationItem(notificationItem, username, message, status)
+    })
+    .catch(err => console.error(err))
+})
+
+$('.bnt-reject-notif').on('click', function(e){
+    const notificationId = $(e.target).data('id');
+    const notificationItem = $(this).parentsUntil('.notification-parent');
+    const username = $(e.target).data('username')
+    const message = $(e.target).data('message')
+    let status = 2
+
+    axios.put(`update-notification-reject/${notificationId}`)
+    .then(function(response){
+        updateNotificationItem(notificationItem, username, message, status)
+    })
+    .catch(err => console.error(err))
+})
+
+function updateNotificationItem(notificationItem, username, message, status){
+    let color = undefined
+    if(status == 1)
+    {
+        color = 'text-green-500'
+        status = 'Accepted'
+    }
+    else if(status == 2)
+    {
+        color = 'text-red-400'
+        status = 'Rejected'
+    }
+    notificationItem.html(`
+        <li class="notif-item flex justify-between py-4 px-2 {{ $notification->is_unread == true ? 'bg-slate-100' : 'bg-slate-200' }}">
             <div class="flex gap-2">
                 <div class="flex flex-col gap-1 justify-center w-full">
-                    <span class="font-bold">${e.username}</span>
-                    <span>${e.notificationMessage}</span>
+                    <span class="font-semibold ${color}">${status}</span>
+                    <span class="font-bold">${username}</span>
+                    <span>${message}</span>
                 </div>
             </div>
-
         </li>
     `)
-})
+}
+
+//TODO: Send notification to customer if accepted or rejected.
