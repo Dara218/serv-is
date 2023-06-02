@@ -35,14 +35,14 @@ class AppServiceProvider extends ServiceProvider
             foreach($admins as $admin){
                 $view->with('admin', $admin);
             }
-
         });
 
         View::composer('partials.notification', function($view){
             $notifications = Notification::where('user_id', Auth::user()->id)->get();
-
-            $view->with('notifications', $notifications);
-
+            $notificationCount = Notification::where('user_id', Auth::user()->id)
+                                            ->where('is_unread', 1)
+                                            ->count();
+            $view->with(['notifications' => $notifications, 'notificationCount' => $notificationCount]);
         });
 
         View::composer('partials.chat', function($view){
@@ -51,9 +51,6 @@ class AppServiceProvider extends ServiceProvider
                 if(Auth::user()->user_type == 3){
                     // $agents = User::where('user_type', 2)->get();
                     // $view->with('agents', $agents);
-
-                    // make new table availed_users that contains user id, client id DONE
-                    // check if true above, select all user_availed where auth user is present
 
                     $agents = AvailedUser::where('availed_by', Auth::user()->id)->with('user')->get();
                     $view->with('agents', $agents);
