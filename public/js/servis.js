@@ -400,39 +400,4 @@ $(document).ready(function(){
         getCategories(allCategories = 9)
     })
 
-    // getServices()
-
-    // let allServices = 6
-    // async function getServices(){
-    //     $.ajax({
-    //         url: 'get-services',
-    //         success: function(data){
-    //             console.log(data);
-    //             // $('.services-container').empty()
-    //             // data.slice(0, allServices).forEach(function(eachData){
-    //             //     $('.services-container').append(
-    //             //         `
-    //             //         <div class="h-full w-full grid-cols-span-1 border border-slate-300 rounded-xl text-center">
-
-    //             //             <div class="bg-slate-200 flex justify-center">
-    //             //                 <img src="${eachData.category_photo}" alt="${eachData.type}" class="h-auto w-6/12 py-6">
-    //             //             </div>
-
-    //             //             <div class="p-4">
-    //             //                 <span class="font-semibold">${eachData.type.charAt(0).toUpperCase() + eachData.type.slice(1).toLowerCase()}</span>
-    //             //             </div>
-    //             //         </div>
-    //             //     `)
-    //             // })
-    //         },
-    //         error: function(error){
-    //             console.error(error)
-    //         }
-    //     })
-    // }
-
-    // $('.view-all-services').on('click', function(){
-    //     getServices(allServices = 9)
-    // })
-
 })
