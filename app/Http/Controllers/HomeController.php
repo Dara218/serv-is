@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agenda;
 use App\Models\Category;
 use App\Models\Service;
 use App\Models\ServiceAddress;
@@ -26,7 +27,8 @@ class HomeController extends Controller
         return view('components.home_agent.index',
         [
             'balance' => Auth::user()->current_balance,
-            'total_services' => Transaction::where('user_id', Auth::user()->id)->count()
+            'services' => Transaction::where('user_id', Auth::user()->id)->count(),
+            'agendas' => Agenda::where('is_available', true)->get()
         ]);
     }
 
