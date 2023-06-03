@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileRequest;
+use App\Models\Notification;
 use App\Models\Agenda;
 use App\Models\Service;
 use App\Models\AvailedPricingPlan;
@@ -21,7 +22,6 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class ProfileController extends Controller
 {
-
     public function update(ProfileRequest $request){
         // $user = User::where('id', Auth::user()->id);
         $user = User::find(Auth::user()->id);
@@ -173,8 +173,8 @@ class ProfileController extends Controller
             $query->where('availed_to_id', $user->id)
                     ->where('availed_by_id', $authUser->id);
         })->orWhere(function($query) use ($user, $authUser){
-            $query->where('availed_by_id', $authUser->id)
-                    ->where('availed_to_id', $user->id);
+            $query->where('availed_to_id', $authUser->id)
+                    ->where('availed_by_id', $user->id);
         })
         ->exists();
 
@@ -203,13 +203,13 @@ class ProfileController extends Controller
         }
 
         $responseData = [
-            $userChat,
-            $chatRoom,
-            $checkIfUserHasAvailed,
-            $authUser->username,
-            $confirmNotAgent,
-            $checkIsAccepted,
-            $request->sender
+            $userChat, // 0
+            $chatRoom, // 1
+            $checkIfUserHasAvailed, // 2
+            $authUser->username, // 3
+            $confirmNotAgent, // 4
+            $isAccepted, // 5
+            $request->sender // 6
         ];
 
         return response()->json($responseData);
