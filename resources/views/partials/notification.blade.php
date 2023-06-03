@@ -12,10 +12,12 @@
     <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">{{ ucwords(Auth::user()->fullname) }}<svg class="w-5 h-5 ml-1" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button>
 
     <!-- Dropdown menu -->
-    <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-1/2 md:w-80 dark:bg-gray-700 h-[80vh] overflow-y-scroll">
-        <ul class="flex flex-col gap-2 w-full p-2 text-sm text-gray-700 dark:text-gray-200 notification-parent" aria-labelledby="dropdownDefaultButton">
+    <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-1/2 md:w-80 dark:bg-gray-700 h-[50vh] overflow-y-auto">
+        <ul class="flex flex-col gap-2 w-full p-2 text-sm text-gray-700 dark:text-gray-200 notification-parent h-auto" aria-labelledby="dropdownDefaultButton">
 
             @foreach ($notifications as $notification)
+            {{-- <span>{{ $notification }}</span> --}}
+
 
                 @if ($notification->status == 1 && $notification->type == 1)
                     <li class="notif-item flex justify-between py-4 px-2 {{ $notification->is_unread == true ? 'bg-slate-100' : 'bg-slate-200' }}">
@@ -37,10 +39,10 @@
                             </div>
                         </div>
                         <div class="flex gap-4 justify-center">
-                            <a href="#" data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" class="material-symbols-outlined cursor-pointer bnt-accept-notif">
+                            <a href="#" data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" data-from-user-id="{{ $notification->from_user_id }}" class="material-symbols-outlined cursor-pointer bnt-accept-notif">
                                 check_circle
                             </a>
-                            <a href="#" data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" class="material-symbols-outlined cursor-pointer bnt-reject-notif">
+                            <a href="#" data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" data-from-user-id="{{ $notification->from_user_id }}" class="material-symbols-outlined cursor-pointer bnt-reject-notif">
                                 cancel
                             </a>
                         </div>
@@ -56,7 +58,18 @@
                             </div>
                         </div>
                     </li>
+
+                @elseif ($notification->status == 3 && $notification->type == 2)
+                    <li class="notif-item flex justify-between py-4 px-2 {{ $notification->is_unread == true ? 'bg-slate-100' : 'bg-slate-200' }}">
+                        <div class="flex gap-2">
+                            <div class="flex flex-col gap-1 justify-center w-full">
+                                <span class="font-bold">{{ $notification->username }}</span>
+                                <span>{{ $notification->message }}</span>
+                            </div>
+                        </div>
+                    </li>
                 @endif
+
             @endforeach
 
             <li class="flex justify-between bg-slate-100 p-1">
