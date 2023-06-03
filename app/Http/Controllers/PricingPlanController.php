@@ -84,13 +84,8 @@ class PricingPlanController extends Controller
         ]);
     }
 
-    public function storeChat(User $user){
-        AvailedUser::create([
-            'availed_by' => Auth::user()->id,
-            'availed_to' => $user->id,
-            'is_accepted' => false
-        ]);
-
+    public function storeChat(User $user)
+    {
         $notificationMessage = $user->username . ' ' . 'requested to avail your service.';
         $notificationType = 1;
 
@@ -101,13 +96,21 @@ class PricingPlanController extends Controller
             $notificationType
         ));
 
-        Notification::create([
+        $notificationId = Notification::create([
             'user_id' => $user->id,
+            'from_user_id' => Auth::user()->id,
             'username' => $user->username,
             'message' => $notificationMessage,
             'is_unread' => true,
             'status' => 0,
             'type' => 1
+        ]);
+
+        AvailedUser::create([
+            'availed_by' => Auth::user()->id,
+            'availed_to' => $user->id,
+            'is_accepted' => false,
+            'notification_id' => $notificationId->id
         ]);
 
         return redirect()->route('home.index');
