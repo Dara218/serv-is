@@ -1,6 +1,8 @@
+#agent-list {
+    display: flex;
+    flex-wrap: nowrap;
+}
 
-@media (min-width: 768px) {
-    .category-photo{
-        aspect-ratio: 3/2;
-    }
+#agent-list li {
+    flex: 0 0 auto;
 }
