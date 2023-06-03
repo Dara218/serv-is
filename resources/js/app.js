@@ -75,9 +75,9 @@ $('.form-chat-head').on('submit', function(e) {
         let messageToShow = 10
 
         subscribeToChat()
+        // console.log(response);
 
         // Load messages when chat room is clicked
-        // console.log(response.data);
 
         if(response.data[0].length == 0 && response.data[2] == false && (response.data[4] == false || response.data[4] == true) && response.data[5] == false){
             $('.message-container').html(`
@@ -114,7 +114,7 @@ $('.form-chat-head').on('submit', function(e) {
             `)
             $('.input-message').prop('disabled', false)
         }
-        else if(response.data[0].length == 0 && response.data[4] == false && response.data[5] == true)
+        else if(response.data[0].length == 0 && response.data[2] == true && response.data[4] == false && response.data[5] == true)
         {
             $('.message-container').html(`
                 <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
@@ -251,6 +251,19 @@ Echo.private(`notifications.${userId}`)
             </li>
         `)
     }
+    else if(e.notificationType == 2)
+    {
+        $('.notification-parent').prepend(`
+            <li class="flex flex-col py-4 px-2 bg-slate-200">
+                <div class="flex gap-2">
+                    <div class="flex flex-col gap-1 justify-center w-full">
+                        <span class="font-bold">${e.username}</span>
+                        <span>${e.notificationMessage}</span>
+                    </div>
+                </div>
+            </li>
+        `)
+    }
     $('.toast-notification-message').text(e.notificationMessage)
     $('.toast-notification').show()
 })
@@ -271,11 +284,13 @@ $('.bnt-accept-notif').on('click', function(e){
     const notificationItem = $(this).parentsUntil('.notification-parent');
     const username = $(e.target).data('username')
     const message = $(e.target).data('message')
+    const fromUserId = $(e.target).data('from-user-id')
+    let is_Accepted = true
     let status = 1
 
     axios.put(`update-notification-accept/${notificationId}`)
     .then(function(response){
-        updateNotificationItem(notificationItem, username, message, status)
+        storeNotificationToCustomer(notificationId, notificationItem, username, message, status, fromUserId, is_Accepted)
     })
     .catch(err => console.error(err))
 })
@@ -285,14 +300,41 @@ $('.bnt-reject-notif').on('click', function(e){
     const notificationItem = $(this).parentsUntil('.notification-parent');
     const username = $(e.target).data('username')
     const message = $(e.target).data('message')
+    const fromUserId = $(e.target).data('from-user-id')
+    let is_Accepted = false
     let status = 2
 
     axios.put(`update-notification-reject/${notificationId}`)
     .then(function(response){
-        updateNotificationItem(notificationItem, username, message, status)
+        storeNotificationToCustomer(notificationId, notificationItem, username, message, status, fromUserId, is_Accepted)
     })
     .catch(err => console.error(err))
 })
+
+function storeNotificationToCustomer(notificationId, notificationItem, username, message, status, fromUserId, is_Accepted)
+    {
+        if(! is_Accepted)
+        {
+            is_Accepted = false
+
+        }
+
+        axios.put(`update-availed-user-accepted/${notificationId}`, {
+            is_Accepted: is_Accepted
+        })
+        .then(function(response){
+            axios.post(`store-notification-to-customer`, {
+                fromUserId: fromUserId,
+                is_Accepted: is_Accepted
+            })
+            .then(function(response){
+                updateNotificationItem(notificationItem, username, message, status)
+            })
+            .catch((err) => console.error(err))
+        })
+        .catch((err) => console.error(err))
+
+    }
 
 function updateNotificationItem(notificationItem, username, message, status){
     let color = undefined
@@ -319,4 +361,38 @@ function updateNotificationItem(notificationItem, username, message, status){
     `)
 }
 
-//TODO: Send notification to customer if accepted or rejected.
+$('.btn-negotiate-agenda').on('click', function(e){
+    const userId = $(e.target).data('userid')
+    const username = $(e.target).data('username')
+
+    Swal.fire({
+        title: 'Make Agenda Offer',
+        icon: 'info',
+        input: 'number',
+        inputLabel: 'Price Offer',
+        inputPlaceholder: 'Enter your counter offer price',
+        showConfirmButton: true,
+        showCancelButton: true,
+        inputValidator: (value) => {
+            if (! value){
+                return 'You need to enter a price.'
+            }
+        }
+    })
+    .then(function(result){
+        if(result.isConfirmed){
+            const counterPrice = result.value
+            axios.post('store-notification-negotiate-agenda', {
+                userId: userId,
+                username: username,
+                counterPrice: counterPrice
+            })
+            .then(function(response){
+                $(e.target).prop('disabled', true) 
+                // TODO: Fix it so that it still be disabled until customer accepts or rejects it.
+                //TODO: Fix some notifs, walang rejected or accepted.
+            })
+            .catch((err) => console.error(err))
+        }
+    })
+})
