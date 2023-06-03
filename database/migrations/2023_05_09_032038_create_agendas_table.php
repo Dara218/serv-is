@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('service');
             $table->integer('budget');
             $table->string('deadline');
+            $table->boolean('is_available')->default(true);
             $table->timestamps();
         });
     }
