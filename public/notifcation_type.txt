@@ -1,9 +1,10 @@
 Notification type:
-wants to avail = 1
-
+wants to avail = 1 (accept or reject)
+normal notification = 2
 
 
 Notification status:
 0 = no option chosen
 1 = accepted
 2 = rejected
+3 = normal status
