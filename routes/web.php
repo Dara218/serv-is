@@ -74,6 +74,12 @@ Route::middleware(['auth'])->group(function(){
         Route::put('/update-notification-count/{id}', [NotificationController::class, 'updateNotificationCount'])->name('updateNotificationCount');
         Route::put('/update-notification-accept/{notification}', [NotificationController::class, 'updateNotificationAccept'])->name('updateNotificationAccept');
         Route::put('/update-notification-reject/{notification}', [NotificationController::class, 'updateNotificationReject'])->name('updateNotificationReject');
+
+        Route::post('/store-notification-to-customer', [NotificationController::class, 'storeNotificationToCustomer'])->name('storeNotificationToCustomer');
+
+        Route::put('/update-availed-user-accepted/{notification}', [NotificationController::class, 'updateAvailedUserAccepted'])->name('updateAvailedUserAccepted');
+
+        Route::post('/store-notification-negotiate-agenda', [NotificationController::class, 'storeNegotiateAgenda'])->name('storeNegotiateAgenda');
     });
 
     Route::prefix('session')->name('session.')->group(function(){
