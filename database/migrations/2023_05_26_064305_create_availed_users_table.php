@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('availed_by')->constrained('users')->cascadeOnDelete();
             $table->foreignId('availed_to')->constrained('users')->cascadeOnDelete();
             $table->boolean('is_accepted')->default(false);
+            $table->foreignId('notification_id')->constrained('notifications')->cascadeOnDelete();
             $table->timestamps();
         });
     }
