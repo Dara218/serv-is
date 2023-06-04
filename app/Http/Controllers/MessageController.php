@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Events\Message;
+use App\Events\NotificationEvent;
+use App\Models\AvailedUser;
 use App\Models\Chat;
 use App\Models\Message as ModelsMessage;
+use App\Models\Notification;
+use App\Models\SentRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,5 +45,45 @@ class MessageController extends Controller
         $appendMessageContent = [$request->message, $sender->username];
 
         return [$appendMessageContent];
+    }
+
+    public function storeChatAfterNegotiate(Request $request){
+
+        $notificationMessage = "You can now pay $request->username. Kindly check your inbox.";
+        $notificationType = 2;
+        $authUserId = $request->currentUserId;
+
+        $notification = Notification::create([
+            'user_id' => $authUserId, // to
+            'from_user_id' => $request->fromUserId, // from
+            'username' => $request->username,
+            'message' => $notificationMessage,
+            'is_unread' => true,
+            'status' => 3,
+            'type' => $notificationType
+        ]);
+
+        event(new NotificationEvent(
+            'Ser-is Assistant',
+            $authUserId, // wrong
+            $notificationMessage,
+            $notificationType,
+            $notification->id,
+            $authUserId
+        ));
+
+        // AvailedUser::create([
+        //     'availed_by' => $authUserId,
+        //     'availed_to' => $request->fromUserId,
+        //     'is_accepted' => false,
+        //     'notification_id' => $request->notificationId
+        // ]);
+
+        SentRequest::create([
+            'request_by' => $authUserId,
+            'request_to' => $request->fromUserId,
+            'type' => 2,
+            'status' => 1
+        ]);
     }
 }
