@@ -7,6 +7,7 @@ use App\Models\AvailedPricingPlan;
 use App\Models\AvailedUser;
 use App\Models\Notification;
 use App\Models\PricingPlan;
+use App\Models\SentRequest;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -72,6 +73,28 @@ class PricingPlanController extends Controller
 
         $this->storeTransaction($customer, $transactionType, $pricingPlanBalance);
 
+        $notificationMessage = "$customer->username has availed a $transactionType plan.";
+        $notificationType = 2;
+
+        $notification = Notification::create([
+            'user_id' => $agent,
+            'from_user_id' => $customer->id,
+            'username' => $customer->username,
+            'message' => $notificationMessage,
+            'is_unread' => true,
+            'status' => 3,
+            'type' => 2
+        ]);
+
+        event(new NotificationEvent(
+            $customer->username,
+            $agent,
+            $notificationMessage,
+            $notificationType,
+            $notification->id,
+            Auth::user()->id
+        ));
+
         Alert::success('Success', 'Transaction successful.');
         return redirect()->route('home.index');
     }
@@ -86,17 +109,10 @@ class PricingPlanController extends Controller
 
     public function storeChat(User $user)
     {
-        $notificationMessage = $user->username . ' ' . 'requested to avail your service.';
+        $notificationMessage = "$user->username requested to avail your service.";
         $notificationType = 1;
 
-        event(new NotificationEvent(
-            $user->username,
-            $user->id,
-            $notificationMessage,
-            $notificationType
-        ));
-
-        $notificationId = Notification::create([
+        $notification = Notification::create([
             'user_id' => $user->id,
             'from_user_id' => Auth::user()->id,
             'username' => $user->username,
@@ -106,13 +122,30 @@ class PricingPlanController extends Controller
             'type' => 1
         ]);
 
+        event(new NotificationEvent(
+            $user->username,
+            $user->id,
+            $notificationMessage,
+            $notificationType,
+            $notification->id,
+            Auth::user()->id
+        ));
+
         AvailedUser::create([
             'availed_by' => Auth::user()->id,
             'availed_to' => $user->id,
             'is_accepted' => false,
-            'notification_id' => $notificationId->id
+            'notification_id' => $notification->id
         ]);
 
+        SentRequest::create([
+            'request_by' => Auth::user()->id,
+            'request_to' => $user->id,
+            'type' => 2,
+            'status' => 1
+        ]);
+
+        Alert::success('Success', 'Kindly check your inbox');
         return redirect()->route('home.index');
     }
 }
