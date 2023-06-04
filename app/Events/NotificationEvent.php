@@ -21,17 +21,19 @@ class NotificationEvent implements ShouldBroadcastNow
 
      public $username;
      public $userIdToReceive;
-
      public $notificationMessage;
-
      public $notificationType;
+     public $notificationId;
+     public $fromUserId;
 
-    public function __construct($username, $userIdToReceive, $notificationMessage, $notificationType)
+    public function __construct($username, $userIdToReceive, $notificationMessage, $notificationType, $notificationId, $fromUserId)
     {
         $this->username = $username;
         $this->userIdToReceive = $userIdToReceive;
         $this->notificationMessage = $notificationMessage;
         $this->notificationType = $notificationType;
+        $this->notificationId = $notificationId;
+        $this->fromUserId = $fromUserId;
     }
 
     /**
