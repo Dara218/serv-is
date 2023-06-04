@@ -1,10 +1,20 @@
 Notification type:
-wants to avail = 1 (accept or reject)
-normal notification = 2
-
+1 = wants to avail (accept or reject)
+2 = normal notification
+3 = wants to avail (negotiate) (accept or reject)
 
 Notification status:
 0 = no option chosen
 1 = accepted
 2 = rejected
 3 = normal status
+
+----------------------------------------------------------------
+
+Sent request type
+1 = agenda
+2 = request avail
+
+Sent request status
+1 = pending
+0 - rejected
