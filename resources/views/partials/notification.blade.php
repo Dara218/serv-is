@@ -18,7 +18,6 @@
             @foreach ($notifications as $notification)
             {{-- <span>{{ $notification }}</span> --}}
 
-
                 @if ($notification->status == 1 && $notification->type == 1)
                     <li class="notif-item flex justify-between py-4 px-2 {{ $notification->is_unread == true ? 'bg-slate-100' : 'bg-slate-200' }}">
                         <div class="flex gap-2">
@@ -39,10 +38,10 @@
                             </div>
                         </div>
                         <div class="flex gap-4 justify-center">
-                            <a href="#" data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" data-from-user-id="{{ $notification->from_user_id }}" class="material-symbols-outlined cursor-pointer bnt-accept-notif">
+                            <a href="#" data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" data-from-user-id="{{ $notification->from_user_id }}" data-to-user-id="{{ $notification->user_id }}" data-type="{{ $notification->type }}" class="material-symbols-outlined cursor-pointer bnt-accept-notif">
                                 check_circle
                             </a>
-                            <a href="#" data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" data-from-user-id="{{ $notification->from_user_id }}" class="material-symbols-outlined cursor-pointer bnt-reject-notif">
+                            <a href="#" data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" data-from-user-id="{{ $notification->from_user_id }}" data-to-user-id="{{ $notification->user_id }}" data-type="{{ $notification->type }}" class="material-symbols-outlined cursor-pointer bnt-reject-notif">
                                 cancel
                             </a>
                         </div>
@@ -59,7 +58,7 @@
                         </div>
                     </li>
 
-                @elseif ($notification->status == 3 && $notification->type == 2)
+                @elseif (($notification->status == 3 || $notification->status == 1) && ($notification->type == 2 || $notification->type == 3))
                     <li class="notif-item flex justify-between py-4 px-2 {{ $notification->is_unread == true ? 'bg-slate-100' : 'bg-slate-200' }}">
                         <div class="flex gap-2">
                             <div class="flex flex-col gap-1 justify-center w-full">
