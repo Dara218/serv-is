@@ -16,4 +16,8 @@ class Agenda extends Model
     public function userPhoto(){
         return $this->belongsTo(UserPhoto::class, 'user_id');
     }
+
+    public function sentRequest(){
+        return $this->hasOne(SentRequest::class, 'request_to', 'user_id');
+    }
 }
