@@ -10,6 +10,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PricingPlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\SentRequestController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
@@ -80,6 +81,10 @@ Route::middleware(['auth'])->group(function(){
         Route::put('/update-availed-user-accepted/{notification}', [NotificationController::class, 'updateAvailedUserAccepted'])->name('updateAvailedUserAccepted');
 
         Route::post('/store-notification-negotiate-agenda', [NotificationController::class, 'storeNegotiateAgenda'])->name('storeNegotiateAgenda');
+
+        Route::post('/get-sent-request', [SentRequestController::class, 'getSentRequest'])->name('getSentRequest');
+
+        Route::post('/store-chat-after-negotiate', [MessageController::class, 'storeChatAfterNegotiate'])->name('storeChatAfterNegotiate');
     });
 
     Route::prefix('session')->name('session.')->group(function(){
