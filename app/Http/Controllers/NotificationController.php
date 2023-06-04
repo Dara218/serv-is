@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\NotificationEvent;
 use App\Models\AvailedUser;
 use App\Models\Notification;
+use App\Models\SentRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,14 +19,18 @@ class NotificationController extends Controller
         return response()->json($userNotification);
     }
 
-    public function updateNotificationAccept(Notification $notification)
+    public function updateNotificationAccept(Notification $notification, Request $request)
     {
         $userNotification = Notification::where('id', $notification->id)->update(['status' => 1]);
+
+        SentRequest::where('request_by', $request->fromUserId)->where('request_to', Auth::user()->id)->update(['status' => 1]);
+
         return response()->json($userNotification);
     }
 
-    public function updateNotificationReject(Notification $notification){
+    public function updateNotificationReject(Notification $notification, Request $request){
         $userNotification = Notification::where('id', $notification->id)->update(['status' => 2]);
+        SentRequest::where('request_by', $request->fromUserId)->where('request_to', Auth::user()->id)->update(['status' => 1]);
         return response()->json($userNotification);
     }
 
@@ -49,14 +54,7 @@ class NotificationController extends Controller
         $notificationMessage = "$fromUser->username has $acceptOrReject your request.";
         $notificationType = 2; // 2 = normal notification
 
-        event(new NotificationEvent(
-            $fromUser->username,
-            $toUser->id,
-            $notificationMessage,
-            $notificationType
-        ));
-
-        Notification::create([
+        $notification = Notification::create([
             'user_id' => $toUser->id,
             'from_user_id' => $toUser->id,
             'username' => $fromUser->username,
@@ -65,6 +63,15 @@ class NotificationController extends Controller
             'status' => 3, // 3 = normal notification
             'type' => 2 // 2 = normal notification
         ]);
+
+        event(new NotificationEvent(
+            $fromUser->username,
+            $toUser->id,
+            $notificationMessage,
+            $notificationType,
+            $notification->id,
+            $fromUser->id
+        ));
 
         return response()->json($request);
     }
@@ -85,25 +92,40 @@ class NotificationController extends Controller
     public function storeNegotiateAgenda(Request $request){
 
         $fromUser = Auth::user();
-        $notificationMessage = "$fromUser->username made an offer of P$request->counterPrice.";
-        $notificationType = 1;
+        $type = $request->type;
+        $notificationMessage = "$fromUser->username wants to take your agenda.";
 
-        event(new NotificationEvent(
-            $fromUser->username, // from
-            $request->userId, // to
-            $notificationMessage,
-            $notificationType
-        ));
+        if($type == 1){
+            $notificationMessage = "$fromUser->username made an offer of P$request->counterPrice.";
+        }
 
-        Notification::create([
+        $notificationType = 3;
+
+        $notification = Notification::create([
             'user_id' => $request->userId,
             'from_user_id' => $fromUser->id,
             'username' => $fromUser->username,
             'message' => $notificationMessage,
             'is_unread' => true,
             'status' => 0, // 0 = no option chosen
-            'type' => $notificationType // 2 = normal notification
+            'type' => $notificationType // 3 (accept or reject) negotiate
         ]);
+
+        SentRequest::create([
+            'request_by' => $fromUser->id,
+            'request_to' => $request->userId,
+            'type' => 1,
+            'status' => 1
+        ]);
+
+        event(new NotificationEvent(
+            $fromUser->username, // from
+            $request->userId, // to
+            $notificationMessage,
+            $notificationType,
+            $notification->id,
+            $fromUser->id
+        ));
 
         return response()->json($request);
     }
