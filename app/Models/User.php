@@ -70,4 +70,8 @@ class User extends Authenticatable
     public function agenda(){
         return $this->hasMany(Agenda::class, 'id');
     }
+
+    public function notification(){
+        return $this->hasMany(Notification::class, 'user_id');
+    }
 }
