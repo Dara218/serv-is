@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agenda;
 use App\Models\Category;
+use App\Models\SentRequest;
 use App\Models\Service;
 use App\Models\ServiceAddress;
 use App\Models\Transaction;
@@ -23,12 +24,22 @@ class HomeController extends Controller
         ]);
     }
 
-    public function indexAgent(){
+    public function indexAgent()
+    {
+        // $agendas = Agenda::where('is_available', true)->with('sentRequest')->get();
+
+        // $sentRequest = '';
+
+        // foreach($agendas as $agenda){
+        //     $sentRequest = SentRequest::where('request_by', Auth::user()->id)->where('request_to', $agenda->user->id)->where('type', 1)->with('agenda')->get();
+        // }
+
         return view('components.home_agent.index',
         [
             'balance' => Auth::user()->current_balance,
             'services' => Transaction::where('user_id', Auth::user()->id)->count(),
-            'agendas' => Agenda::where('is_available', true)->get()
+            'agendas' => Agenda::where('is_available', true)->get(),
+            // 'request' =>  $sentRequest
         ]);
     }
 
