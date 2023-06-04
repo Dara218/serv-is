@@ -187,7 +187,6 @@ $('.form-chat-head').on('submit', function(e) {
     .catch(err => console.error(err))
 });
 
-
 function loadMoreMessage(moreMessage){
     moreMessage.forEach(function(eachResponse) {
         const formattedDate = moment(eachResponse.created_at).fromNow()
@@ -230,7 +229,7 @@ Echo.private(`notifications.${userId}`)
 
     $('.notif-count-hidden').show()
 
-    if(e.notificationType == 1)
+    if(e.notificationType == 1 || e.notificationType == 3)
     {
         $('.notification-parent').prepend(`
             <li class="flex flex-col py-4 px-2 bg-slate-200">
@@ -241,10 +240,10 @@ Echo.private(`notifications.${userId}`)
                     </div>
                 </div>
                 <div class="flex gap-4 justify-center">
-                    <a href="#" data-id="{{ $notification->id }}" class="material-symbols-outlined cursor-pointer bnt-accept-notif">
+                    <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer bnt-accept-notif">
                         check_circle
                     </a>
-                    <a href="#" data-id="{{ $notification->id }}" class="material-symbols-outlined cursor-pointer bnt-reject-notif">
+                    <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer bnt-reject-notif">
                         cancel
                     </a>
                 </div>
@@ -279,32 +278,64 @@ $('.notification-bell').on('click', function(){
     .catch((err) => console.error(err))
 })
 
-$('.bnt-accept-notif').on('click', function(e){
-    const notificationId = $(e.target).data('id');
-    const notificationItem = $(this).parentsUntil('.notification-parent');
-    const username = $(e.target).data('username')
-    const message = $(e.target).data('message')
-    const fromUserId = $(e.target).data('from-user-id')
+$('.notification-parent').on('click', '.bnt-accept-notif', function(e)
+{
+    const notificationId = $(this).data('id')
+    const notificationItem = $(this).closest('li')
+    const username = $(this).data('username')
+    const message = $(this).data('message')
+    const fromUserId = $(this).data('from-user-id')
+    const toUserId = $(this).data('to-user-id')
+    const notificationType = $(this).data('type')
     let is_Accepted = true
     let status = 1
 
-    axios.put(`update-notification-accept/${notificationId}`)
-    .then(function(response){
-        storeNotificationToCustomer(notificationId, notificationItem, username, message, status, fromUserId, is_Accepted)
+    axios.put(`update-notification-accept/${notificationId}`, {
+        fromUserId: fromUserId
+    })
+    .then(function(response) {
+
+        storeNotificationToCustomer(notificationId, notificationItem, username, message, status, fromUserId, is_Accepted);
+       
+        if(notificationType == 3)
+        {
+            axios.post('store-chat-after-negotiate', {
+                notificationId: notificationId,
+                fromUserId: fromUserId,
+                toUserId: toUserId,
+                username: username,
+                currentUserId: userId,
+                notificationType: notificationType
+            })
+        }
+        if (notificationType == 1)
+        {
+            axios.post('store-chat-after-negotiate', {
+                notificationId: notificationId,
+                fromUserId: toUserId,
+                toUserId: fromUserId,
+                username: username,
+                currentUserId: fromUserId,
+                notificationType: notificationType
+            })
+        }
     })
     .catch(err => console.error(err))
 })
 
-$('.bnt-reject-notif').on('click', function(e){
-    const notificationId = $(e.target).data('id');
-    const notificationItem = $(this).parentsUntil('.notification-parent');
-    const username = $(e.target).data('username')
-    const message = $(e.target).data('message')
-    const fromUserId = $(e.target).data('from-user-id')
+$('.notification-parent').on('click', '.bnt-reject-notif', function(e)
+{
+    const notificationId = $(this).data('id');
+    const notificationItem = $(this).closest('li');
+    const username = $(this).data('username')
+    const message = $(this).data('message')
+    const fromUserId = $(this).data('from-user-id')
     let is_Accepted = false
     let status = 2
 
-    axios.put(`update-notification-reject/${notificationId}`)
+    axios.put(`update-notification-reject/${notificationId}`, {
+        fromUserId: fromUserId
+    })
     .then(function(response){
         storeNotificationToCustomer(notificationId, notificationItem, username, message, status, fromUserId, is_Accepted)
     })
@@ -333,7 +364,6 @@ function storeNotificationToCustomer(notificationId, notificationItem, username,
             .catch((err) => console.error(err))
         })
         .catch((err) => console.error(err))
-
     }
 
 function updateNotificationItem(notificationItem, username, message, status){
@@ -364,6 +394,7 @@ function updateNotificationItem(notificationItem, username, message, status){
 $('.btn-negotiate-agenda').on('click', function(e){
     const userId = $(e.target).data('userid')
     const username = $(e.target).data('username')
+    const type = 1 // negotiate
 
     Swal.fire({
         title: 'Make Agenda Offer',
@@ -385,12 +416,48 @@ $('.btn-negotiate-agenda').on('click', function(e){
             axios.post('store-notification-negotiate-agenda', {
                 userId: userId,
                 username: username,
-                counterPrice: counterPrice
+                counterPrice: counterPrice,
+                type: type
             })
             .then(function(response){
-                $(e.target).prop('disabled', true) 
-                // TODO: Fix it so that it still be disabled until customer accepts or rejects it.
-                //TODO: Fix some notifs, walang rejected or accepted.
+                Swal.fire({
+                    title: 'Successfully made an offer',
+                    icon: 'success',
+                    showConfirmButton: true,
+                })
+                $(e.target).prop('disabled', true)
+            })
+            .catch((err) => console.error(err))
+        }
+    })
+})
+
+$('.btn-task-me-agenda').on('click', function(e){
+    const userId = $(e.target).data('userid')
+    const username = $(e.target).data('username')
+    const type = 2 // task me
+    Swal.fire({
+        title: 'Do you really wish to take this task?',
+        icon: 'warning',
+        showConfirmButton: true,
+        showCancelButton: true,
+    })
+    .then(function(result){
+        if(result.isConfirmed){
+            const counterPrice = result.value
+            axios.post('store-notification-negotiate-agenda', {
+                userId: userId,
+                username: username,
+                counterPrice: counterPrice,
+                type: type
+            })
+            .then(function(response){
+                Swal.fire({
+                    title: 'Successfully made an offer',
+                    icon: 'success',
+                    showConfirmButton: true,
+                })
+                $(e.target).prop('disabled', true)
             })
             .catch((err) => console.error(err))
         }
