@@ -38,7 +38,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('partials.notification', function($view){
-            $notifications = Notification::where('user_id', Auth::user()->id)->get();
+            $notifications = Notification::where('user_id', Auth::user()->id)
+                                        ->orderBy('created_at', 'desc')
+                                        ->get();
             $notificationCount = Notification::where('user_id', Auth::user()->id)
                                             ->where('is_unread', 1)
                                             ->count();
