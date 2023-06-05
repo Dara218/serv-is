@@ -66,3 +66,8 @@ Breadcrumbs::for('pricing-plan', function(BreadcrumbTrail $trail, User $user){
     $trail->parent('home');
     $trail->push('Pricing Plan', route('home.showPricingPlan', ['user' => $user]));
 });
+
+Breadcrumbs::for('update-service-details', function(BreadcrumbTrail $trail){
+    $trail->parent('home');
+    $trail->push('Update Service Details', route('home.createServiceDetails'));
+});
