@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\AgentServiceController;
 use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AddressController;
@@ -85,6 +86,7 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/get-sent-request', [SentRequestController::class, 'getSentRequest'])->name('getSentRequest');
 
         Route::post('/store-chat-after-negotiate', [MessageController::class, 'storeChatAfterNegotiate'])->name('storeChatAfterNegotiate');
+
     });
 
     Route::prefix('session')->name('session.')->group(function(){
@@ -102,6 +104,9 @@ Route::middleware(['customer'])->group(function(){
 Route::middleware(['agent'])->group(function(){
     Route::prefix('home')->name('home.')->group(function(){
         Route::get('/home-agent', [HomeController::class, 'indexAgent'])->name('indexAgent');
+        Route::put('/update-agent-services/{id}', [AgentServiceController::class, 'updateAgentService'])->name('updateAgentService');
+        Route::get('/update-service-details', [AgentServiceController::class, 'createServiceDetails'])->name('createServiceDetails');
+        Route::put('/update-service-details/{agentservices}', [AgentServiceController::class, 'updateServiceDetails'])->name('updateServiceDetails');
     });
 });
 
