@@ -1,0 +1,3 @@
+Request Type:
+1 = New agent registered
+2 = Update service details
