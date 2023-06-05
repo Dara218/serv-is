@@ -74,4 +74,8 @@ class User extends Authenticatable
     public function notification(){
         return $this->hasMany(Notification::class, 'user_id');
     }
+
+    public function agentService(){
+        return $this->hasOne(AgentService::class, 'user_id');
+    }
 }
