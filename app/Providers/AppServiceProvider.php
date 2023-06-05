@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\AgentService;
 use App\Models\AvailedUser;
 use App\Models\Notification;
 use App\Models\User;
@@ -31,9 +32,17 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('partials.navbar', function($view){
             $admins = UserPhoto::where('user_type', 1)->get();
+            $agentService = AgentService::where('user_id', Auth::user()->id)
+                                        ->where('title', 'NA')
+                                        ->exists();
+            $user = User::where('id', Auth::user()->id)->with('agentService')->first();
 
             foreach($admins as $admin){
-                $view->with('admin', $admin);
+                $view->with([
+                    'admin' => $admin,
+                    'agentservice' => $agentService,
+                    'user' => $user
+                ]);
             }
         });
 
@@ -44,8 +53,18 @@ class AppServiceProvider extends ServiceProvider
             $notificationCount = Notification::where('user_id', Auth::user()->id)
                                             ->where('is_unread', 1)
                                             ->count();
-            $view->with(['notifications' => $notifications, 'notificationCount' => $notificationCount]);
+            $view->with([
+                'notifications' => $notifications,
+                'notificationCount' => $notificationCount,
+            ]);
         });
+
+        // View::composer('partials.banner', function($view){
+        //     $agentService = AgentService::where('user_id', Auth::user()->id)
+        //                                     ->where('title', 'NA')
+        //                                     ->exists();
+        //     $view->with('agentservice', $agentService);
+        // });
 
         View::composer('partials.chat', function($view){
 
