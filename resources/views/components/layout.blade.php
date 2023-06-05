@@ -16,7 +16,8 @@
 
     </head>
 
-    <body>
+    <body class="min-h-screen">
+
         {{ $slot }}
 
         @if (Auth::check())
@@ -30,6 +31,7 @@
 
         @include('partials.toast')
         @include('partials.chat')
+        @include('partials.footer')
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/datepicker.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
