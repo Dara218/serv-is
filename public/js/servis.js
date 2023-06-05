@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+    const userId = $('#current-user-id').val()
+
     checkUserType()
 
     $('.user_type-options').on('change', function(){
@@ -400,4 +402,56 @@ $(document).ready(function(){
         getCategories(allCategories = 9)
     })
 
+    $('.btn-add-service-title').on('click', function(){
+
+        const agentServiceId = $('#current-user-id').data('user-service')
+
+        Swal.fire({
+            title: 'Add service title',
+            icon: 'info',
+            input: 'text',
+            inputLabel: 'Enter your service title here',
+            showConfirmButton: true,
+            showCancelButton: true,
+            inputValidator: function(value){
+                if(! value)
+                {
+                    return 'You need to enter a title.'
+                }
+            }
+        })
+        .then(function(result){
+            const serviceTitle = result.value
+            if(result.isConfirmed)
+            {
+                axios.put(`update-agent-services/1`, {
+                    title: serviceTitle
+                })
+                .then(function(response){
+                    // console.log(response)
+
+                    Swal.fire({
+                        title: 'Title successfully added',
+                        icon: 'success',
+                        showConfirmButton: true,
+                    })
+                    .then(function(result){
+                        if(result.isConfirmed)
+                        {
+                            location.reload()
+                        }
+                    })
+
+                })
+                .catch((err) => console.error(err))
+            }
+        })
+        .catch((err) => console.error(err))
+    })
+
+    $('.btn-update-service').on('click', function(){
+
+    })
+
+    // todo: reload chat modal to reload it instead of whole page.
 })
