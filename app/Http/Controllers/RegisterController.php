@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterClientRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Models\AdminRequest;
 use App\Models\Agent;
+use App\Models\AgentService;
 use App\Models\Service;
 use App\Models\ServiceAddress;
 use App\Models\User;
@@ -112,8 +114,19 @@ class RegisterController extends Controller
             ]);
 
             ValidDocument::create($validDocuments);
-
         }
+
+        $service = Service::where('type', $userDetails['service'])->first();
+        AgentService::create([
+            'user_id' => $user->id,
+            'service_id' => $service->id,
+            'title' => 'NA'
+        ]);
+
+        AdminRequest::create([
+            'request_by' => $user->id,
+            'type' => 1 // 1 = new agent
+        ]);
 
         Alert::success('Success', 'Registration completed.');
         return redirect('/');
