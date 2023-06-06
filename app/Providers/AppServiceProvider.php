@@ -85,8 +85,7 @@ class AppServiceProvider extends ServiceProvider
                     // $view->with('agents', $agents);
                 }
                 if(Auth::user()->user_type == 1){
-                    $agents = User::where('user_type', 2)
-                                    ->orWhere('user_type', 3)->get();
+                    $agents = User::all();
                     $view->with('agents', $agents);
                 }
             }
