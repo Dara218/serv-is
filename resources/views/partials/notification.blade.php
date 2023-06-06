@@ -18,7 +18,7 @@
             @foreach ($notifications as $notification)
             {{-- <span>{{ $notification }}</span> --}}
 
-                @if ($notification->status == 1 && $notification->type == 1)
+                @if ($notification->status == 1 && ($notification->type == 1 || $notification->type == 4))
                     <li class="notif-item flex justify-between py-4 px-2 {{ $notification->is_unread == true ? 'bg-slate-100' : 'bg-slate-200' }}">
                         <div class="flex gap-2">
                             <div class="flex flex-col gap-1 justify-center w-full">
@@ -29,7 +29,7 @@
                         </div>
                     </li>
 
-                @elseif($notification->status == 0 && $notification->type == 1)
+                @elseif($notification->status == 0 && ($notification->type == 1 || $notification->type == 4))
                     <li class="notif-item flex flex-col py-4 px-2 bg-slate-200">
                         <div class="flex gap-2">
                             <div class="flex flex-col gap-1 justify-center w-full">
@@ -47,7 +47,7 @@
                         </div>
                     </li>
 
-                @elseif ($notification->status == 2 && $notification->type == 1)
+                @elseif ($notification->status == 2 && ($notification->type == 1 || $notification->type == 4))
                     <li class="notif-item flex justify-between py-4 px-2 {{ $notification->is_unread == true ? 'bg-slate-100' : 'bg-slate-200' }}">
                         <div class="flex gap-2">
                             <div class="flex flex-col gap-1 justify-center w-full">
