@@ -43,7 +43,7 @@ class HomeController extends Controller
         [
             'balance' => $user->current_balance,
             'services' => Transaction::where('user_id', $user->id)->count(),
-            'agendas' => Agenda::where('is_available', true)->get(),
+            'agendas' => Agenda::where('is_available', true)->with('userPhoto')->get(),
             'accepted' => AdminRequest::where('request_by', $user->id)
                                         ->where('type', 1)
                                         ->where('is_accepted', false)
@@ -61,7 +61,7 @@ class HomeController extends Controller
         return view('components.home.edit-profile',
             [
                 'users' => UserPhoto::where('user_id', Auth::user()->id)->get(),
-                'useraddresses' => ServiceAddress::where('user_id', Auth::user()->id)->get()
+                'useraddress' => ServiceAddress::where('user_id', Auth::user()->id)->where('is_primary', true)->first()
             ]);
     }
 
