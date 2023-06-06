@@ -2,6 +2,7 @@ Notification type:
 1 = wants to avail (accept or reject)
 2 = normal notification
 3 = wants to avail (negotiate) (accept or reject)
+4 = admin accept or reject new agent
 
 Notification status:
 0 = no option chosen
