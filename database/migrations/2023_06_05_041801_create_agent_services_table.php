@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('service_id')->constrained('services')->cascadeOnDelete();
             $table->string('title');
+            $table->boolean('is_pending')->default(true);
+            $table->boolean('is_pending_changes')->default(false);
             $table->timestamps();
         });
     }
