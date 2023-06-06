@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationEvent;
 use App\Http\Requests\AgentRequest;
 use App\Models\AdminRequest;
 use App\Models\AgentService;
+use App\Models\AgentServicePending;
+use App\Models\Notification;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,9 +36,12 @@ class AgentServiceController extends Controller
         //     'service' => $agentServiceDetails['service']
         // ]);
 
-        /* TODO: Make new table named agent_service_pendings
-            columns: same lang sa agent service but may new column name, is_pending
-        */
+        AgentService::create([
+            'user_id' => Auth::user()->id,
+            'title' => $agentServiceDetails['service_title'],
+            'service' => $agentServiceDetails['service'],
+            'is_pending_changes' => true
+        ]);
 
         AdminRequest::create([
             'request_by' => Auth::user()->id,
@@ -44,5 +50,39 @@ class AgentServiceController extends Controller
 
         Alert::success('Success', 'Admin will verify your changes. You will be notified once done.');
         return back();
+    }
+
+    public function storeAgentUpdatedDetails(Request $request){
+        AdminRequest::where('request_by', $request->fromUserId)->first()->update([
+            'is_accepted' => true,
+        ]);
+
+        AgentService::where('user_id', $request->fromUserId)->first()->update([
+            'is_pending' => false
+        ]);
+
+        $notificationMessage = "System admin has verified your account. Your service can now be seen online.";
+        $notificationType = 2;
+
+        $notification = Notification::create([
+            'user_id' => $request->fromUserId, // to
+            'from_user_id' => $request->toUserId, // from
+            'username' => $request->username,
+            'message' => $notificationMessage,
+            'is_unread' => true,
+            'status' => 3,
+            'type' => $notificationType
+        ]);
+
+        event(new NotificationEvent(
+            $request->username,
+            $request->fromUserId,
+            $notificationMessage,
+            $notificationType,
+            $notification->id,
+            $request->fromUserId
+        ));
+
+        return response()->json($request);
     }
 }
