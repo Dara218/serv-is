@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationEvent;
 use App\Http\Requests\RegisterClientRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\AdminRequest;
 use App\Models\Agent;
 use App\Models\AgentService;
+use App\Models\Notification;
 use App\Models\Service;
 use App\Models\ServiceAddress;
 use App\Models\User;
@@ -120,13 +122,37 @@ class RegisterController extends Controller
         AgentService::create([
             'user_id' => $user->id,
             'service_id' => $service->id,
-            'title' => 'NA'
+            'title' => 'NA',
+            'is_pending' => true
         ]);
 
         AdminRequest::create([
             'request_by' => $user->id,
             'type' => 1 // 1 = new agent
         ]);
+
+        $admin = User::where('user_type', 1)->first();
+        $notificationMessage = $userDetails['username'] . "has joined Serv-is! Accept verification status?";
+        $notificationType = 4;
+
+        $notification = Notification::create([
+            'user_id' => $admin->id, // to
+            'from_user_id' => $user->id, // from
+            'username' => $user->username,
+            'message' => $notificationMessage,
+            'is_unread' => true,
+            'status' => 0,
+            'type' => $notificationType
+        ]);
+
+        event(new NotificationEvent(
+            $user->username,
+            $admin->id,
+            $notificationMessage,
+            $notificationType,
+            $notification->id,
+            $user->id
+        ));
 
         Alert::success('Success', 'Registration completed.');
         return redirect('/');
