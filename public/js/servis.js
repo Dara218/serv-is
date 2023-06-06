@@ -82,6 +82,8 @@ $(document).ready(function(){
             const reader = new FileReader()
 
             reader.onload = function(e){
+                $('.upload-profile-text').hide()
+                $('.user-profile-el').show()
                 $('.user-profile-el').attr('src', e.target.result)
             }
             reader.readAsDataURL(file)
