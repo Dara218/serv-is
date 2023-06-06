@@ -23,7 +23,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 class ProfileController extends Controller
 {
     public function update(ProfileRequest $request){
-        // $user = User::where('id', Auth::user()->id);
+
         $user = User::find(Auth::user()->id);
 
         $userDetails = $request->validated();
@@ -43,37 +43,42 @@ class ProfileController extends Controller
         $userDetails['password'] = bcrypt($userDetails['password']);
 
         $photoId = 'profile_picture';
+        $userProfilePictureExists = UserPhoto::where('user_id', Auth::user()->id)->exists();
 
-        if ($request->hasFile($photoId)) {
+        if ($request->hasFile($photoId))
+        {
             $file = $request->file($photoId);
             $fileName = time() . '_' . $file->getClientOriginalName();
             $file->storeAs('public/uploads', $fileName);
             $photoId = '/storage/uploads/' . $fileName;
+
+            if ($userProfilePictureExists)
+            {
+                UserPhoto::where('user_id', Auth::user()->id)->first()->update([
+                    'profile_picture' => $photoId,
+                ]);
+            }
+            else {
+                UserPhoto::create([
+                    'user_id' => Auth::user()->id,
+                    'profile_picture' => $photoId,
+                    'user_type' => Auth::user()->user_type
+                ]);
+            }
         }
 
-        $userProfilePicture = UserPhoto::where('user_id', Auth::user()->id)->first();
-
-        if($userProfilePicture){
-            $userProfilePicture->update([
-                'profile_picture' => $photoId,
-            ]);
-        }
-        else {
-            UserPhoto::create([
-                'user_id' => Auth::user()->id,
-                'profile_picture' => $photoId,
-                'user_type' => Auth::user()->user_type
-            ]);
-        }
+        ServiceAddress::where('user_id', Auth::user()->id)
+                        ->where('is_primary', true)
+                        ->first()
+                        ->update([
+                            'user_id' => Auth::user()->id,
+                            'address' => $request->address,
+                            'is_active' => true
+                        ]);
 
         $user->update($userDetails);
 
-        $userAddress = ServiceAddress::find(Auth::user()->id);
-        $userAddress->update([
-            'user_id' => Auth::user()->id,
-            'address' => $request->address,
-            'is_active' => true
-        ]);
+        auth()->setUser($user);
 
         Alert::success('Success', 'Your changes has been saved.');
         return back();
@@ -132,7 +137,6 @@ class ProfileController extends Controller
     }
 
     public function tryChat(Request $request){
-        // return $request;
         $receiver = User::where('username', $request->receiver_hidden)->first();
         $receiverId = $receiver->id;
         return $receiver->id;
@@ -214,5 +218,4 @@ class ProfileController extends Controller
 
         return response()->json($responseData);
     }
-
 }
