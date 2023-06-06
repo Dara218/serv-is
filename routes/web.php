@@ -60,33 +60,23 @@ Route::middleware(['auth'])->group(function(){
         Route::put('/address-secondary-update/{serviceaddress}', [AddressController::class, 'updateSecondaryAddress'])->name('updateSecondaryAddress');
         Route::put('/address-to-primary-update/{id}', [AddressController::class, 'updateToPrimaryAddress'])->name('updateToPrimaryAddress');
         Route::put('/address-to-secondary-update/{id}', [AddressController::class, 'updateToSecondaryAddress'])->name('updateToSecondaryAddress');
-
         Route::delete('/address-destroy/{id}', [AddressController::class, 'destroyAddress'])->name('destroyAddress');
         Route::post('/store-contact-message', [ContactUsController::class, 'storeContactMessage'])->name('storeContactMessage');
-
         Route::post('/store-agenda', [AgendaController::class, 'storeAgenda'])->name('storeAgenda');
         Route::get('/get-services', [AgendaController::class, 'getServices'])->name('getServices');
-
         Route::put('/update-agenda/{agenda}', [AgendaController::class, 'updateAgenda'])->name('updateAgenda');
         Route::delete('/agenda-destroy/{agenda}', [AgendaController::class, 'destroyAgenda'])->name('destroyAgenda');
-
         Route::get('/get-categories', [CategoryController::class, 'getCategories'])->name('getCategories');
         Route::get('/get-services', [ServiceController::class, 'getServices'])->name('getServices');
-
         Route::put('/update-notification-count/{id}', [NotificationController::class, 'updateNotificationCount'])->name('updateNotificationCount');
         Route::put('/update-notification-accept/{notification}', [NotificationController::class, 'updateNotificationAccept'])->name('updateNotificationAccept');
         Route::put('/update-notification-reject/{notification}', [NotificationController::class, 'updateNotificationReject'])->name('updateNotificationReject');
-
         Route::post('/store-notification-to-customer', [NotificationController::class, 'storeNotificationToCustomer'])->name('storeNotificationToCustomer');
-
         Route::put('/update-availed-user-accepted/{notification}', [NotificationController::class, 'updateAvailedUserAccepted'])->name('updateAvailedUserAccepted');
-
         Route::post('/store-notification-negotiate-agenda', [NotificationController::class, 'storeNegotiateAgenda'])->name('storeNegotiateAgenda');
-
         Route::post('/get-sent-request', [SentRequestController::class, 'getSentRequest'])->name('getSentRequest');
-
         Route::post('/store-chat-after-negotiate', [MessageController::class, 'storeChatAfterNegotiate'])->name('storeChatAfterNegotiate');
-
+        Route::put('/store-agent-updated-details/{id}', [AgentServiceController::class, 'storeAgentUpdatedDetails'])->name('storeAgentUpdatedDetails');
     });
 
     Route::prefix('session')->name('session.')->group(function(){
