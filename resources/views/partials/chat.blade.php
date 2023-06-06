@@ -4,19 +4,30 @@
         <span class="font-semibold">Chats</span>
         <div class="overflow-x-auto overflow-y-hidden md:overflow-x-hidden md:overflow-y-scroll">
             <ol class="flex md:flex-col gap-2 md:h-80" id="agent-list">
-
                 @foreach ($agents as $agent)
-                    <li class="flex gap-1 receiver-el cursor-pointer shadow-md" data-id="{{ $agent->user->id }}">
+                    <li class="flex gap-1 receiver-el cursor-pointer shadow-md" {{ Auth::user()->user_type == 1 ? 'data-id=' .$agent->id  : 'data-id=' .$agent->user->id }}>
                         <img
                             src="https://images.pexels.com/photos/7841717/pexels-photo-7841717.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                             alt="user id photo"
                             class="h-8 w-8 mb-2 receiver-chat-head-click"
                             style="border-radius: 50%"
-                            data-id="{{ $agent->user->id }}"
-                            data-username="{{ $agent->user->username }}"
+                            data-id="{{ Auth::user()->user_type == 1 ? 'data-id=' .$agent->id  : 'data-id=' .$agent->user->id }}"
+                            data-username="{{ Auth::user()->user_type == 1 ? $agent->username  : $agent->user->username }}"
                         >
 
-                        <span class="md:block hidden receiver-chat-heads">{{ Auth::user()->user_type == 3 ? $agent->user->username :  (Auth::user()->user_type == 2 ? $agent->availedBy->username : '') }}</span>
+                        <span class="md:block hidden receiver-chat-heads">
+                            {{
+                              Auth::user()->user_type == 3
+                                ? $agent->user->username
+                                : (Auth::user()->user_type == 2
+                                  ? $agent->availedBy->username
+                                  : (Auth::user()->user_type == 1
+                                    ? $agent->username
+                                    : '')
+                                  )
+                            }}
+                          </span>
+
                     </li>
                 @endforeach
 
