@@ -229,7 +229,7 @@ Echo.private(`notifications.${userId}`)
 
     $('.notif-count-hidden').show()
 
-    if(e.notificationType == 1 || e.notificationType == 3)
+    if(e.notificationType == 1 || e.notificationType == 3 || e.notificationType == 4)
     {
         $('.notification-parent').prepend(`
             <li class="flex flex-col py-4 px-2 bg-slate-200">
@@ -294,30 +294,47 @@ $('.notification-parent').on('click', '.bnt-accept-notif', function(e)
         fromUserId: fromUserId
     })
     .then(function(response) {
-
-        storeNotificationToCustomer(notificationId, notificationItem, username, message, status, fromUserId, is_Accepted);
-       
-        if(notificationType == 3)
+        if(notificationType == 1 || notificationType == 3)
         {
-            axios.post('store-chat-after-negotiate', {
+            storeNotificationToCustomer(notificationId, notificationItem, username, message, status, fromUserId, is_Accepted);
+
+            if(notificationType == 3)
+            {
+                axios.post('store-chat-after-negotiate', {
+                    notificationId: notificationId,
+                    fromUserId: fromUserId,
+                    toUserId: toUserId,
+                    username: username,
+                    currentUserId: userId,
+                    notificationType: notificationType
+                })
+            }
+            if (notificationType == 1)
+            {
+                axios.post('store-chat-after-negotiate', {
+                    notificationId: notificationId,
+                    fromUserId: toUserId,
+                    toUserId: fromUserId,
+                    username: username,
+                    currentUserId: fromUserId,
+                    notificationType: notificationType
+                })
+            }
+        }
+        if (notificationType == 4)
+        {
+            axios.put(`store-agent-updated-details/${notificationId}`, {
                 notificationId: notificationId,
                 fromUserId: fromUserId,
                 toUserId: toUserId,
                 username: username,
-                currentUserId: userId,
-                notificationType: notificationType
-            })
-        }
-        if (notificationType == 1)
-        {
-            axios.post('store-chat-after-negotiate', {
-                notificationId: notificationId,
-                fromUserId: toUserId,
-                toUserId: fromUserId,
-                username: username,
                 currentUserId: fromUserId,
                 notificationType: notificationType
             })
+            .then(function(response){
+                updateNotificationItem(notificationItem, username, message, status)
+            })
+            .catch((err) => console.error(err))
         }
     })
     .catch(err => console.error(err))
@@ -347,7 +364,6 @@ function storeNotificationToCustomer(notificationId, notificationItem, username,
         if(! is_Accepted)
         {
             is_Accepted = false
-
         }
 
         axios.put(`update-availed-user-accepted/${notificationId}`, {
