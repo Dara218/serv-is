@@ -77,6 +77,8 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/get-sent-request', [SentRequestController::class, 'getSentRequest'])->name('getSentRequest');
         Route::post('/store-chat-after-negotiate', [MessageController::class, 'storeChatAfterNegotiate'])->name('storeChatAfterNegotiate');
         Route::put('/store-agent-updated-details/{id}', [AgentServiceController::class, 'storeAgentUpdatedDetails'])->name('storeAgentUpdatedDetails');
+        Route::get('/get-agent-service', [ServiceController::class, 'getAgentService'])->name('getAgentService');
+        Route::get('/get-all-agent-service', [ServiceController::class, 'getAllAgentService'])->name('getAllAgentService');
     });
 
     Route::prefix('session')->name('session.')->group(function(){
@@ -103,5 +105,6 @@ Route::middleware(['agent'])->group(function(){
 Route::middleware(['admin'])->group(function(){
     Route::prefix('home')->name('home.')->group(function(){
         Route::get('/home-admin', [HomeController::class, 'indexAdmin'])->name('indexAdmin');
+        Route::get('/show-confirm-agent', [AgentServiceController::class, 'showConfirmAgent'])->name('showConfirmAgent');
     });
 });
