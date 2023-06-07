@@ -16,7 +16,7 @@
         <ul class="flex flex-col gap-2 w-full p-2 text-sm text-gray-700 dark:text-gray-200 notification-parent h-auto" aria-labelledby="dropdownDefaultButton">
 
             @foreach ($notifications as $notification)
-            {{-- <span>{{ $notification }}</span> --}}
+            {{-- <span>{{ $notification->from_user_id }}</span> --}}
 
                 @if ($notification->status == 1 && ($notification->type == 1 || $notification->type == 4))
                     <li class="notif-item flex justify-between py-4 px-2 {{ $notification->is_unread == true ? 'bg-slate-100' : 'bg-slate-200' }}">
@@ -30,7 +30,12 @@
                     </li>
 
                 @elseif($notification->status == 0 && ($notification->type == 1 || $notification->type == 4))
-                    <li class="notif-item flex flex-col py-4 px-2 bg-slate-200">
+                    <li class="notif-item flex flex-col py-4 px-2 bg-slate-200 relative">
+
+                        @if ($notification->type == 4)
+                            <a href="{{ route('home.showConfirmAgent') }}" class="text-slate-500 absolute top-2 right-3">See details</a>
+                        @endif
+
                         <div class="flex gap-2">
                             <div class="flex flex-col gap-1 justify-center w-full">
                                 <span class="font-bold">{{ $notification->username }}</span>
