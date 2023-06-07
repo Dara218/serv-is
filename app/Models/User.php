@@ -78,4 +78,8 @@ class User extends Authenticatable
     public function agentService(){
         return $this->hasOne(AgentService::class, 'user_id');
     }
+
+    public function review(){
+        return $this->hasMany(Review::class, 'user_id');
+    }
 }
