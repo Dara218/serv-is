@@ -1,10 +1,10 @@
 <div>
     <div class="text-2xl font-bold text-slate-400 flex justify-between">
         <span>Services</span>
-        <a href="#" class="text-gray-400 font-medium text-lg view-all-services">View All</a>
+        <span class="text-gray-400 font-medium text-lg view-all-services cursor-pointer">View All</span>
     </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 services-container">
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 skeleton-loading" style="display: none;">
         @foreach(range(1, 6) as $index)
             <div role="status" class="space-y-8 animate-pulse md:space-y-0 md:space-x-8 md:flex md:items-center">
                 <div class="flex items-center justify-center w-full h-48 bg-gray-300 rounded sm:w-96 dark:bg-gray-700">
@@ -13,4 +13,9 @@
             </div>
         @endforeach
     </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 services-container">
+        {{-- {{ $services->links('partials.paginate') }} --}}
+    </div>
+
 </div>
