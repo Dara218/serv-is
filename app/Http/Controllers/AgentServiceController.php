@@ -9,6 +9,9 @@ use App\Models\AgentService;
 use App\Models\AgentServicePending;
 use App\Models\Notification;
 use App\Models\Service;
+use App\Models\User;
+use App\Models\UserPhoto;
+use App\Models\ValidDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -84,5 +87,27 @@ class AgentServiceController extends Controller
         ));
 
         return response()->json($request);
+    }
+
+    public function showConfirmAgent(User $user){
+        $notifications = Notification::where('user_id', Auth::user()->id)
+                                    ->where('status', 0)
+                                    ->where('type', 4)
+                                    ->orderBy('created_at', 'desc')
+                                    ->get();
+
+        // $userDocuments = ValidDocument::where('user_id', $user->id)->first();
+        $otherUserDocuments = AdminRequest::where('is_accepted', false)
+        ->with('validDocument.notification')
+        // ->orderByRaw('CASE WHEN request_by = ' .$user->id .' THEN 0 ELSE 1 END')
+        ->orderBy('created_at', 'DESC')
+        ->get();
+
+
+        return view('components.home_admin.confirm-agent', [
+            // 'userDocuments' => $userDocuments,
+            'notifications' => $notifications,
+            'otherDocuments' => $otherUserDocuments
+        ]);
     }
 }
