@@ -12,4 +12,8 @@ class ValidDocument extends Model
     public function users(){
         return $this->hasOne(User::class, 'id');
     }
+
+    public function notification(){
+        return $this->hasOne(Notification::class, 'from_user_id', 'user_id');
+    }
 }
