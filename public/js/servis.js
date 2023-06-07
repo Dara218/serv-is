@@ -404,6 +404,56 @@ $(document).ready(function(){
         getCategories(allCategories = 9)
     })
 
+    $('.skeleton-loading').show()
+
+    $.ajax({
+        url: 'get-agent-service',
+        success: function(data){
+            $('.skeleton-loading').hide()
+            loadServices(data)
+        },
+        error: function(err){
+            console.error(err)
+        }
+    })
+
+    $('.view-all-services').on('click', function(){
+        $('.services-container').hide()
+        $('.skeleton-loading').show()
+        $.ajax({
+            url: 'get-all-agent-service',
+            success: function(data){
+                $('.skeleton-loading').hide()
+                loadServices(data)
+            },
+            error: function(err){
+                console.error(err)
+            }
+        })
+    })
+
+    function loadServices(data){
+        $('.services-container').show()
+        $('.services-container').empty()
+                data.forEach(function(eachData){
+                    // console.log(eachData)
+                    $('.services-container').append(
+                        `
+                        <div class="p-4 flex flex-col gap-3 border border-slate-300 rounded-xl">
+                            <span>***** star rating here</span>
+                            <div class="flex flex-col">
+                                <span class="font-semibold">${eachData.title}</span>
+                                <small class="text-slate-500">${eachData.service.type.charAt(0).toUpperCase() + eachData.service.type.slice(1).toLowerCase()}</small>
+                            </div>
+                            <div class="flex gap-2 items-center">
+                                <img src="${eachData.user.user_photo.profile_picture}" alt="" class="h-[50px] rounded-full">
+                                <span class="text-slate-500">${eachData.user.fullname.charAt(0).toUpperCase() + eachData.user.fullname.slice(1).toLowerCase()}</span>
+                            </div>
+                        </div>
+                    `)
+                })
+    }
+
     $('.btn-add-service-title').on('click', function(){
 
         const agentServiceId = $('#current-user-id').data('user-service')
@@ -426,7 +476,7 @@ $(document).ready(function(){
             const serviceTitle = result.value
             if(result.isConfirmed)
             {
-                axios.put(`update-agent-services/1`, {
+                axios.put(`update-agent-services/${agentServiceId}`, {
                     title: serviceTitle
                 })
                 .then(function(response){
@@ -454,6 +504,12 @@ $(document).ready(function(){
     $('.btn-update-service').on('click', function(){
 
     })
+
+    Fancybox.bind('[data-fancybox="valid-photos-gallery"]', {
+        // Your custom options
+    });
+
+
 
     // todo: reload chat modal to reload it instead of whole page.
 })
