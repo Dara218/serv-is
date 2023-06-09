@@ -29,8 +29,8 @@
                         </span>
                         <span class="flex items-center gap-2">
                             <span>Deadline: </span>
-                            {{ $agenda->deadline }}
-                        </span>
+                            {{ date('m/d/Y', strtotime($agenda->deadline)) }}
+                        </span>                        
                     </div>
                 </div>
 
