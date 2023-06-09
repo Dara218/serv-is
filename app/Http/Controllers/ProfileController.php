@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileRequest;
+use App\Models\AdminRequest;
 use App\Models\Notification;
 use App\Models\Agenda;
+use App\Models\Reward;
+use App\Models\AgentService;
 use App\Models\Service;
 use App\Models\AvailedPricingPlan;
 use App\Models\AvailedUser;
@@ -22,10 +25,9 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class ProfileController extends Controller
 {
-    public function update(ProfileRequest $request){
-
+    public function update(ProfileRequest $request)
+    {
         $user = User::find(Auth::user()->id);
-
         $userDetails = $request->validated();
 
         if(Auth::user()->username != $userDetails['username'] && User::where('username', $request->username)->exists() ){
@@ -41,7 +43,6 @@ class ProfileController extends Controller
         }
 
         $userDetails['password'] = bcrypt($userDetails['password']);
-
         $photoId = 'profile_picture';
         $userProfilePictureExists = UserPhoto::where('user_id', Auth::user()->id)->exists();
 
@@ -88,63 +89,65 @@ class ProfileController extends Controller
         return view('components.home.my-wallet', ['userBalance' => Auth::user()->current_balance]);
     }
 
-    public function showServiceProvider(){
-        $serviceAddress =  ServiceAddress::where('user_id', Auth::user()->id)
-        ->where('is_primary', 1)
-        ->first();
-
-        return view('components.home.service-provider',
-        ['employees' => User::where('user_type', 2)->with('userPhoto')->get(),
-        'address' => $serviceAddress]);
+    public function showServiceProvider()
+    {
+        return view('components.home.service-provider',[
+            'employees' => User::where('user_type', 2)->with('userPhoto', 'serviceAddress')->get()
+        ]);
     }
 
-    public function showEmployeeProfile(User $user){
-        $serviceAddress =  ServiceAddress::where('user_id', Auth::user()->id)
-        ->where('is_primary', 1)
-        ->first();
+    public function showEmployeeProfile(User $user)
+    {
+        $agentService = AgentService::where('user_id', $user->id)->with('service', 'review.user')->first();
 
-        return view('components.home.employee-profile',
-        ['users' => User::where('id', $user->id)->with('userPhoto')->get(),
-        'address' => $serviceAddress]);
+        return view('components.home.employee-profile',[
+            'users' => User::where('id', $user->id)->with('userPhoto', 'agentService', 'serviceAddress')->get(),
+            'service' => $agentService
+        ]);
     }
 
-    public function showServiceAddress(){
+    public function showServiceAddress()
+    {
         return view('components.home.service-address',
         ['primaryAddress' => ServiceAddress::where('user_id', Auth::user()->id)->where('is_primary', 1)->first(),
         'secondaryAddresses' => ServiceAddress::where('user_id', Auth::user()->id)->where('is_primary', 0)->get()]);
     }
 
     public function showRewards(){
-        return view('components.home.rewards');
+        return view('components.home.rewards', ['rewards' => Reward::all()]);
     }
 
     public function showTransactionHistory(){
-        return view('components.home.transaction-history', ['transactions' => Transaction::where('id', Auth::user()->id)->get()]);
+        return view('components.home.transaction-history', ['transactions' => Transaction::where('user_id', Auth::user()->id)->paginate(10)]);
     }
 
     public function showFaqs(){
         return view('components.home.faqs', ['faqs' => Faq::all()]);
     }
 
-    public function showAgenda(){
+    public function showAgenda()
+    {
         return view('components.home.agenda',
         ['services' => Service::all(),
         'agendas' => Agenda::where('user_id', Auth::user()->id)->with('user', 'userPhoto')->get()]);
     }
 
-    public function showChat(){
-        return view('components.home.chat', ['agents' => User::where('user_type',2)->with('userPhoto')->get()]);
+    public function showChat(){ 
+        return view('components.home.chat', [
+            'agents' => User::where('user_type', 2)->with('userPhoto', 'adminRequest')->get()
+        ]);
     }
 
-    public function tryChat(Request $request){
+    public function tryChat(Request $request)
+    {
         $receiver = User::where('username', $request->receiver_hidden)->first();
         $receiverId = $receiver->id;
-        return $receiver->id;
+        return $receiverId;
     }
 
-    public function getUserChat(Request $request){
+    public function getUserChat(Request $request)
+    {
         $user = User::where('username', $request->receiver)->first();
-
         $authUser = Auth::user();
 
         $userChat = Message::where(function ($query) use ($authUser, $user){
@@ -166,7 +169,8 @@ class ProfileController extends Controller
                 })
                 ->first();
 
-        if(! $chatRoom){
+        if(! $chatRoom)
+        {
             $chatRoom = Chat::create([
                 'sender_id' => Auth::user()->id,
                 'receiver_id' => $user->id
@@ -195,7 +199,6 @@ class ProfileController extends Controller
 
         $checkIfAgentOrAdmin = User::find($authUser->id);
         $confirmNotAgent = false;
-
         $isAccepted = false;
 
         if($checkIfAgentOrAdmin->user_type == 3)
