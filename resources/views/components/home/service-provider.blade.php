@@ -41,7 +41,7 @@
                                     <span class="material-symbols-outlined">
                                         location_on
                                     </span>
-                                    {{ $address->address }}
+                                    {{ $employee->serviceAddress->address }}
                                 </span>
                                 <span class="flex items-center gap-2">
                                     <span class="material-symbols-outlined">
@@ -52,10 +52,11 @@
                             </div>
                         </div>
 
-                        <div class="flex justify-evenly mt-6">
-                            <button type="button" class="bg-slate-600 text-white rounded cursor-pointer py-2 px-4 hover:bg-slate-800">Add Provider</button>
+                        <form method="post" action="{{ route('home.storeChat', ['user' => $employee->id]) }}" class="flex justify-evenly mt-6">
+                            @csrf
+                            <button type="submit" class="bg-slate-600 text-white rounded cursor-pointer py-2 px-4 hover:bg-slate-800">Add Provider</button>
                             <button type="button" class="bg-white rounded cursor-pointer py-2 px-4 hover:bg-gray-200">Not Interested</button>
-                        </div>
+                        </form>
                     </div>
                     @endforeach
                 </div>
