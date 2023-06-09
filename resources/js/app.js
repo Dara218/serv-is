@@ -250,6 +250,28 @@ Echo.private(`notifications.${userId}`)
             </li>
         `)
     }
+    else if(e.notificationType == 4) // TODO FIX NOTIF APPENDING NEW.
+    {
+        $('.notification-parent').prepend(`
+            <li class="flex flex-col py-4 px-2 bg-slate-200">
+                <a href="{{ route('home.showConfirmAgent') }}" class="text-slate-500 absolute top-2 right-3">See details</a>
+                <div class="flex gap-2">
+                    <div class="flex flex-col gap-1 justify-center w-full">
+                        <span class="font-bold">${e.username}</span>
+                        <span>${e.notificationMessage}</span>
+                    </div>
+                </div>
+                <div class="flex gap-4 justify-center">
+                    <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer bnt-accept-notif">
+                        check_circle
+                    </a>
+                    <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer bnt-reject-notif">
+                        cancel
+                    </a>
+                </div>
+            </li>
+        `)
+    }
     else if(e.notificationType == 2)
     {
         $('.notification-parent').prepend(`
@@ -289,6 +311,11 @@ $('.notification-parent').on('click', '.bnt-accept-notif', function(e)
     const notificationType = $(this).data('type')
     let is_Accepted = true
     let status = 1
+
+    const confirmRejectParentEl = $(e.target).parent()
+    buttonChangeAfterRejectOrAccept(confirmRejectParentEl, is_Accepted)
+
+    $(e.target.closest('.accepted-rejected-btn')).text('Accepted').show()
 
     axios.put(`update-notification-accept/${notificationId}`, {
         fromUserId: fromUserId
@@ -340,7 +367,7 @@ $('.notification-parent').on('click', '.bnt-accept-notif', function(e)
     .catch(err => console.error(err))
 })
 
-$('.notification-parent').on('click', '.bnt-reject-notif', function(e)
+$('.notification-parent').on('click', '.btn-reject-notif', function(e)
 {
     const notificationId = $(this).data('id');
     const notificationItem = $(this).closest('li');
@@ -350,6 +377,9 @@ $('.notification-parent').on('click', '.bnt-reject-notif', function(e)
     let is_Accepted = false
     let status = 2
 
+    const confirmRejectParentEl = $(e.target).parent()
+    buttonChangeAfterRejectOrAccept(confirmRejectParentEl, is_Accepted)
+
     axios.put(`update-notification-reject/${notificationId}`, {
         fromUserId: fromUserId
     })
@@ -358,6 +388,18 @@ $('.notification-parent').on('click', '.bnt-reject-notif', function(e)
     })
     .catch(err => console.error(err))
 })
+
+function buttonChangeAfterRejectOrAccept(confirmRejectParentEl, is_Accepted){
+    confirmRejectParentEl.hide()
+
+    if(! is_Accepted)
+    {
+        confirmRejectParentEl.parent().children().eq(0).text('Rejected').show()
+    }
+    else{
+        confirmRejectParentEl.parent().children().eq(0).text('Accepted').show()
+    }
+}
 
 function storeNotificationToCustomer(notificationId, notificationItem, username, message, status, fromUserId, is_Accepted)
     {
