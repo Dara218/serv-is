@@ -78,6 +78,7 @@
             </div>
 
             <input type="hidden" name="clientToBeAvailed" value="{{ $clientToBeAvailed->id }}">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
             <div class="w-full flex justify-center">
                 <p id="filled_error_help" class="error-pricing-plan hidden mt-2 text-xs text-red-600 dark:text-red-400"><span class="font-medium">You must select a plan first.</span></p>
