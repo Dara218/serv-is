@@ -10,9 +10,12 @@ use App\Models\PricingPlan;
 use App\Models\SentRequest;
 use App\Models\Transaction;
 use App\Models\User;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Stripe\Checkout\Session as CheckoutSession;
+use Stripe\Stripe;
 
 class PricingPlanController extends Controller
 {
@@ -41,8 +44,6 @@ class PricingPlanController extends Controller
         $user = AvailedPricingPlan::where('availed_to_id', $agent)
                                     ->where('availed_by_id', $customer->id)
                                     ->exists();
-
-        // add payment API.
 
         if($userBalance < $pricingPlanBalance->price){
             Alert::error('Cannot Avail Service', 'Insufficient balance.');
@@ -95,8 +96,28 @@ class PricingPlanController extends Controller
             Auth::user()->id
         ));
 
-        Alert::success('Success', 'Transaction successful.');
-        return redirect()->route('home.index');
+        Stripe::setApiKey(config('stripe.sk'));
+        $session = CheckoutSession::create([
+                'line_items' => [
+                    [
+                        'price_data' => [
+                            'currency' => 'PHP',
+                            'product_data' => [
+                                'name' => $transactionType
+                            ],
+                            'unit_amount' => $pricingPlanBalance->price * 100
+                        ],
+                        'quantity' => 1
+                    ]
+                ],
+                'mode' => 'payment',
+                'success_url' => route('home.index'),
+                'cancel_url' => route('home.index')
+        ]);
+
+        return redirect()->away($session->url);
+        // Alert::success('Success', 'Transaction successful.');
+        // return redirect()->route('home.index');
     }
 
     public function storeTransaction($customer, $transactionType, $pricingPlanBalance){
@@ -109,13 +130,14 @@ class PricingPlanController extends Controller
 
     public function storeChat(User $user)
     {
-        $notificationMessage = "$user->username requested to avail your service.";
+        $authUser = Auth::user();
+        $notificationMessage = "$authUser->username requested to avail your service.";
         $notificationType = 1;
 
         $notification = Notification::create([
             'user_id' => $user->id,
-            'from_user_id' => Auth::user()->id,
-            'username' => $user->username,
+            'from_user_id' => $authUser->id,
+            'username' => $authUser->username,
             'message' => $notificationMessage,
             'is_unread' => true,
             'status' => 0,
@@ -123,23 +145,23 @@ class PricingPlanController extends Controller
         ]);
 
         event(new NotificationEvent(
-            $user->username,
+            $authUser->username,
             $user->id,
             $notificationMessage,
             $notificationType,
             $notification->id,
-            Auth::user()->id
+            $authUser->id
         ));
 
         AvailedUser::create([
-            'availed_by' => Auth::user()->id,
+            'availed_by' => $authUser->id,
             'availed_to' => $user->id,
             'is_accepted' => false,
             'notification_id' => $notification->id
         ]);
 
         SentRequest::create([
-            'request_by' => Auth::user()->id,
+            'request_by' => $authUser->id,
             'request_to' => $user->id,
             'type' => 2,
             'status' => 1
