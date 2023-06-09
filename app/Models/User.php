@@ -82,4 +82,12 @@ class User extends Authenticatable
     public function review(){
         return $this->hasMany(Review::class, 'user_id');
     }
+
+    public function adminRequest(){
+        return $this->hasOne(AdminRequest::class, 'request_by');
+    }
+
+    public function serviceAddress(){
+        return $this->hasOne(ServiceAddress::class, 'user_id');
+    }
 }
