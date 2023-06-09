@@ -101,8 +101,12 @@ class AgentServiceController extends Controller
         ->with('validDocument.notification')
         // ->orderByRaw('CASE WHEN request_by = ' .$user->id .' THEN 0 ELSE 1 END')
         ->orderBy('created_at', 'DESC')
-        ->get();
+        ->paginate(3);
 
+        /*
+            TODO:
+            - Add pagination on services
+         */
 
         return view('components.home_admin.confirm-agent', [
             // 'userDocuments' => $userDocuments,
