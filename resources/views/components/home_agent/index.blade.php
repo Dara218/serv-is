@@ -50,7 +50,9 @@
                 </div>
             </div>
 
-            <x-home_agent.agenda-home :agendas="$agendas"/>
+            @if (! $accepted)
+                <x-home_agent.agenda-home :agendas="$agendas"/>
+            @endif
         </div>
 
     @include('sweetalert::alert')
