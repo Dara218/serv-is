@@ -21,7 +21,8 @@ class HomeController extends Controller
     public function index(){
         return view('components.home.home',
         [
-            'services' => Service::all(), 'categories' => Category::all(),
+            // 'services' => AgentService::where('is_pending', 0)->inRandomOrder()->paginate(6),
+            'categories' => Category::all(),
             'balance' => Auth::user()->current_balance,
             'transaction' => Transaction::where('user_id', Auth::user()->id)->count()
         ]);
@@ -43,13 +44,15 @@ class HomeController extends Controller
         [
             'balance' => $user->current_balance,
             'services' => Transaction::where('user_id', $user->id)->count(),
-            'agendas' => Agenda::where('is_available', true)->with('userPhoto')->get(),
+            'agendas' => Agenda::where('is_available', true)
+                                ->where('deadline', '>', now())
+                                ->with('userPhoto')
+                                ->get(),
             'accepted' => AdminRequest::where('request_by', $user->id)
                                         ->where('type', 1)
                                         ->where('is_accepted', false)
                                         ->exists(),
-            'reviews' => Review::where('user_id', $user->id)->with('user')->get()
-            // 'request' =>  $sentRequest
+            'reviews' => Review::where('user_id', $user->id)->with('user')->get(),
         ]);
     }
 
