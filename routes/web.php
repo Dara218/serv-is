@@ -51,7 +51,10 @@ Route::middleware(['auth'])->group(function(){
         Route::post('/get-user-chat', [ProfileController::class, 'getUserChat'])->name('getUserChat');
         Route::post('/handle-message', [MessageController::class, 'handleMessage'])->name('handleMessage');
         Route::get('/pricing-plan/{user}', [PricingPlanController::class, 'showPricingPlan'])->name('showPricingPlan');
+        // Route::post('/pricing-plan-store-stripe', [PricingPlanController::class, 'storePricingStripe'])->name('storePricingStripe');
+
         Route::post('/pricing-plan-store', [PricingPlanController::class, 'storePricing'])->name('storePricing');
+        
         Route::post('/pricing-plan-add-chat/{user}', [PricingPlanController::class, 'storeChat'])->name('storeChat');
         Route::post('/store-address', [AddressController::class, 'storeAddress'])->name('storeAddress');
         Route::put('/address-changed-update/{serviceaddress}', [AddressController::class, 'updateChangeAddress'])->name('updateChangeAddress');
