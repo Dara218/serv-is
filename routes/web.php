@@ -6,6 +6,7 @@ use App\Http\Controllers\AgentServiceController;
 use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\CheckInController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PricingPlanController;
@@ -35,7 +36,11 @@ Route::middleware(['guest'])->group(function(){
     });
 });
 
-Route::middleware(['auth'])->group(function(){
+Route::middleware(['web'])->group(function(){
+
+    Route::post('/stripe-webhook', [CheckInController::class, 'handleWebhook'])->name('stripe.webhook');
+    Route::post('/store-check-in', [CheckInController::class, 'storeCheckIn'])->name('storeCheckIn');
+
     Route::prefix('home')->name('home.')->group(function(){
         Route::get('/edit-profile', [HomeController::class, 'showEditProfile'])->name('showEditProfile');
         Route::put('/edit-profile-process', [ProfileController::class, 'update'])->name('editProfile');
@@ -54,7 +59,9 @@ Route::middleware(['auth'])->group(function(){
         // Route::post('/pricing-plan-store-stripe', [PricingPlanController::class, 'storePricingStripe'])->name('storePricingStripe');
 
         Route::post('/pricing-plan-store', [PricingPlanController::class, 'storePricing'])->name('storePricing');
-        
+        // Route::post('/store-check-in', [CheckInController::class, 'storeCheckIn'])->name('storeCheckIn');
+        // Route::post('/stripe-webhook', [CheckInController::class, 'handleWebhook'])->name('stripe.webhook');
+
         Route::post('/pricing-plan-add-chat/{user}', [PricingPlanController::class, 'storeChat'])->name('storeChat');
         Route::post('/store-address', [AddressController::class, 'storeAddress'])->name('storeAddress');
         Route::put('/address-changed-update/{serviceaddress}', [AddressController::class, 'updateChangeAddress'])->name('updateChangeAddress');
