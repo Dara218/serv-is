@@ -8,6 +8,7 @@
                 <div class="w-full md:w-1/2 flex flex-col gap-4">
                     <div class="flex gap-2 flex-col">
                         <span class="font-semibold">Current Balance</span>
+                        @include('partials.cash-in', ['checkinprices' => $checkinprices])
                         <div class="p-4 rounded flex justify-between items-center border border-slate-300">
                             <div class="flex flex-col">
                                 <span class="font-semibold">P{{ $userBalance }}.00</span>
