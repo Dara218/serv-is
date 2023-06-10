@@ -6,6 +6,7 @@ use App\Http\Requests\ProfileRequest;
 use App\Models\AdminRequest;
 use App\Models\Notification;
 use App\Models\Agenda;
+use App\Models\CheckInPrice;
 use App\Models\Reward;
 use App\Models\AgentService;
 use App\Models\Service;
@@ -86,7 +87,10 @@ class ProfileController extends Controller
     }
 
     public function showWallet(){
-        return view('components.home.my-wallet', ['userBalance' => Auth::user()->current_balance]);
+        return view('components.home.my-wallet', [
+            'userBalance' => Auth::user()->current_balance,
+            'checkinprices' => CheckInPrice::all()
+        ]);
     }
 
     public function showServiceProvider()
@@ -132,7 +136,7 @@ class ProfileController extends Controller
         'agendas' => Agenda::where('user_id', Auth::user()->id)->with('user', 'userPhoto')->get()]);
     }
 
-    public function showChat(){ 
+    public function showChat(){
         return view('components.home.chat', [
             'agents' => User::where('user_type', 2)->with('userPhoto', 'adminRequest')->get()
         ]);
