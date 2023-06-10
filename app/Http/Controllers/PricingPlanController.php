@@ -96,28 +96,8 @@ class PricingPlanController extends Controller
             Auth::user()->id
         ));
 
-        Stripe::setApiKey(config('stripe.sk'));
-        $session = CheckoutSession::create([
-                'line_items' => [
-                    [
-                        'price_data' => [
-                            'currency' => 'PHP',
-                            'product_data' => [
-                                'name' => $transactionType
-                            ],
-                            'unit_amount' => $pricingPlanBalance->price * 100
-                        ],
-                        'quantity' => 1
-                    ]
-                ],
-                'mode' => 'payment',
-                'success_url' => route('home.index'),
-                'cancel_url' => route('home.index')
-        ]);
-
-        return redirect()->away($session->url);
-        // Alert::success('Success', 'Transaction successful.');
-        // return redirect()->route('home.index');
+        Alert::success('Success', 'Transaction successful.');
+        return redirect()->route('home.index');
     }
 
     public function storeTransaction($customer, $transactionType, $pricingPlanBalance){
