@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NotificationEvent;
+use App\Events\NotificationMessageBadgeEvent;
 use App\Models\AvailedPricingPlan;
 use App\Models\AvailedUser;
 use App\Models\Notification;
@@ -87,6 +88,13 @@ class PricingPlanController extends Controller
             'type' => 2
         ]);
 
+        // $this->username = $username;
+        // $this->userIdToReceive = $userIdToReceive;
+        // $this->notificationMessage = $notificationMessage;
+        // $this->notificationType = $notificationType;
+        // $this->notificationId = $notificationId;
+        // $this->fromUserId = $fromUserId;
+
         event(new NotificationEvent(
             $customer->username,
             $agent,
@@ -94,6 +102,10 @@ class PricingPlanController extends Controller
             $notificationType,
             $notification->id,
             Auth::user()->id
+        ));
+
+        event(new NotificationMessageBadgeEvent(
+            $agent,
         ));
 
         Alert::success('Success', 'Transaction successful.');
