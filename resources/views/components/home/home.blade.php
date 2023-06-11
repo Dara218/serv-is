@@ -7,7 +7,7 @@
             <x-home.wallet-transaction :balance="$balance" :transaction="$transaction"/>
 
             <div class="flex justify-center mt-12">
-                <x-home.services-search/>
+                <x-home.services-search :services="$services"/>
             </div>
 
             {{--
