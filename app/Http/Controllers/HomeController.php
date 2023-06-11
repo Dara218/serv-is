@@ -24,7 +24,8 @@ class HomeController extends Controller
             // 'services' => AgentService::where('is_pending', 0)->inRandomOrder()->paginate(6),
             'categories' => Category::all(),
             'balance' => Auth::user()->current_balance,
-            'transaction' => Transaction::where('user_id', Auth::user()->id)->count()
+            'transaction' => Transaction::where('user_id', Auth::user()->id)->count(),
+            'services' => Service::all()
         ]);
     }
 
