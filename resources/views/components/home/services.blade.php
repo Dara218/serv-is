@@ -1,7 +1,9 @@
 <div>
     <div class="text-2xl font-bold text-slate-400 flex justify-between">
         <span>Services</span>
-        <span class="text-gray-400 font-medium text-lg view-all-services cursor-pointer">View All</span>
+        <div>
+            <span class="text-gray-400 font-medium text-lg view-all-services cursor-pointer">View All</span>
+        </div>
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 skeleton-loading" style="display: none;">
