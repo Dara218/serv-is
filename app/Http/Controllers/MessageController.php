@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\Message;
 use App\Events\NotificationEvent;
+use App\Events\NotificationMessageBadgeEvent;
 use App\Models\AvailedUser;
 use App\Models\Chat;
 use App\Models\Message as ModelsMessage;
@@ -33,6 +34,10 @@ class MessageController extends Controller
             'receiver_id' => $receiver->id,
             'message' => $request->message,
         ]);
+
+        event(new NotificationMessageBadgeEvent(
+            $receiver->id,
+        ));
 
         //toOthers() prevent sender from getting appends after sending.
         broadcast(new Message(
