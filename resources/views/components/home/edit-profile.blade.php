@@ -1,7 +1,7 @@
 <x-layout>
     @include('partials.navbar')
 
-        <div class="px-16 my-24">
+        <div class="px-8 md:px-16 my-24">
             {{ Breadcrumbs::render('edit-profile') }}
 
             <div class="mt-12 flex flex-col items-center gap-8">

@@ -2,7 +2,7 @@
 
     @include('partials.navbar')
 
-        <div class="px-16 my-24">
+        <div class="px-8 md:px-16 my-24">
             @foreach ($users as $user)
             {{ Breadcrumbs::render('employee-profile', $user) }}
 

@@ -1,7 +1,7 @@
 <x-layout>
     @include('partials.navbar')
 
-        <div class="px-12 md:px-16 my-24">
+        <div class="px-12 md:px-8 md:px-16 my-24">
             {{ Breadcrumbs::render('faqs') }}
 
             <div class="mt-12 flex flex-col items-center gap-8 w-full">

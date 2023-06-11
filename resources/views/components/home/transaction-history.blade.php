@@ -1,13 +1,11 @@
 <x-layout>
     @include('partials.navbar')
 
-        <div class="px-16 my-24">
+        <div class="px-8 md:px-16 my-24">
             {{ Breadcrumbs::render('transaction-history') }}
 
             <div class="mt-12 flex flex-col items-center gap-8">
                 <div class="w-full flex flex-col gap-4">
-
-                    {{-- Foreach here --}}
 
                         <div class="relative overflow-x-auto">
                             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 mb-6">
