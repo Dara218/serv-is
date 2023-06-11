@@ -376,6 +376,7 @@ $(document).ready(function(){
     async function getCategories(){
         $.ajax({
             url: 'get-categories',
+            method: 'get',
             success: function(data){
                 $('.categories-container').empty()
                 data.slice(0, allCategories).forEach(function(eachData){
@@ -408,6 +409,7 @@ $(document).ready(function(){
 
     $.ajax({
         url: 'get-agent-service',
+        method: 'get',
         success: function(data){
             $('.skeleton-loading').hide()
             loadServices(data)
@@ -422,6 +424,7 @@ $(document).ready(function(){
         $('.skeleton-loading').show()
         $.ajax({
             url: 'get-all-agent-service',
+            method: 'get',
             success: function(data){
                 $('.skeleton-loading').hide()
                 loadServices(data)
@@ -454,8 +457,8 @@ $(document).ready(function(){
                 })
     }
 
-    $('.btn-add-service-title').on('click', function(){
-
+    $('.btn-add-service-title').on('click', function()
+    {
         const agentServiceId = $('#current-user-id').data('user-service')
 
         Swal.fire({
@@ -506,10 +509,93 @@ $(document).ready(function(){
     })
 
     Fancybox.bind('[data-fancybox="valid-photos-gallery"]', {
-        // Your custom options
+        // custom options
     });
 
+    $('.service-type-dropdown-item').on('click', function(){
+        var serviceCategoryData = $(this).data('service-type')
+        $('#dropdown-services').text(serviceCategoryData)
 
+        $.ajax({
+            url: 'get-search-services',
+            method: 'get',
+            data: {
+                category: serviceCategoryData
+            },
+            success: ((response) => {
+                let results = ''
+                showSearchResults(response,  results)
+            }),
+            error: ((err) => console.error(err))
+        })
+    })
+
+    $('#search-services').on('input', function()
+    {
+        $('.skeleton-loading').show()
+
+        let searchValue = $(this).val()
+        let dropdownText = $('#dropdown-services').text() 
+
+        if(searchValue.length > 0)
+        {
+            $('.skeleton-loading').hide()
+            $.ajax({
+                url: 'get-search-agent-services',
+                method: 'get',
+                data: {
+                    searchValue: searchValue,
+                    dropdownText: dropdownText
+                },
+                success: function(response){
+                    let results = ''  
+                    showSearchResults(response,  results)
+                },
+                error: ((err) => console.error(err))
+            })
+        }
+        else{
+            $('.skeleton-loading').show()
+            $.ajax({
+                url: 'get-all-agent-service',
+                method: 'get',
+                success: function(data){
+                    $('.skeleton-loading').hide()
+                    loadServices(data)
+                },
+                error: function(err){
+                    console.error(err)
+                }
+            })
+        }
+    })
+
+    function showSearchResults(response,  results){
+        if(response.agentService.length > 0)
+        {
+            response.agentService.forEach(function(eachAgentService)
+            {
+                results += `
+                    <div class="p-4 flex flex-col gap-3 border border-slate-300 rounded-xl">
+                        <span>***** star rating here</span>
+                        <div class="flex flex-col">
+                            <span class="font-semibold">${eachAgentService.title}</span>
+                            <small class="text-slate-500">${eachAgentService.service.type}</small>
+                        </div>
+                        <div class="flex gap-2 items-center">
+                                <img src="${eachAgentService.user.user_photo.profile_picture}" alt="" class="h-[50px] rounded-full">
+                                <span class="text-slate-500">${eachAgentService.user.fullname.charAt(0).toUpperCase() + eachAgentService.user.fullname.slice(1).toLowerCase()}</span>
+                        </div>
+                    </div>
+                `
+            })
+        }
+        else{
+            $('.skeleton-loading').hide()
+            results = '<span class="font-semibold text-slate-500">No results found.</span>'
+        }
+        $('.services-container').html(results)
+    }
 
     // todo: reload chat modal to reload it instead of whole page.
 })
