@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileRequest;
 use App\Models\AdminRequest;
 use App\Models\Notification;
+use App\Models\WalletHistory;
 use App\Models\Agenda;
 use App\Models\CheckInPrice;
 use App\Models\Reward;
@@ -89,7 +90,8 @@ class ProfileController extends Controller
     public function showWallet(){
         return view('components.home.my-wallet', [
             'userBalance' => Auth::user()->current_balance,
-            'checkinprices' => CheckInPrice::all()
+            'checkInPrices' => CheckInPrice::all(),
+            'walletHistories' => WalletHistory::where('user_id', Auth::user()->id)->get()
         ]);
     }
 
