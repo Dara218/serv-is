@@ -88,13 +88,6 @@ class PricingPlanController extends Controller
             'type' => 2
         ]);
 
-        // $this->username = $username;
-        // $this->userIdToReceive = $userIdToReceive;
-        // $this->notificationMessage = $notificationMessage;
-        // $this->notificationType = $notificationType;
-        // $this->notificationId = $notificationId;
-        // $this->fromUserId = $fromUserId;
-
         event(new NotificationEvent(
             $customer->username,
             $agent,
