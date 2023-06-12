@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('receiver_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('chat_room_id')->constrained('chats')->cascadeOnDelete();
             $table->string('message');
+            $table->boolean('is_unread')->default(true);
             $table->timestamps();
         });
     }

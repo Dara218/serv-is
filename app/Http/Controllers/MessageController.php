@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Events\Message;
 use App\Events\NotificationEvent;
 use App\Events\NotificationMessageBadgeEvent;
+use App\Models\AvailedPricingPlan;
 use App\Models\AvailedUser;
 use App\Models\Chat;
 use App\Models\Message as ModelsMessage;
 use App\Models\Notification;
 use App\Models\SentRequest;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,11 +35,20 @@ class MessageController extends Controller
             'sender_id' => $sender->id,
             'receiver_id' => $receiver->id,
             'message' => $request->message,
+            'chat_room_id' => $chatRoom->id
         ]);
 
         event(new NotificationMessageBadgeEvent(
             $receiver->id,
+            $sender->id,
+            $chatRoom->id
         ));
+
+        /*
+            ---1. make column on chat named has_unread
+            ---2. add if else on blade if has_unread is true, show new message badge
+            3. if new meesage, append it on chat head where sender == receiver and receiver == sender
+        */
 
         //toOthers() prevent sender from getting appends after sending.
         broadcast(new Message(
@@ -90,5 +101,53 @@ class MessageController extends Controller
             'type' => 2,
             'status' => 1
         ]);
+    }
+
+    public function updateMessageRead(Request $request)
+    {
+        $sender = $request->senderId;
+        $receiver = Auth::user()->id;
+
+        ModelsMessage::where('receiver_id', Auth::user()->id)
+                    ->where('chat_room_id', $request->id)
+                    ->where('is_unread', true)
+                    ->update([
+                        'is_unread' => false
+                    ]);
+
+        $availedPricingPlan = AvailedPricingPlan::where(function ($query) use ($sender, $receiver) {
+            $query->where('availed_to_id', $sender)
+                    ->where('availed_by_id', $receiver);
+        })->orWhere(function ($query) use ($sender, $receiver) {
+            $query->where('availed_to_id', $receiver)
+                    ->where('availed_by_id', $sender);
+        })->first();
+
+        $deadline = Carbon::parse($availedPricingPlan->created_at)->addDay();
+        $remainingTime = Carbon::now()->diff($deadline);
+
+        $isExpired = false;
+
+        if($availedPricingPlan->is_expired == true)
+        {
+            $isExpired = true;
+        }
+
+        return response()->json([
+            'remainingTime' => $remainingTime,
+            'isExpired' => $isExpired
+        ]);
+    }
+
+    public function getUnreadMessages()
+    {
+        $unreadMessages = ModelsMessage::where('receiver_id', Auth::user()->id)->where('is_unread', true)->get();
+        $sentBy = [];
+
+        foreach($unreadMessages as $unreadMessage){
+            $sentBy[] = $unreadMessage->receiver->id;
+        }
+
+        return response()->json($sentBy);
     }
 }

@@ -28,7 +28,9 @@
                 <span class="material-symbols-outlined">
                     chat
                 </span>
-                {{-- <span class="bg-red-400 rounded-full p-1 text-xs text-white">new</span> --}}
+                @if ($hasNewChats)
+                    <span class="bg-red-400 rounded-full p-1 text-xs text-white">new</span>
+                @endif
             </div>
         @endif
 

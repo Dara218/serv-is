@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('availed_to_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('availed_by_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('pricing_plan_type')->constrained('pricing_plans')->cascadeOnDelete();
+            $table->boolean('is_expired')->default(false);
             $table->timestamps();
         });
     }

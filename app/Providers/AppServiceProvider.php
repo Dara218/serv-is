@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\AgentService;
 use App\Models\AvailedUser;
+use App\Models\Chat;
+use App\Models\Message;
 use App\Models\Notification;
 use App\Models\User;
 use App\Models\UserPhoto;
@@ -29,6 +31,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::unguard();
+
+        View::composer('components.layout', function($view)
+        {
+            if(Auth::check()){
+                $hasNewChats = Message::where('receiver_id', Auth::user()->id)->where('is_unread', true)->exists();
+                $view->with(['hasNewChats'=> $hasNewChats]);
+            }
+        });
 
         View::composer('partials.navbar', function($view){
             $admins = UserPhoto::where('user_type', 1)->get();
@@ -73,12 +83,12 @@ class AppServiceProvider extends ServiceProvider
                     // $agents = User::where('user_type', 2)->get();
                     // $view->with('agents', $agents);
 
-                    $agents = AvailedUser::where('availed_by', Auth::user()->id)->with('user')->get();
+                    $agents = AvailedUser::where('availed_by', Auth::user()->id)->with('user.chat')->get();
                     $view->with('agents', $agents);
                 }
 
                 if(Auth::user()->user_type == 2){
-                    $agents = AvailedUser::where('availed_to', Auth::user()->id)->with('user', 'availedBy')->get();
+                    $agents = AvailedUser::where('availed_to', Auth::user()->id)->with('user.chat', 'availedBy')->get();
                     $view->with('agents', $agents);
 
                     // $agents = User::where('user_type', 3)->get();

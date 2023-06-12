@@ -215,14 +215,31 @@ class ProfileController extends Controller
             $isAccepted = true;
         }
 
+        $availedPricingPlan = AvailedPricingPlan::where(function($query) use($user, $authUser){
+            $query->where('availed_to_id', $user->id)
+                    ->where('availed_by_id', $authUser->id);
+                })->orWhere(function($subQuery) use ($user, $authUser){
+            $subQuery->where('availed_to_id', $authUser->id)
+                    ->where('availed_by_id', $user->id);
+        })
+        ->first();
+
+        $isExpired = false;
+
+        if($availedPricingPlan->is_expired == true)
+        {
+            $isExpired = true;
+        }
+
         $responseData = [
-            $userChat, // 0
-            $chatRoom, // 1
-            $checkIfUserHasAvailed, // 2
-            $authUser->username, // 3
-            $confirmNotAgent, // 4
-            $isAccepted, // 5
-            $request->sender // 6
+            'userChat' => $userChat, // 0
+            'chatRoom' => $chatRoom, // 1
+            'checkIfUserHasAvailed' => $checkIfUserHasAvailed, // 2
+            'authenticatedUser' => $authUser->username, // 3
+            'confirmNotAgent' => $confirmNotAgent, // 4
+            'isAccepted' => $isAccepted, // 5
+            'sender' => $request->sender, // 6
+            'isExpired' => $isExpired
         ];
 
         return response()->json($responseData);

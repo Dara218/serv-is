@@ -86,6 +86,8 @@ Route::middleware(['auth'])->group(function()
         Route::get('/get-all-agent-service', [ServiceController::class, 'getAllAgentService'])->name('getAllAgentService');
         Route::get('/get-search-agent-services', [SearchController::class, 'getSearchAgentService'])->name('getSearchAgentService');
         Route::get('/get-search-services', [SearchController::class, 'getSearchService'])->name('getSearchService');
+        Route::put('/update-message-read/{id}', [MessageController::class, 'updateMessageRead'])->name('updateMessageRead');
+        Route::get('/get-unread-messages', [MessageController::class, 'getUnreadMessages'])->name('getUnreadMessages');
     });
 
     Route::prefix('session')->name('session.')->group(function(){

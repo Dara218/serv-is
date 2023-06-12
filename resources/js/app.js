@@ -1,3 +1,4 @@
+import axios from 'axios'
 import './bootstrap'
 
 $(document).ready(function(){
@@ -42,8 +43,27 @@ $(document).ready(function(){
 
     });
 
+    let isAppended = false
+
     $('.btn-chat-open').on('click', function(){
         $('.chat-badge').hide()
+
+        axios.get('get-unread-messages').then(function(response)
+        {
+            $('.receiver-el').each(function(index, eachChat){
+                const chatId = eachChat.getAttribute('data-chat-id')
+
+                const checkChat = response.data.some((chat) => chat == chatId)
+
+                if(checkChat && !isAppended)
+                {
+                    $(eachChat).append(`<span class="chat-badge-message bg-red-400 rounded-full p-1 text-xs text-white">new</span>`)
+                    isAppended = true
+                }
+            })
+        })
+        .catch((err) => console.error(err))
+
         $('.chat-modal').slideDown()
     })
 
@@ -538,7 +558,7 @@ $(document).ready(function(){
         $('.skeleton-loading').show()
 
         let searchValue = $(this).val()
-        let dropdownText = $('#dropdown-services').text() 
+        let dropdownText = $('#dropdown-services').text()
 
         if(searchValue.length > 0)
         {
@@ -551,7 +571,7 @@ $(document).ready(function(){
                     dropdownText: dropdownText
                 },
                 success: function(response){
-                    let results = ''  
+                    let results = ''
                     showSearchResults(response,  results)
                 },
                 error: ((err) => console.error(err))
@@ -609,30 +629,45 @@ $(document).ready(function(){
     // Click the chat head
     $('.receiver-el').on('click', function(e)
     {
-        receiver.val($(e.target).text())
+        const username = $(this).data('username')
+        receiver.val(username)
 
-        $('.current-chat-name').show()
-        $('.input-message').show()
-        $('.current-chat-name').text($(e.target).text()) // Username of current chat
-        $('#receiver-chat-head').val($(e.target).text())
+        const chatRoomId = $(this).data('chat-id')
+        var receiverId = $(this).data('receiver')
+        var senderId = $(this).data('sender')
 
-        var receiverId = $(this).data('id')
-        $('.user-id-hidden').val(receiverId)
+        axios.put(`update-message-read/${chatRoomId}`, {
+            senderId: senderId
+        })
+        .then(function(response)
+        {
+            const date = response.data.remainingTime
+            $(this).find('.chat-badge-message').hide();
+            $('.current-chat-name').show()
+            $('.input-message').show()
 
-        $('.form-chat-head').submit()
+            $('.current-chat-name').text(`${username} ${date.days} day(s) ${date.h} hour(s) ${date.m} minute(s) remaining`)
+            $('#receiver-chat-head').val(username)
+
+            $('.user-id-hidden').val(receiverId)
+            $('.form-chat-head').submit()
+        })
+        .catch((err) => console.error(err))
+
     })
 
     $('.receiver-chat-head-click').on('click', function(e)
     {
-        // console.log($(e.target).data('username'));
+        const username = $(this).data('username')
         receiver.val($(e.target).data('username'))
 
         $('.current-chat-name').show()
         $('.input-message').show()
-        $('.current-chat-name').text($(e.target).data('username')) // Username of current chat
-        $('#receiver-chat-head').val($(e.target).data('username'))
 
-        var receiverId = $(e.target).data('id')
+        $('.current-chat-name').text(username)  // Username of current chat
+        $('#receiver-chat-head').val(username)
+
+        var receiverId = $(this).data('receiver')
         $('.user-id-hidden').val(receiverId)
 
         $('.form-chat-head').submit()
@@ -672,16 +707,16 @@ $(document).ready(function(){
             sender: username.val()
         })
         .then(response => {
+            const responseData = response.data
             $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight)
             $('.message-container').empty()
-            $('.chat-id').val(response.data[1].id)
+            $('.chat-id').val(responseData.chatRoom.id)
             let messageToShow = 10
 
             subscribeToChat()
-            // console.log(response);
 
             // Load messages when chat room is clicked
-            if(response.data[0].length == 0 && response.data[2] == false && (response.data[4] == false || response.data[4] == true) && response.data[5] == false){
+            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == false && (responseData.confirmNotAgent == false || responseData.confirmNotAgent == true) && responseData.isAccepted == false){
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                         Good day! Please wait for the agent to accept your booking. You'll get notified later on.
@@ -689,7 +724,7 @@ $(document).ready(function(){
                 `)
                 $('.input-message').prop('disabled', true)
             }
-            else if(response.data[0].length == 0 && response.data[2] == false && response.data[4] == false && response.data[5] == true)
+            else if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == false && responseData.confirmNotAgent == false && responseData.isAccepted == true)
             {
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
@@ -698,7 +733,7 @@ $(document).ready(function(){
                 `)
                 $('.input-message').prop('disabled', true)
             }
-            else if(response.data[0].length == 0 && response.data[2] == false && response.data[4] == true && response.data[5] == true)
+            else if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == false && responseData.confirmNotAgent == true && responseData.isAccepted == true)
             {
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
@@ -707,26 +742,35 @@ $(document).ready(function(){
                 `)
                 $('.input-message').prop('disabled', true)
             }
-            else if(response.data[0].length == 0 && response.data[2] == true && response.data[4] == true && response.data[5] == true)
+            else if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == true && responseData.confirmNotAgent == true && responseData.isAccepted == true)
             {
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
-                        Welcome to Serv-is ${response.data[3]}! Thank you for availing my service.
+                        Welcome to Serv-is ${responseData.authenticatedUser}! Thank you for availing my service.
                     </p>
                 `)
                 $('.input-message').prop('disabled', false)
             }
-            else if(response.data[0].length == 0 && response.data[2] == true && response.data[4] == false && response.data[5] == true)
+            else if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == true && responseData.confirmNotAgent == false && responseData.isAccepted == true)
             {
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
-                        Welcome to Serv-is ${response.data[3]}! Thank you for availing my service.
+                        Welcome to Serv-is ${responseData.authenticatedUser}! Thank you for availing my service.
                     </p>
                 `)
                 $('.input-message').prop('disabled', false)
+            }
+            else if(responseData.checkIfUserHasAvailed == true && responseData.confirmNotAgent == false && responseData.isAccepted == true && responseData.isExpired == true)
+            {
+                $('.message-container').append(`
+                    <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
+                        Good day! Your subscription for this plan has been expired. If you want to continue, subscribe another plan.
+                    </p>
+                `)
+                $('.input-message').prop('disabled', true)
             }
             else{
-                loadMoreMessage(response.data[0].reverse().slice(0, messageToShow))
+                loadMoreMessage(responseData.userChat.reverse().slice(0, messageToShow))
             }
 
             // Remove previous scroll event listener if exists
@@ -745,7 +789,7 @@ $(document).ready(function(){
 
                     let currentMessageCount = messageToShow
                     messageToShow += 5
-                    const messages = response.data[0].slice(currentMessageCount, messageToShow)
+                    const messages = responseData.userChat.slice(currentMessageCount, messageToShow)
 
                     if(messages.length == 0){
                         $('.load-more').text('Nothing to load.').css('cursor', 'default')
@@ -766,7 +810,7 @@ $(document).ready(function(){
                         $('.load-more').css('cursor', 'pointer')
                         let currentMessageCount = messageToShow
                         messageToShow += 5
-                        const messages = response.data[0].slice(currentMessageCount, messageToShow)
+                        const messages = responseData.userChat.slice(currentMessageCount, messageToShow)
 
                         if(messages.length == 0){
                             $('.load-more').text('Nothing to load.').css('cursor', 'default')
@@ -983,7 +1027,7 @@ $(document).ready(function(){
             const confirmRejectParentEl = $(e.target).parent()
             buttonChangeAfterRejectOrAccept(confirmRejectParentEl, is_Accepted)
         }
-        
+
         axios.put(`update-notification-reject/${notificationId}`, {
             fromUserId: fromUserId
         })
@@ -1126,8 +1170,16 @@ $(document).ready(function(){
         })
     })
 
-    Echo.private(`message-badge.${userId}`)
-    .listen('.message.badge', (e) => {
+    Echo.private(`message-badge.${userId}`).listen('.message.badge', (e) =>
+    {
+        console.log(response);
         $('.btn-chat-open').append(`<span class="chat-badge bg-red-400 rounded-full p-1 text-xs text-white">new</span>`)
+
+        const chatRoomId = e.chatRoomId
+        const chatHeadEl = $('.receiver-el').filter(function(){
+            return $(this).data('chat-id') == chatRoomId
+        })
+
+        chatHeadEl.append(`<span class="chat-badge-message bg-red-400 rounded-full p-1 text-xs text-white">new</span>`)
     })
 })

@@ -19,11 +19,15 @@ class NotificationMessageBadgeEvent implements ShouldBroadcastNow
      * Create a new event instance.
      */
 
-    public $fromUserId;
+    public $receiverId;
+    public $senderId;
+    public $chatRoomId;
 
-    public function __construct($fromUserId)
+    public function __construct($receiverId, $senderId, $chatRoomId)
     {
-        $this->fromUserId = $fromUserId;
+        $this->receiverId = $receiverId;
+        $this->senderId = $senderId;
+        $this->chatRoomId = $chatRoomId;
     }
 
     /**
@@ -34,7 +38,7 @@ class NotificationMessageBadgeEvent implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('message-badge.'.$this->fromUserId),
+            new PrivateChannel('message-badge.'.$this->receiverId),
         ];
     }
 

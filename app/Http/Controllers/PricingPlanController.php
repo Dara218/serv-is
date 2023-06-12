@@ -97,9 +97,9 @@ class PricingPlanController extends Controller
             Auth::user()->id
         ));
 
-        event(new NotificationMessageBadgeEvent(
-            $agent,
-        ));
+        // event(new NotificationMessageBadgeEvent(
+        //     $agent,
+        // ));
 
         Alert::success('Success', 'Transaction successful.');
         return redirect()->route('home.index');
