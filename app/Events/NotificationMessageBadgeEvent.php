@@ -38,7 +38,7 @@ class NotificationMessageBadgeEvent implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('message-badge.'.$this->receiverId),
+            new PrivateChannel('message-badge.'.$this->receiverId)
         ];
     }
 
