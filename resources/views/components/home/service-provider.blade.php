@@ -23,7 +23,7 @@
                             more_horiz
                         </span>
 
-                        <a href="{{ route('home.showEmployeeProfile', ['user' => $employee->username]) }}" class="view-profile hidden bg-white rounded w-1/2 h-auto p-2 absolute top-8 right-2 cursor-pointer shadow-md hover:bg-gray-50">
+                        <a href="{{ route('showEmployeeProfile', ['user' => $employee->username]) }}" class="view-profile hidden bg-white rounded w-1/2 h-auto p-2 absolute top-8 right-2 cursor-pointer shadow-md hover:bg-gray-50">
                             <span>View Profile</span>
                         </a>
 
@@ -52,7 +52,7 @@
                             </div>
                         </div>
 
-                        <form method="post" action="{{ route('home.storeChat', ['user' => $employee->id]) }}" class="flex justify-evenly mt-6">
+                        <form method="post" action="{{ route('storeChat', ['user' => $employee->id]) }}" class="flex justify-evenly mt-6">
                             @csrf
                             <button type="submit" class="bg-slate-600 text-white rounded cursor-pointer py-2 px-4 hover:bg-slate-800">Add Provider</button>
                             <button type="button" class="bg-white rounded cursor-pointer py-2 px-4 hover:bg-gray-200">Not Interested</button>

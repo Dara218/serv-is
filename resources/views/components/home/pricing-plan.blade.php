@@ -4,7 +4,7 @@
     <div class="px-8 md:px-16 my-24">
         {{ Breadcrumbs::render('pricing-plan', $clientToBeAvailed) }}
 
-        <form action="{{ route('home.storePricing') }}" method="post" class="form-pricing mt-12 flex flex-col gap-6">
+        <form action="{{ route('storePricing') }}" method="post" class="form-pricing mt-12 flex flex-col gap-6">
             @csrf
             <div class="flex flex-col md:flex-row justify-center gap-8">
                 <label for="basic" class="label-pricing w-full md:w-1/2 flex flex-col gap-4 items-center border border-slate-200 rounded cursor-pointer">

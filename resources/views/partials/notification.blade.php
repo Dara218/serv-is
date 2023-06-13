@@ -33,7 +33,7 @@
                     <li class="notif-item flex flex-col py-4 px-2 bg-slate-200 relative">
 
                         @if ($notification->type == 4)
-                            <a href="{{ route('home.showConfirmAgent') }}" class="text-slate-500 absolute top-2 right-3">See details</a>
+                            <a href="{{ route('showConfirmAgent') }}" class="text-slate-500 absolute top-2 right-3">See details</a>
                         @endif
 
                         <div class="flex gap-2">

@@ -4,9 +4,9 @@
 <nav class="bg-slate-300 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto md:p-2 p4">
         <a href="{{
-            Auth::user()->user_type == 3 ? route('home.index') :
-            (Auth::user()->user_type == 2 ? route('home.indexAgent') :
-            (Auth::user()->user_type == 1 ? route('home.indexAdmin') : ''))}}"
+            Auth::user()->user_type == 3 ? route('index') :
+            (Auth::user()->user_type == 2 ? route('homeAgent') :
+            (Auth::user()->user_type == 1 ? route('homeAdmin') : ''))}}"
             class="flex items-center">
 
             <img src="{{ asset('images/servis_logo.png') }}" class="h-8 mr-3" alt="Flowbite Logo">
@@ -21,35 +21,35 @@
                 <div id="dropdownNavbar" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                     <ul class="py-2 text-sm text-gray-700 dark:text-gray-400" aria-labelledby="dropdownLargeButton">
                         <li>
-                            <a href="{{ route('home.showEditProfile') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit Profile</a>
+                            <a href="{{ route('showEditProfile') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit Profile</a>
                         </li>
                         <li>
-                            <a href="{{ route('home.showWallet') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My Wallet</a>
+                            <a href="{{ route('showWallet') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My Wallet</a>
                         </li>
                         @if (Auth::user()->user_type == 3)
                             <li>
-                                <a href="{{ route('home.showServiceProvider') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Service Provider</a>
+                                <a href="{{ route('showServiceProvider') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Service Provider</a>
                             </li>
 
                             <li>
-                                <a href="{{ route('home.showServiceAddress') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Service Address</a>
+                                <a href="{{ route('showServiceAddress') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Service Address</a>
                             </li>
                             <li>
-                                <a href="{{route('home.showRewards')}}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Rewards & Discounts</a>
+                                <a href="{{route('showRewards')}}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Rewards & Discounts</a>
                             </li>
                         @endif
                         <li>
-                            <a href="{{ route('home.showTransactionHistory') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Transaction History</a>
+                            <a href="{{ route('showTransactionHistory') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Transaction History</a>
                         </li>
                         <li>
-                            <a href="{{ route('home.showFaqs') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Customer Support</a>
+                            <a href="{{ route('showFaqs') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Customer Support</a>
                         </li>
                         @if (Auth::user()->user_type == 3)
                             <li>
-                                <a href="{{ route('home.showAgenda') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Agenda</a>
+                                <a href="{{ route('showAgenda') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Agenda</a>
                             </li>
                             <li>
-                                <a href="{{ route('home.showChat') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Chat</a>
+                                <a href="{{ route('showChat') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Chat</a>
                             </li>
                         @endif
                         @if (Auth::user()->user_type == 2 && $agentservice)
@@ -59,7 +59,7 @@
 
                             @elseif (Auth::user()->user_type == 2 && ! $agentservice)
                                 <li>
-                                    <a href="{{ route('home.createServiceDetails') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer btn-update-service">Update Service Details</a>
+                                    <a href="{{ route('createServiceDetails') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer btn-update-service">Update Service Details</a>
                                 </li>
                         @endif
                     </ul>

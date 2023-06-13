@@ -4,7 +4,7 @@
         <div class="md:px-16 px-4 mt-16 md:mt-24">
             {{ Breadcrumbs::render('update-service-details') }}
             <div class="flex flex-col items-center justify-center gap-8 h-[80vh]">
-                <form action="{{ route('home.updateServiceDetails', ['agentservices' => $agentservices->id ]) }}" method="post" class="w-full md:w-1/2">
+                <form action="{{ route('updateServiceDetails', ['agentservices' => $agentservices->id ]) }}" method="post" class="w-full md:w-1/2">
                     @csrf
                     @method('put')
 

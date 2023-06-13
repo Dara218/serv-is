@@ -14,7 +14,7 @@
                         <div class="bg-slate-500 h-16 w-full"></div>
                         <button type="button" class="btn-contact-us bg-[#F6F7F9] w-1/2 h-16 -mt-10 rounded-lg shadow-xl font-semibold text-slate-500 cursor-pointer hover:bg-[#eeeeee]">Contact Us</button>
 
-                        <form action="{{ route('home.storeContactMessage') }}" method="post" class="contact-us-modal border border-slate-400 rounded-md shadow-md absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white overflow-hidden hidden w-11/12 md:w-2/5">
+                        <form action="{{ route('storeContactMessage') }}" method="post" class="contact-us-modal border border-slate-400 rounded-md shadow-md absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white overflow-hidden hidden w-11/12 md:w-2/5">
                             @csrf
 
                             {{-- TODO: STAY ON MIDDLE KAHIT SCROLL YUNG CONTACT US MODAL --}}

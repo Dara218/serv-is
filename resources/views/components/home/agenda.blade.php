@@ -74,7 +74,7 @@
                                     </script>
                                 @endif
 
-                                <form action="{{route('home.updateAgenda', ['agenda' => $agenda->id])}}" method="post" id="edit-agenda-modal-{{ $agenda->id }}" class="z-10 w-11/12 md:w-1/2 fixed left-1/2 top-1/2 trasform -translate-x-1/2 -translate-y-1/2 bg-slate-200 rounded shadow-md p-4 mt-12 " style="display:none;">
+                                <form action="{{route('updateAgenda', ['agenda' => $agenda->id])}}" method="post" id="edit-agenda-modal-{{ $agenda->id }}" class="z-10 w-11/12 md:w-1/2 fixed left-1/2 top-1/2 trasform -translate-x-1/2 -translate-y-1/2 bg-slate-200 rounded shadow-md p-4 mt-12 " style="display:none;">
 
                                     @csrf
 
@@ -142,7 +142,7 @@
                             @endforeach
                     @endif
 
-                    <form action="{{route('home.storeAgenda')}}" method="post" class="w-11/12 md:w-1/2 fixed left-1/2 top-1/2 trasform -translate-x-1/2 -translate-y-1/2 bg-slate-200 rounded shadow-md p-4 form-agenda-modal mt-12 " style="display:none;">
+                    <form action="{{route('storeAgenda')}}" method="post" class="w-11/12 md:w-1/2 fixed left-1/2 top-1/2 trasform -translate-x-1/2 -translate-y-1/2 bg-slate-200 rounded shadow-md p-4 form-agenda-modal mt-12 " style="display:none;">
 
                         <div class="w-full text-end">
                             <span class="material-symbols-outlined cursor-pointer btn-close-agenda">

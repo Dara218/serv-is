@@ -63,7 +63,7 @@
                         </div>
                     @endforeach
 
-                    <form action="{{ route('home.storeAddress') }}" method="post" class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-4 address-modal w-11/12 md:w-1/2 add-address-form bg-white border border-slate-200 rounded-xl shadow-lg" style="display:none;">
+                    <form action="{{ route('storeAddress') }}" method="post" class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-4 address-modal w-11/12 md:w-1/2 add-address-form bg-white border border-slate-200 rounded-xl shadow-lg" style="display:none;">
                         @csrf
 
                         <div class="flex justify-between bg-slate-500 text-white p-4 rounded-t-xl">

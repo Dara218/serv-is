@@ -5,9 +5,9 @@
 
             @if (Auth::check())
                 <a href="{{
-                    Auth::user()->user_type == 3 ? route('home.index') :
-                    (Auth::user()->user_type == 2 ? route('home.indexAgent') :
-                    (Auth::user()->user_type == 1 ? route('home.indexAdmin') : ''))}}"
+                    Auth::user()->user_type == 3 ? route('index') :
+                    (Auth::user()->user_type == 2 ? route('homeAgent') :
+                    (Auth::user()->user_type == 1 ? route('homeAdmin') : ''))}}"
                     class="flex items-center">
 
                     <img src="{{ asset('images/servis_logo.png') }}" class="h-8 mr-3" alt="Flowbite Logo">
