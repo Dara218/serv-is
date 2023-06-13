@@ -95,7 +95,7 @@ class AppServiceProvider extends ServiceProvider
                     // $view->with('agents', $agents);
                 }
                 if(Auth::user()->user_type == 1){
-                    $agents = User::all();
+                    $agents = User::with('chat')->get();
                     $view->with('agents', $agents);
                 }
             }
