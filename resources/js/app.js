@@ -208,9 +208,6 @@ $(document).ready(function(){
                             primaryAddressId: primaryAddressId,
                             primaryAddress: primaryAddress,
                         })
-                        .then(function (response) {
-                            // console.log(response)
-                        })
                         .catch((err) => console.error(err))
 
                     Swal.fire({
@@ -306,8 +303,8 @@ $(document).ready(function(){
                     axios.put(`address-to-${addressType}-update/${addressId}`,{
                         secondaryAddressId: addressId,
                     })
-                    .then(function(response){
-
+                    .then(function(response)
+                    {
                         const ucAddressType = addressType.charAt(0).toUpperCase() + addressType.slice(1).toLowerCase()
 
                         Swal.fire({
@@ -398,7 +395,7 @@ $(document).ready(function(){
     let allCategories = 6
     async function getCategories(){
         $.ajax({
-            url: 'get-categories',
+            url: 'api/get-categories',
             method: 'get',
             success: function(data){
                 $('.categories-container').empty()
@@ -431,7 +428,7 @@ $(document).ready(function(){
     $('.skeleton-loading').show()
 
     $.ajax({
-        url: 'get-agent-service',
+        url: 'api/get-agent-service',
         method: 'get',
         success: function(data){
             $('.skeleton-loading').hide()
@@ -461,8 +458,8 @@ $(document).ready(function(){
     function loadServices(data){
         $('.services-container').show()
         $('.services-container').empty()
-                data.forEach(function(eachData){
-                    // console.log(eachData)
+                data.forEach(function(eachData)
+                {
                     $('.services-container').append(
                         `
                         <div class="p-4 flex flex-col gap-3 border border-slate-300 rounded-xl">
@@ -505,9 +502,8 @@ $(document).ready(function(){
                 axios.put(`update-agent-services/${agentServiceId}`, {
                     title: serviceTitle
                 })
-                .then(function(response){
-                    // console.log(response)
-
+                .then(function(response)
+                {
                     Swal.fire({
                         title: 'Title successfully added',
                         icon: 'success',
@@ -637,23 +633,28 @@ $(document).ready(function(){
         var senderId = $(this).data('sender')
 
         axios.put(`update-message-read/${chatRoomId}`, {
-            senderId: senderId
+            receiverId: receiverId
         })
         .then(function(response)
         {
-            const date = response.data.remainingTime
             $(this).find('.chat-badge-message').hide();
             $('.current-chat-name').show()
             $('.input-message').show()
-
-            $('.current-chat-name').text(`${username} ${date.days} day(s) ${date.h} hour(s) ${date.m} minute(s) remaining`)
+            $('.user-id-hidden').val(receiverId)
             $('#receiver-chat-head').val(username)
 
-            $('.user-id-hidden').val(receiverId)
-            $('.form-chat-head').submit()
+            if(response.data.remainingTime != 0)
+            {
+                const date = response.data.remainingTime
+                $('.current-chat-name').text(`${username} ${date.days} day(s) ${date.h} hour(s) ${date.m} minute(s) remaining`)
+                $('.form-chat-head').submit()
+            }
+            else{
+                $('.current-chat-name').text(username)
+                $('.form-chat-head').submit()
+            }
         })
         .catch((err) => console.error(err))
-
     })
 
     $('.receiver-chat-head-click').on('click', function(e)
@@ -687,9 +688,6 @@ $(document).ready(function(){
             receiver_hidden: receiver.val(),
             chatId: $('.chat-id').val()
         })
-        .then(response => {
-            // console.log(response)
-        })
         .catch(err => console.error(err))
 
         message.val('')
@@ -707,6 +705,7 @@ $(document).ready(function(){
             sender: username.val()
         })
         .then(response => {
+            console.log(response);
             const responseData = response.data
             $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight)
             $('.message-container').empty()
@@ -716,6 +715,15 @@ $(document).ready(function(){
             subscribeToChat()
 
             // Load messages when chat room is clicked
+            if(responseData.checkIfChatHasAdmin)
+            {
+                $('.message-container').html(`
+                    <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
+                        Admin chat.
+                    </p>
+                `)
+                $('.input-message').prop('disabled', false)
+            }
             if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == false && (responseData.confirmNotAgent == false || responseData.confirmNotAgent == true) && responseData.isAccepted == false){
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
@@ -724,25 +732,25 @@ $(document).ready(function(){
                 `)
                 $('.input-message').prop('disabled', true)
             }
-            else if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == false && responseData.confirmNotAgent == false && responseData.isAccepted == true)
+            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == false && responseData.confirmNotAgent == false && responseData.isAccepted == true)
             {
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
-                        Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="/home/pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
+                        Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="/pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
                     </p>
                 `)
                 $('.input-message').prop('disabled', true)
             }
-            else if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == false && responseData.confirmNotAgent == true && responseData.isAccepted == true)
+            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == false && responseData.confirmNotAgent == true && responseData.isAccepted == true)
             {
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
-                        Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="/home/pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
+                        Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
                     </p>
                 `)
                 $('.input-message').prop('disabled', true)
             }
-            else if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == true && responseData.confirmNotAgent == true && responseData.isAccepted == true)
+            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == true && responseData.confirmNotAgent == true && responseData.isAccepted == true)
             {
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
@@ -751,7 +759,7 @@ $(document).ready(function(){
                 `)
                 $('.input-message').prop('disabled', false)
             }
-            else if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == true && responseData.confirmNotAgent == false && responseData.isAccepted == true)
+            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == true && responseData.confirmNotAgent == false && responseData.isAccepted == true)
             {
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
@@ -760,11 +768,11 @@ $(document).ready(function(){
                 `)
                 $('.input-message').prop('disabled', false)
             }
-            else if(responseData.checkIfUserHasAvailed == true && responseData.confirmNotAgent == false && responseData.isAccepted == true && responseData.isExpired == true)
+            if(responseData.checkIfUserHasAvailed == true && (responseData.confirmNotAgent == false || responseData.confirmNotAgent == true) && responseData.isAccepted == true && responseData.isExpired == true)
             {
                 $('.message-container').append(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
-                        Good day! Your subscription for this plan has been expired. If you want to continue, subscribe another plan.
+                        Good day! Your subscription for this plan has been expired. If you want to continue, subscribe another plan. <a href="employee-profile/agent21" />
                     </p>
                 `)
                 $('.input-message').prop('disabled', true)
@@ -851,8 +859,6 @@ $(document).ready(function(){
 
         Echo.join(`chat.${chatId}`)
         .listen('.message', (e) => {
-            // console.log(e)
-
             $('.message-container').append(`
                 <small class="font-semibold text-slate-400 mt-2">${e.username}</small>
                 <span class="w-auto col-span-4 message-el bg-slate-300 rounded-full py-2 px-3">${e.message}</span>
@@ -862,8 +868,6 @@ $(document).ready(function(){
             $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight)
         })
     }
-
-    // const userId = $('#current-user-id').val()
 
     Echo.private(`notifications.${userId}`)
     .listen('.user.notif', (e) =>
@@ -898,7 +902,7 @@ $(document).ready(function(){
         {
             $('.notification-parent').prepend(`
                 <li class="flex flex-col py-4 px-2 bg-slate-200">
-                    <a href="{{ route('home.showConfirmAgent') }}" class="text-slate-500 absolute top-2 right-3">See details</a>
+                    <a href="{{ route('showConfirmAgent') }}" class="text-slate-500 absolute top-2 right-3">See details</a>
                     <div class="flex gap-2">
                         <div class="flex flex-col gap-1 justify-center w-full">
                             <span class="font-bold">${e.username}</span>
@@ -938,9 +942,6 @@ $(document).ready(function(){
         $('.notif-count-hidden').hide()
 
         axios.put(`update-notification-count/${userId}`)
-        .then(function(response){
-            // console.log(response)
-        })
         .catch((err) => console.error(err))
     })
 
