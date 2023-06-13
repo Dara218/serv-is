@@ -54,8 +54,8 @@ class CheckInController extends Controller
                     ]
                 ],
                 'mode' => 'payment',
-                'success_url' => route('home.index'),
-                'cancel_url' => route('home.showWallet'),
+                'success_url' => route('index'),
+                'cancel_url' => route('showWallet'),
                 'client_reference_id' => Auth::user()->id
         ]);
 

@@ -102,7 +102,7 @@ class PricingPlanController extends Controller
         // ));
 
         Alert::success('Success', 'Transaction successful.');
-        return redirect()->route('home.index');
+        return redirect()->route('index');
     }
 
     public function storeTransaction($customer, $transactionType, $pricingPlanBalance){
@@ -153,6 +153,6 @@ class PricingPlanController extends Controller
         ]);
 
         Alert::success('Success', 'Kindly check your inbox');
-        return redirect()->route('home.index');
+        return redirect()->route('index');
     }
 }

@@ -24,14 +24,14 @@ class SessionController extends Controller
         session()->regenerate();
 
         if ($request->user_type === 'Customer' && User::where('username', $request->username)->where('user_type', 3)->exists()) {
-            return redirect()->route('home.index');
+            return redirect()->route('index');
         }
 
         if ($request->user_type === 'Client' && User::where('username', $request->username)->where('user_type', 2)->exists()) {
             if (User::where('username', $request->username)->where('user_type', 1)->exists()) {
-                return redirect()->route('home.indexAdmin');
+                return redirect()->route('homeAdmin');
             }
-            return redirect()->route('home.indexAgent');
+            return redirect()->route('homeAgent');
         }
     }
 
