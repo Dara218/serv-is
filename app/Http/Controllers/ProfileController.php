@@ -226,9 +226,17 @@ class ProfileController extends Controller
 
         $isExpired = false;
 
-        if($availedPricingPlan->is_expired == true)
+        if($authUser->user_type == 2 || $authUser->user_type == 3)
         {
-            $isExpired = true;
+            if($availedPricingPlan->is_expired == true)
+            {
+                $isExpired = true;
+            }
+        }
+
+        $checkIfChatHasAdmin = false;
+        if($authUser->user_type == 1 || $user->user_type == 1){
+            $checkIfChatHasAdmin = true;
         }
 
         $responseData = [
@@ -239,7 +247,8 @@ class ProfileController extends Controller
             'confirmNotAgent' => $confirmNotAgent, // 4
             'isAccepted' => $isAccepted, // 5
             'sender' => $request->sender, // 6
-            'isExpired' => $isExpired
+            'isExpired' => $isExpired,
+            'checkIfChatHasAdmin' => $checkIfChatHasAdmin
         ];
 
         return response()->json($responseData);
