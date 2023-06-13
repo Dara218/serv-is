@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 class HomeController extends Controller
 {
     public function index(){
-        return view('components.home.home',
+        return view('components.home',
         [
             // 'services' => AgentService::where('is_pending', 0)->inRandomOrder()->paginate(6),
             'categories' => Category::all(),
