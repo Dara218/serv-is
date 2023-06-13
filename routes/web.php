@@ -41,7 +41,7 @@ Route::post('/stripe-webhook', [CheckInController::class, 'handleWebhook'])->nam
 
 Route::middleware(['auth'])->group(function()
 {
-    Route::prefix('home')->name('home.')->group(function(){
+    // Route::prefix('home')->name('home.')->group(function(){
         Route::get('/edit-profile', [HomeController::class, 'showEditProfile'])->name('showEditProfile');
         Route::put('/edit-profile-process', [ProfileController::class, 'update'])->name('editProfile');
         Route::get('/my-wallet', [ProfileController::class, 'showWallet'])->name('showWallet');
@@ -71,7 +71,7 @@ Route::middleware(['auth'])->group(function()
         Route::get('/get-services', [AgendaController::class, 'getServices'])->name('getServices');
         Route::put('/update-agenda/{agenda}', [AgendaController::class, 'updateAgenda'])->name('updateAgenda');
         Route::delete('/agenda-destroy/{agenda}', [AgendaController::class, 'destroyAgenda'])->name('destroyAgenda');
-        Route::get('/get-categories', [CategoryController::class, 'getCategories'])->name('getCategories');
+        // Route::get('/get-categories', [CategoryController::class, 'getCategories'])->name('getCategories');
         Route::get('/get-services', [ServiceController::class, 'getServices'])->name('getServices');
         Route::put('/update-notification-count/{id}', [NotificationController::class, 'updateNotificationCount'])->name('updateNotificationCount');
         Route::put('/update-notification-accept/{notification}', [NotificationController::class, 'updateNotificationAccept'])->name('updateNotificationAccept');
@@ -82,13 +82,13 @@ Route::middleware(['auth'])->group(function()
         Route::post('/get-sent-request', [SentRequestController::class, 'getSentRequest'])->name('getSentRequest');
         Route::post('/store-chat-after-negotiate', [MessageController::class, 'storeChatAfterNegotiate'])->name('storeChatAfterNegotiate');
         Route::put('/store-agent-updated-details/{id}', [AgentServiceController::class, 'storeAgentUpdatedDetails'])->name('storeAgentUpdatedDetails');
-        Route::get('/get-agent-service', [ServiceController::class, 'getAgentService'])->name('getAgentService');
+        // Route::get('/get-agent-service', [ServiceController::class, 'getAgentService'])->name('getAgentService');
         Route::get('/get-all-agent-service', [ServiceController::class, 'getAllAgentService'])->name('getAllAgentService');
         Route::get('/get-search-agent-services', [SearchController::class, 'getSearchAgentService'])->name('getSearchAgentService');
         Route::get('/get-search-services', [SearchController::class, 'getSearchService'])->name('getSearchService');
         Route::put('/update-message-read/{id}', [MessageController::class, 'updateMessageRead'])->name('updateMessageRead');
         Route::get('/get-unread-messages', [MessageController::class, 'getUnreadMessages'])->name('getUnreadMessages');
-    });
+    // });
 
     Route::prefix('session')->name('session.')->group(function(){
         Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
@@ -98,19 +98,19 @@ Route::middleware(['auth'])->group(function()
 
 Route::middleware(['customer'])->group(function()
 {
-    Route::prefix('home')->name('home.')->group(function(){
+    // Route::prefix('home')->name('home.')->group(function(){
         Route::get('/home', [HomeController::class, 'index'])->name('index');
-    });
+    // });
 });
 
 Route::middleware(['agent'])->group(function()
 {
-    Route::prefix('home')->name('home.')->group(function(){
+    // Route::prefix('home')->name('home.')->group(function(){
         Route::get('/home-agent', [HomeController::class, 'indexAgent'])->name('indexAgent');
         Route::put('/update-agent-services/{id}', [AgentServiceController::class, 'updateAgentService'])->name('updateAgentService');
         Route::get('/update-service-details', [AgentServiceController::class, 'createServiceDetails'])->name('createServiceDetails');
         Route::put('/update-service-details/{agentservices}', [AgentServiceController::class, 'updateServiceDetails'])->name('updateServiceDetails');
-    });
+    // });
 });
 
 Route::middleware(['admin'])->group(function()
