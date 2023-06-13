@@ -105,10 +105,10 @@ class MessageController extends Controller
 
     public function updateMessageRead(Request $request)
     {
-        $sender = $request->senderId;
-        $receiver = Auth::user()->id;
+        $sender = $request->receiverId;
+        $receiver = Auth::user();
 
-        ModelsMessage::where('receiver_id', Auth::user()->id)
+        ModelsMessage::where('receiver_id', $receiver->id)
                     ->where('chat_room_id', $request->id)
                     ->where('is_unread', true)
                     ->update([
@@ -117,22 +117,30 @@ class MessageController extends Controller
 
         $availedPricingPlan = AvailedPricingPlan::where(function ($query) use ($sender, $receiver) {
             $query->where('availed_to_id', $sender)
-                    ->where('availed_by_id', $receiver);
+                    ->where('availed_by_id', $receiver->id);
         })->orWhere(function ($query) use ($sender, $receiver) {
-            $query->where('availed_to_id', $receiver)
+            $query->where('availed_to_id', $receiver->id)
                     ->where('availed_by_id', $sender);
         })->first();
 
-        $deadline = Carbon::parse($availedPricingPlan->created_at)->addDay();
-        $remainingTime = Carbon::now()->diff($deadline);
+         $isExpired = false;
 
-        $isExpired = false;
-
-        if($availedPricingPlan->is_expired == true)
+        if($receiver->user_type == 2 || $receiver->user_type == 3)
         {
-            $isExpired = true;
-        }
+            $deadline = Carbon::parse($availedPricingPlan->created_at)->addDay();
+            $remainingTime = Carbon::now()->diff($deadline);
 
+            if($availedPricingPlan->is_expired == true)
+            {
+                $isExpired = true;
+            }
+
+
+        }
+        else{
+            $remainingTime = 0;
+            $isExpired = false;
+        }
         return response()->json([
             'remainingTime' => $remainingTime,
             'isExpired' => $isExpired
