@@ -12,6 +12,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PricingPlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SentRequestController;
 use App\Http\Controllers\ServiceController;
@@ -42,52 +43,54 @@ Route::post('/stripe-webhook', [CheckInController::class, 'handleWebhook'])->nam
 Route::middleware(['auth'])->group(function()
 {
     // Route::prefix('home')->name('home.')->group(function(){
-        Route::get('/edit-profile', [HomeController::class, 'showEditProfile'])->name('showEditProfile');
-        Route::put('/edit-profile-process', [ProfileController::class, 'update'])->name('editProfile');
-        Route::get('/my-wallet', [ProfileController::class, 'showWallet'])->name('showWallet');
-        Route::get('/service-provider', [ProfileController::class, 'showServiceProvider'])->name('showServiceProvider');
-        Route::get('/employee-profile/{user:username}', [ProfileController::class, 'showEmployeeProfile'])->name('showEmployeeProfile');
-        Route::get('/service-address', [ProfileController::class, 'showServiceAddress'])->name('showServiceAddress');
-        Route::get('/rewards', [ProfileController::class, 'showRewards'])->name('showRewards');
-        Route::get('/transaction-history', [ProfileController::class, 'showTransactionHistory'])->name('showTransactionHistory');
-        Route::get('/faqs', [ProfileController::class, 'showFaqs'])->name('showFaqs');
-        Route::get('/agenda', [ProfileController::class, 'showAgenda'])->name('showAgenda');
-        Route::get('/chat', [ProfileController::class, 'showChat'])->name('showChat');
-        Route::post('/get-user-chat', [ProfileController::class, 'getUserChat'])->name('getUserChat');
-        Route::post('/handle-message', [MessageController::class, 'handleMessage'])->name('handleMessage');
-        Route::get('/pricing-plan/{user}', [PricingPlanController::class, 'showPricingPlan'])->name('showPricingPlan');
-        Route::post('/pricing-plan-store', [PricingPlanController::class, 'storePricing'])->name('storePricing');
-        Route::post('/pricing-plan-add-chat/{user}', [PricingPlanController::class, 'storeChat'])->name('storeChat');
-        Route::post('/store-address', [AddressController::class, 'storeAddress'])->name('storeAddress');
-        Route::put('/address-changed-update/{serviceaddress}', [AddressController::class, 'updateChangeAddress'])->name('updateChangeAddress');
-        Route::put('/address-changed-secondary-update/{serviceaddress}', [AddressController::class, 'updateChangeSecondaryAddress'])->name('updateChangeSecondaryAddress');
-        Route::put('/address-primary-update/{serviceaddress}', [AddressController::class, 'updatePrimaryAddress'])->name('updatePrimaryAddress');
-        Route::put('/address-secondary-update/{serviceaddress}', [AddressController::class, 'updateSecondaryAddress'])->name('updateSecondaryAddress');
-        Route::put('/address-to-primary-update/{id}', [AddressController::class, 'updateToPrimaryAddress'])->name('updateToPrimaryAddress');
-        Route::put('/address-to-secondary-update/{id}', [AddressController::class, 'updateToSecondaryAddress'])->name('updateToSecondaryAddress');
-        Route::delete('/address-destroy/{id}', [AddressController::class, 'destroyAddress'])->name('destroyAddress');
-        Route::post('/store-contact-message', [ContactUsController::class, 'storeContactMessage'])->name('storeContactMessage');
-        Route::post('/store-agenda', [AgendaController::class, 'storeAgenda'])->name('storeAgenda');
-        Route::get('/get-services', [AgendaController::class, 'getServices'])->name('getServices');
-        Route::put('/update-agenda/{agenda}', [AgendaController::class, 'updateAgenda'])->name('updateAgenda');
-        Route::delete('/agenda-destroy/{agenda}', [AgendaController::class, 'destroyAgenda'])->name('destroyAgenda');
-        // Route::get('/get-categories', [CategoryController::class, 'getCategories'])->name('getCategories');
-        Route::get('/get-services', [ServiceController::class, 'getServices'])->name('getServices');
-        Route::put('/update-notification-count/{id}', [NotificationController::class, 'updateNotificationCount'])->name('updateNotificationCount');
-        Route::put('/update-notification-accept/{notification}', [NotificationController::class, 'updateNotificationAccept'])->name('updateNotificationAccept');
-        Route::put('/update-notification-reject/{notification}', [NotificationController::class, 'updateNotificationReject'])->name('updateNotificationReject');
-        Route::post('/store-notification-to-customer', [NotificationController::class, 'storeNotificationToCustomer'])->name('storeNotificationToCustomer');
-        Route::put('/update-availed-user-accepted/{notification}', [NotificationController::class, 'updateAvailedUserAccepted'])->name('updateAvailedUserAccepted');
-        Route::post('/store-notification-negotiate-agenda', [NotificationController::class, 'storeNegotiateAgenda'])->name('storeNegotiateAgenda');
-        Route::post('/get-sent-request', [SentRequestController::class, 'getSentRequest'])->name('getSentRequest');
-        Route::post('/store-chat-after-negotiate', [MessageController::class, 'storeChatAfterNegotiate'])->name('storeChatAfterNegotiate');
-        Route::put('/store-agent-updated-details/{id}', [AgentServiceController::class, 'storeAgentUpdatedDetails'])->name('storeAgentUpdatedDetails');
-        // Route::get('/get-agent-service', [ServiceController::class, 'getAgentService'])->name('getAgentService');
-        Route::get('/get-all-agent-service', [ServiceController::class, 'getAllAgentService'])->name('getAllAgentService');
-        Route::get('/get-search-agent-services', [SearchController::class, 'getSearchAgentService'])->name('getSearchAgentService');
-        Route::get('/get-search-services', [SearchController::class, 'getSearchService'])->name('getSearchService');
-        Route::put('/update-message-read/{id}', [MessageController::class, 'updateMessageRead'])->name('updateMessageRead');
-        Route::get('/get-unread-messages', [MessageController::class, 'getUnreadMessages'])->name('getUnreadMessages');
+    Route::get('/edit-profile', [HomeController::class, 'showEditProfile'])->name('showEditProfile');
+    Route::put('/edit-profile-process', [ProfileController::class, 'update'])->name('editProfile');
+    Route::get('/my-wallet', [ProfileController::class, 'showWallet'])->name('showWallet');
+    Route::get('/service-provider', [ProfileController::class, 'showServiceProvider'])->name('showServiceProvider');
+    Route::get('/employee-profile/{user:username}', [ProfileController::class, 'showEmployeeProfile'])->name('showEmployeeProfile');
+    Route::get('/service-address', [ProfileController::class, 'showServiceAddress'])->name('showServiceAddress');
+    Route::get('/rewards', [ProfileController::class, 'showRewards'])->name('showRewards');
+    Route::get('/transaction-history', [ProfileController::class, 'showTransactionHistory'])->name('showTransactionHistory');
+    Route::get('/faqs', [ProfileController::class, 'showFaqs'])->name('showFaqs');
+    Route::get('/agenda', [ProfileController::class, 'showAgenda'])->name('showAgenda');
+    Route::get('/chat', [ProfileController::class, 'showChat'])->name('showChat');
+    Route::post('/get-user-chat', [ProfileController::class, 'getUserChat'])->name('getUserChat');
+    Route::post('/handle-message', [MessageController::class, 'handleMessage'])->name('handleMessage');
+    Route::get('/pricing-plan/{user}', [PricingPlanController::class, 'showPricingPlan'])->name('showPricingPlan');
+    Route::post('/pricing-plan-store', [PricingPlanController::class, 'storePricing'])->name('storePricing');
+    Route::post('/pricing-plan-add-chat/{user}', [PricingPlanController::class, 'storeChat'])->name('storeChat');
+    Route::post('/store-address', [AddressController::class, 'storeAddress'])->name('storeAddress');
+    Route::put('/address-changed-update/{serviceaddress}', [AddressController::class, 'updateChangeAddress'])->name('updateChangeAddress');
+    Route::put('/address-changed-secondary-update/{serviceaddress}', [AddressController::class, 'updateChangeSecondaryAddress'])->name('updateChangeSecondaryAddress');
+    Route::put('/address-primary-update/{serviceaddress}', [AddressController::class, 'updatePrimaryAddress'])->name('updatePrimaryAddress');
+    Route::put('/address-secondary-update/{serviceaddress}', [AddressController::class, 'updateSecondaryAddress'])->name('updateSecondaryAddress');
+    Route::put('/address-to-primary-update/{id}', [AddressController::class, 'updateToPrimaryAddress'])->name('updateToPrimaryAddress');
+    Route::put('/address-to-secondary-update/{id}', [AddressController::class, 'updateToSecondaryAddress'])->name('updateToSecondaryAddress');
+    Route::delete('/address-destroy/{id}', [AddressController::class, 'destroyAddress'])->name('destroyAddress');
+    Route::post('/store-contact-message', [ContactUsController::class, 'storeContactMessage'])->name('storeContactMessage');
+    Route::post('/store-agenda', [AgendaController::class, 'storeAgenda'])->name('storeAgenda');
+    Route::get('/get-services', [AgendaController::class, 'getServices'])->name('getServices');
+    Route::put('/update-agenda/{agenda}', [AgendaController::class, 'updateAgenda'])->name('updateAgenda');
+    Route::delete('/agenda-destroy/{agenda}', [AgendaController::class, 'destroyAgenda'])->name('destroyAgenda');
+    // Route::get('/get-categories', [CategoryController::class, 'getCategories'])->name('getCategories');
+    Route::get('/get-services', [ServiceController::class, 'getServices'])->name('getServices');
+    Route::put('/update-notification-count/{id}', [NotificationController::class, 'updateNotificationCount'])->name('updateNotificationCount');
+    Route::put('/update-notification-accept/{notification}', [NotificationController::class, 'updateNotificationAccept'])->name('updateNotificationAccept');
+    Route::put('/update-notification-reject/{notification}', [NotificationController::class, 'updateNotificationReject'])->name('updateNotificationReject');
+    Route::post('/store-notification-to-customer', [NotificationController::class, 'storeNotificationToCustomer'])->name('storeNotificationToCustomer');
+    Route::put('/update-availed-user-accepted/{notification}', [NotificationController::class, 'updateAvailedUserAccepted'])->name('updateAvailedUserAccepted');
+    Route::post('/store-notification-negotiate-agenda', [NotificationController::class, 'storeNegotiateAgenda'])->name('storeNegotiateAgenda');
+    Route::post('/get-sent-request', [SentRequestController::class, 'getSentRequest'])->name('getSentRequest');
+    Route::post('/store-chat-after-negotiate', [MessageController::class, 'storeChatAfterNegotiate'])->name('storeChatAfterNegotiate');
+    Route::put('/store-agent-updated-details/{id}', [AgentServiceController::class, 'storeAgentUpdatedDetails'])->name('storeAgentUpdatedDetails');
+    // Route::get('/get-agent-service', [ServiceController::class, 'getAgentService'])->name('getAgentService');
+    Route::get('/get-all-agent-service', [ServiceController::class, 'getAllAgentService'])->name('getAllAgentService');
+    Route::get('/get-search-agent-services', [SearchController::class, 'getSearchAgentService'])->name('getSearchAgentService');
+    Route::get('/get-search-services', [SearchController::class, 'getSearchService'])->name('getSearchService');
+    Route::put('/update-message-read/{id}', [MessageController::class, 'updateMessageRead'])->name('updateMessageRead');
+    Route::get('/get-unread-messages', [MessageController::class, 'getUnreadMessages'])->name('getUnreadMessages');
+    Route::post('/store-user-comment', [ReviewController::class, 'store'])->name('storeUserComment');
+    
     // });
 
     Route::prefix('session')->name('session.')->group(function(){
@@ -115,8 +118,9 @@ Route::middleware(['agent'])->group(function()
 
 Route::middleware(['admin'])->group(function()
 {
-    Route::prefix('home')->name('home.')->group(function(){
+    // Route::prefix('home')->name('home.')->group(function(){
         Route::get('/home-admin', [HomeController::class, 'indexAdmin'])->name('indexAdmin');
-        Route::get('/show-confirm-agent', [AgentServiceController::class, 'showConfirmAgent'])->name('showConfirmAgent');
-    });
+        Route::get('/show-confirm-agent/{user}', [AgentServiceController::class, 'showConfirmAgent'])->name('showConfirmAgent');
+        Route::get('/show-confirm-agent-admin', [AgentServiceController::class, 'showConfirmAgentOnNav'])->name('showConfirmAgentOnNav');
+    // });
 });
