@@ -22,9 +22,7 @@ class NotificationController extends Controller
     public function updateNotificationAccept(Notification $notification, Request $request)
     {
         $userNotification = Notification::where('id', $notification->id)->update(['status' => 1]);
-
         SentRequest::where('request_by', $request->fromUserId)->where('request_to', Auth::user()->id)->update(['status' => 1]);
-
         return response()->json($userNotification);
     }
 
