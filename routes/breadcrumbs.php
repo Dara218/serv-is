@@ -10,10 +10,10 @@ Breadcrumbs::for('home', function(BreadcrumbTrail $trail){
         $trail->push('Home', route('index'));
     }
     if(Auth::user()->user_type == 2){
-        $trail->push('Home', route('homeAgent'));
+        $trail->push('Home', route('indexAgent'));
     }
     if(Auth::user()->user_type == 1 ){
-        $trail->push('Home', route('homeAdmin'));
+        $trail->push('Home', route('indexAdmin'));
     }
 });
 
@@ -70,4 +70,9 @@ Breadcrumbs::for('pricing-plan', function(BreadcrumbTrail $trail, User $user){
 Breadcrumbs::for('update-service-details', function(BreadcrumbTrail $trail){
     $trail->parent('home');
     $trail->push('Update Service Details', route('createServiceDetails'));
+});
+
+Breadcrumbs::for('confirm-agents', function(BreadcrumbTrail $trail){
+    $trail->parent('home');
+    $trail->push('Confirm Agents', route('showConfirmAgentOnNav'));
 });
