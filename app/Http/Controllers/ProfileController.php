@@ -108,7 +108,8 @@ class ProfileController extends Controller
 
         return view('components.home.employee-profile',[
             'users' => User::where('id', $user->id)->with('userPhoto', 'agentService', 'serviceAddress')->get(),
-            'service' => $agentService
+            'service' => $agentService,
+            'authuser' => User::where('id', Auth::user()->id)->with('userPhoto')->first()
         ]);
     }
 
@@ -248,7 +249,8 @@ class ProfileController extends Controller
             'isAccepted' => $isAccepted, // 5
             'sender' => $request->sender, // 6
             'isExpired' => $isExpired,
-            'checkIfChatHasAdmin' => $checkIfChatHasAdmin
+            'checkIfChatHasAdmin' => $checkIfChatHasAdmin,
+            'receiverUsername' => $user->username
         ];
 
         return response()->json($responseData);
