@@ -10,11 +10,11 @@
                 <div class="w-full md:w-1/2 flex flex-col gap-6">
 
                     {{-- @dd($service) --}}
-                    <form method="post" action="{{ route('storeChat', ['user' => $user->id]) }}" class="flex flex-col items-center gap-2 rounded-md bg-slate-100 p-8">
+                    <form method="post" action="{{ route('storeChat', ['user' => $user->id]) }}" class="test-form flex flex-col items-center gap-2 rounded-md bg-slate-100 p-8" data-agent-service-id="{{ $service->id }}">
                         @csrf
                         <div class="flex flex-col gap-6 items-start">
 
-                            <div class="flex gap-4">
+                            <div class="flex gap-4 w-full">
                                 <img src="{{ $user->userPhoto->profile_picture }}" alt="user id photo" class="h-1/2 w-16 rounded-full">
                                 <div class="flex flex-col gap-2">
                                     <span class="font-semibold">{{ ucwords($user->fullname) }}</span>
@@ -57,16 +57,17 @@
 
                 {{-- Todo:: add migrations yung review tables and add expertise table, check figma baka may ma add pakong table.--}}
 
-                <div class="flex flex-col gap-4 items-start">
-                    <span class="font-semibold text-xl">Customer Review</span>
-
-                    <div class="flex gap-4 relative">
+                <div class="flex flex-col w-full md:w-1/2 gap-4 items-start">
+                    <x-home.user-form-comment :authuser="$authuser" :user="$user" :service="$service"/>
+                    
+                    <div class="flex flex-col w-full gap-4 relative">
+                        <span class="font-semibold text-xl">Customer Review</span>
 
                         @if ($service->review->count() == 0)
                             <span class="items-center justify-center text-slate-500 font-semibold">No user review</span>
-                            
+
                             @else
-                                @foreach ($service->review as $review)  
+                                @foreach ($service->review as $review)
                                     <span class="absolute top-0 right-0 text-slate-700">27 Mar</span>
                                     <img src="http://127.0.0.1:8000/storage/uploads/1683171440_1x1.jpg" alt="customer profile picture" class="h-1/2 w-16 rounded-full">
 
