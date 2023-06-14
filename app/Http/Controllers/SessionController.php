@@ -29,13 +29,11 @@ class SessionController extends Controller
 
         if ($request->user_type === 'Client' && User::where('username', $request->username)->where('user_type', 2)->exists()) {
             if (User::where('username', $request->username)->where('user_type', 1)->exists()) {
-                return redirect()->route('homeAdmin');
+                return redirect()->route('indexAdmin');
             }
-            return redirect()->route('homeAgent');
+            return redirect()->route('indexAgent');
         }
     }
-
-
     public function logout(){
         Auth::logout();
         return redirect('/');
