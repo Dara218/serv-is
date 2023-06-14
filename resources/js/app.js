@@ -48,7 +48,7 @@ $(document).ready(function(){
     $('.btn-chat-open').on('click', function(){
         $('.chat-badge').hide()
 
-        axios.get('get-unread-messages').then(function(response)
+        axios.get('/get-unread-messages').then(function(response)
         {
             $('.receiver-el').each(function(index, eachChat){
                 const chatId = eachChat.getAttribute('data-chat-id')
@@ -395,7 +395,7 @@ $(document).ready(function(){
     let allCategories = 6
     async function getCategories(){
         $.ajax({
-            url: 'api/get-categories',
+            url: '/api/get-categories',
             method: 'get',
             success: function(data){
                 $('.categories-container').empty()
@@ -428,7 +428,7 @@ $(document).ready(function(){
     $('.skeleton-loading').show()
 
     $.ajax({
-        url: 'api/get-agent-service',
+        url: '/api/get-agent-service',
         method: 'get',
         success: function(data){
             $('.skeleton-loading').hide()
@@ -536,7 +536,7 @@ $(document).ready(function(){
         $('#dropdown-services').text(serviceCategoryData)
 
         $.ajax({
-            url: 'get-search-services',
+            url: '/get-search-services',
             method: 'get',
             data: {
                 category: serviceCategoryData
@@ -632,7 +632,7 @@ $(document).ready(function(){
         var receiverId = $(this).data('receiver')
         var senderId = $(this).data('sender')
 
-        axios.put(`update-message-read/${chatRoomId}`, {
+        axios.put(`/update-message-read/${chatRoomId}`, {
             receiverId: receiverId
         })
         .then(function(response)
@@ -700,12 +700,12 @@ $(document).ready(function(){
     $('.form-chat-head').on('submit', function(e) {
         e.preventDefault()
 
-        axios.post('get-user-chat', {
+        axios.post('/get-user-chat', {
             receiver: $('#receiver-chat-head').val(),
             sender: username.val()
         })
         .then(response => {
-            console.log(response);
+            // console.log(response);
             const responseData = response.data
             $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight)
             $('.message-container').empty()
@@ -772,7 +772,7 @@ $(document).ready(function(){
             {
                 $('.message-container').append(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
-                        Good day! Your subscription for this plan has been expired. If you want to continue, subscribe another plan. <a href="employee-profile/agent21" />
+                        Good day! Your subscription for this plan has been expired. If you want to continue, <a href="employee-profile/${responseData.receiverUsername}" class="text-slate-800 font-semibold">subscribe another plan.</a>
                     </p>
                 `)
                 $('.input-message').prop('disabled', true)
@@ -941,7 +941,7 @@ $(document).ready(function(){
 
         $('.notif-count-hidden').hide()
 
-        axios.put(`update-notification-count/${userId}`)
+        axios.put(`/update-notification-count/${userId}`)
         .catch((err) => console.error(err))
     })
 
@@ -963,11 +963,46 @@ $(document).ready(function(){
             buttonChangeAfterRejectOrAccept(confirmRejectParentEl, is_Accepted)
         }
 
-        axios.put(`update-notification-accept/${notificationId}`, {
+        axios.put(`/update-notification-accept/${notificationId}`, {
             fromUserId: fromUserId
         })
         .then(function(response) {
-            if(notificationType == 1 || notificationType == 3)
+            acceptedRejectedProcess(notificationType, notificationId, notificationItem, username, message, status, fromUserId, is_Accepted, toUserId)
+        })
+        .catch(err => console.error(err))
+    })
+
+    $('.notification-parent').on('click', '.btn-reject-notif', function(e)
+    {
+        const notificationId = $(this).data('id');
+        const notificationItem = $(this).closest('li');
+        const username = $(this).data('username')
+        const message = $(this).data('message')
+        const fromUserId = $(this).data('from-user-id')
+        const toUserId = $(this).data('to-user-id')
+        let is_Accepted = false
+        const notificationType = $(this).data('type')
+        let status = 2
+
+        if(notificationType == 4)
+        {
+            $(e.target.closest('.accepted-rejected-btn')).text('Rejected').show()
+            const confirmRejectParentEl = $(e.target).parent()
+            buttonChangeAfterRejectOrAccept(confirmRejectParentEl, is_Accepted)
+        }
+
+        axios.put(`/update-notification-reject/${notificationId}`, {
+            fromUserId: fromUserId
+        })
+        .then(function(response){
+            acceptedRejectedProcess(notificationType, notificationId, notificationItem, username, message, status, fromUserId, is_Accepted, toUserId)
+        })
+        .catch(err => console.error(err))
+    })
+
+
+    function acceptedRejectedProcess(notificationType, notificationId, notificationItem, username, message, status, fromUserId, is_Accepted, toUserId){
+        if(notificationType == 1 || notificationType == 3)
             {
                 storeNotificationToCustomer(notificationId, notificationItem, username, message, status, fromUserId, is_Accepted);
 
@@ -996,47 +1031,21 @@ $(document).ready(function(){
             }
             if (notificationType == 4)
             {
-                axios.put(`store-agent-updated-details/${notificationId}`, {
+                axios.put(`/store-agent-updated-details/${notificationId}`, {
                     notificationId: notificationId,
                     fromUserId: fromUserId,
                     toUserId: toUserId,
                     username: username,
                     currentUserId: fromUserId,
-                    notificationType: notificationType
+                    notificationType: notificationType,
+                    is_Accepted: is_Accepted
                 })
                 .then(function(response){
                     updateNotificationItem(notificationItem, username, message, status)
                 })
                 .catch((err) => console.error(err))
             }
-        })
-        .catch(err => console.error(err))
-    })
-
-    $('.notification-parent').on('click', '.btn-reject-notif', function(e)
-    {
-        const notificationId = $(this).data('id');
-        const notificationItem = $(this).closest('li');
-        const username = $(this).data('username')
-        const message = $(this).data('message')
-        const fromUserId = $(this).data('from-user-id')
-        let is_Accepted = false
-        let status = 2
-
-        if(notificationType == 4)
-        {
-            const confirmRejectParentEl = $(e.target).parent()
-            buttonChangeAfterRejectOrAccept(confirmRejectParentEl, is_Accepted)
-        }
-
-        axios.put(`update-notification-reject/${notificationId}`, {
-            fromUserId: fromUserId
-        })
-        .then(function(response){
-            storeNotificationToCustomer(notificationId, notificationItem, username, message, status, fromUserId, is_Accepted)
-        })
-        .catch(err => console.error(err))
-    })
+    }
 
     function buttonChangeAfterRejectOrAccept(confirmRejectParentEl, is_Accepted){
         confirmRejectParentEl.hide()
@@ -1182,5 +1191,11 @@ $(document).ready(function(){
         })
 
         chatHeadEl.append(`<span class="chat-badge-message bg-red-400 rounded-full p-1 text-xs text-white">new</span>`)
+    })
+
+    // console.log(userId);
+
+    Echo.private(`reviews.${userId}`).listen('.rating', (e) => {
+        console.log(e);
     })
 })
