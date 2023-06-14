@@ -88,12 +88,6 @@ class MessageController extends Controller
             $authUserId
         ));
 
-        // AvailedUser::create([
-        //     'availed_by' => $authUserId,
-        //     'availed_to' => $request->fromUserId,
-        //     'is_accepted' => false,
-        //     'notification_id' => $request->notificationId
-        // ]);
 
         SentRequest::create([
             'request_by' => $authUserId,
@@ -134,8 +128,6 @@ class MessageController extends Controller
             {
                 $isExpired = true;
             }
-
-
         }
         else{
             $remainingTime = 0;
