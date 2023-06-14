@@ -5,8 +5,8 @@
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto md:p-2 p4">
         <a href="{{
             Auth::user()->user_type == 3 ? route('index') :
-            (Auth::user()->user_type == 2 ? route('homeAgent') :
-            (Auth::user()->user_type == 1 ? route('homeAdmin') : ''))}}"
+            (Auth::user()->user_type == 2 ? route('indexAgent') :
+            (Auth::user()->user_type == 1 ? route('indexAdmin') : ''))}}"
             class="flex items-center">
 
             <img src="{{ asset('images/servis_logo.png') }}" class="h-8 mr-3" alt="Flowbite Logo">
@@ -44,6 +44,11 @@
                         <li>
                             <a href="{{ route('showFaqs') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Customer Support</a>
                         </li>
+                        @if (Auth::user()->user_type == 1)
+                            <li>
+                                <a href="{{ route('showConfirmAgentOnNav') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer btn-update-service">Pending Agents</a>
+                            </li>
+                        @endif
                         @if (Auth::user()->user_type == 3)
                             <li>
                                 <a href="{{ route('showAgenda') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Agenda</a>
@@ -62,6 +67,7 @@
                                     <a href="{{ route('createServiceDetails') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer btn-update-service">Update Service Details</a>
                                 </li>
                         @endif
+
                     </ul>
                     <form class="py-1 w-full" action="{{ route('session.logout') }}" method="post">
                         @csrf
