@@ -65,6 +65,11 @@ class AgentServiceController extends Controller
         ]);
 
         $notificationMessage = "System admin has verified your account. Your service can now be seen online.";
+
+        if(! $request->is_Accepted){
+            $notificationMessage = "System admin has rejected your account.";
+        }
+
         $notificationType = 2;
 
         $notification = Notification::create([
@@ -89,19 +94,20 @@ class AgentServiceController extends Controller
         return response()->json($request);
     }
 
-    public function showConfirmAgent(User $user){
+    public function showConfirmAgent($username)
+    {
         $notifications = Notification::where('user_id', Auth::user()->id)
                                     ->where('status', 0)
                                     ->where('type', 4)
                                     ->orderBy('created_at', 'desc')
                                     ->get();
 
-        // $userDocuments = ValidDocument::where('user_id', $user->id)->first();
+        $user = User::where('username', $username)->first();
         $otherUserDocuments = AdminRequest::where('is_accepted', false)
-        ->with('validDocument.notification')
-        // ->orderByRaw('CASE WHEN request_by = ' .$user->id .' THEN 0 ELSE 1 END')
-        ->orderBy('created_at', 'DESC')
-        ->paginate(3);
+                                            ->with('validDocument.notification')
+                                            ->orderByRaw('CASE WHEN request_by = ' .$user->id .' THEN 0 ELSE 1 END')
+                                            ->orderBy('created_at', 'DESC')
+                                            ->paginate(3);
 
         /*
             TODO:
@@ -109,7 +115,25 @@ class AgentServiceController extends Controller
          */
 
         return view('components.home_admin.confirm-agent', [
-            // 'userDocuments' => $userDocuments,
+            'notifications' => $notifications,
+            'otherDocuments' => $otherUserDocuments
+        ]);
+    }
+
+    public function showConfirmAgentOnNav()
+    {
+        $notifications = Notification::where('user_id', Auth::user()->id)
+                                ->where('status', 0)
+                                ->where('type', 4)
+                                ->orderBy('created_at', 'desc')
+                                ->get();
+
+        $otherUserDocuments = AdminRequest::where('is_accepted', false)
+        ->with('validDocument.notification')
+        ->orderBy('created_at', 'DESC')
+        ->paginate(3);
+
+        return view('components.home_admin.confirm-agent', [
             'notifications' => $notifications,
             'otherDocuments' => $otherUserDocuments
         ]);
