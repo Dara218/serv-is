@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('agent_service_id')->constrained('agent_services')->cascadeOnDelete();
-            $table->integer('employee_id');
+            $table->foreignId('employee_id')->constrained('users')->cascadeOnDelete();
             $table->integer('level');
             $table->string('message');
             $table->timestamps();
