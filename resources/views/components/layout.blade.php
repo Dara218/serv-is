@@ -31,6 +31,10 @@
                 @if ($hasNewChats)
                     <span class="bg-red-400 rounded-full p-1 text-xs text-white">new</span>
                 @endif
+
+                @if (Auth::user()->user_type == 2)
+                    <input type="hidden" name="agent_service_id_layout" class="agent_service_id_layout" value="{{ $agentServiceId }}">
+                @endif
             </div>
         @endif
 
