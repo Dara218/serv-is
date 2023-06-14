@@ -36,7 +36,14 @@ class AppServiceProvider extends ServiceProvider
         {
             if(Auth::check()){
                 $hasNewChats = Message::where('receiver_id', Auth::user()->id)->where('is_unread', true)->exists();
-                $view->with(['hasNewChats'=> $hasNewChats]);
+                $agentServiceId = null;
+
+                if(Auth::user()->user_type == 2){
+                    $agentService = AgentService::where('user_id', Auth::user()->id)->with('service', 'review.user')->first();
+                    $agentServiceId = $agentService->id;
+                }
+                
+                $view->with(['hasNewChats'=> $hasNewChats, 'agentServiceId' => $agentServiceId]);
             }
         });
 
