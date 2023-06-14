@@ -40,3 +40,7 @@ Broadcast::channel('notifications.{id}', function ($user, $id) {
 Broadcast::channel('message-badge.{id}', function ($user, $id) {
     return $user;
 });
+
+Broadcast::channel('reviews.{id}', function ($user, $id) {
+    return $user;
+});
