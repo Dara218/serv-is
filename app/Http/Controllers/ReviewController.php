@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Events\CommentRatingEvent;
+use App\Events\NotificationEvent;
+use App\Models\Notification;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,7 +17,7 @@ class ReviewController extends Controller
         $user = User::where('id', Auth::user()->id)->with('userPhoto')->first();
 
         $request->validate([
-            'star_rating' => 'required', 
+            'star_rating' => 'required',
             'comment' => 'required|min:5|max:200'
         ]);
 
@@ -33,13 +35,31 @@ class ReviewController extends Controller
             $request->agent_service_id,
             $request->star_rating,
             $request->comment,
-            $review->id
+            $review,
+            $user
         ));
-        
+
+        $notificationMessage = "$user->username has posted a review on your service.";
+        $notificationType = 2;
+        $notification = Notification::create([
+            'user_id' => $request->agent_id, // to
+            'from_user_id' => $user->id, // from
+            'username' => $user->username,
+            'message' => $notificationMessage,
+            'is_unread' => true,
+            'status' => 3,
+            'type' => $notificationType
+        ]);
+
+        event(new NotificationEvent(
+            $user->username,
+            $request->agent_id,
+            $notificationMessage,
+            $notificationType,
+            $notification->id,
+            $user->id
+        ));
+
         return back();
     }
-
-    /*
-        TODO: FIX reject button on notif, add appending of new reviews on admin side
-     */
 }
