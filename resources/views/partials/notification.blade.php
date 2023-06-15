@@ -43,12 +43,12 @@
                             </div>
                         </div>
                         <div class="flex gap-4 justify-center">
-                            <a href="#" data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" data-from-user-id="{{ $notification->from_user_id }}" data-to-user-id="{{ $notification->user_id }}" data-type="{{ $notification->type }}" class="material-symbols-outlined cursor-pointer bnt-accept-notif">
+                            <span data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" data-from-user-id="{{ $notification->from_user_id }}" data-to-user-id="{{ $notification->user_id }}" data-type="{{ $notification->type }}" class="material-symbols-outlined cursor-pointer bnt-accept-notif">
                                 check_circle
-                            </a>
-                            <a href="#" data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" data-from-user-id="{{ $notification->from_user_id }}" data-to-user-id="{{ $notification->user_id }}" data-type="{{ $notification->type }}" class="material-symbols-outlined cursor-pointer bnt-reject-notif">
+                            </span>
+                            <span data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" data-from-user-id="{{ $notification->from_user_id }}" data-to-user-id="{{ $notification->user_id }}" data-type="{{ $notification->type }}" class="material-symbols-outlined cursor-pointer btn-reject-notif">
                                 cancel
-                            </a>
+                            </span>
                         </div>
                     </li>
 
