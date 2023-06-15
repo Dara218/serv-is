@@ -13,6 +13,9 @@
             <div class="px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800">
                 <label for="comment" class="sr-only">Your comment</label>
                 <textarea id="comment" name="comment" rows="4" class="w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="Write a comment..." required></textarea>
+                    @error('comment')
+                        <p id="filled_error_help" class="mt-2 text-xs text-red-600 dark:text-red-400"><span class="font-medium">{{ $message }}</span></p>
+                    @enderror
                 <input type="hidden" name="agent_id" value="{{ $user->id }}">
                 <input type="hidden" name="agent_service_id" value="{{ $service->id }}">
             </div>
