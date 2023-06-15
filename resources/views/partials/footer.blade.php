@@ -1,7 +1,7 @@
 
 <footer class="bg-white rounded-lg shadow dark:bg-gray-900 mt-20 mx-4">
     <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-        <div class="flex justify-between">
+        <div class="flex justify-center md:justify-between">
 
             @if (Auth::check())
                 <a href="{{
@@ -10,13 +10,13 @@
                     (Auth::user()->user_type == 1 ? route('indexAdmin') : ''))}}"
                     class="flex items-center">
 
-                    <img src="{{ asset('images/servis_logo.png') }}" class="h-8 mr-3" alt="Flowbite Logo">
+                    {{-- <img src="{{ asset('images/servis_logo.png') }}" class="block md:hidden h-8 mr-3" alt="Servis Logo"> --}}
                     <span class="hidden md:block self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Serv &#9679; is</span>
                 </a>
 
                 @else
                     <div class="flex gap-2">
-                        <img src="{{ asset('images/servis_logo.png') }}" class="h-8 mr-3" alt="Flowbite Logo">
+                        <img src="{{ asset('images/servis_logo.png') }}" class="hidden md:block h-8 mr-3" alt="Servis Logo">
                         <span class="hidden md:block self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Serv &#9679; is</span>
                     </div>
             @endif
