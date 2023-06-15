@@ -5,7 +5,7 @@
             <div class="overflow-x-auto overflow-y-hidden md:overflow-x-hidden md:overflow-y-scroll">
                 <ol class="flex md:flex-col gap-2 md:h-80" id="agent-list">
                     @foreach ($agents as $agent)
-                        @foreach ( Auth::user()->user_type == 1 ? $agent->chat :   $agent->user->chat as $chat)
+                        @foreach ( Auth::user()->user_type == 1 ? $agent->chat : $agent->user->chat as $chat)
                             <li class="flex items-center gap-1 p-1 receiver-el cursor-pointer shadow-md" data-chat-id="{{ $chat->id }}" data-sender="{{ $chat->sender_id }}" data-receiver="{{ $chat->receiver_id }}" {{ Auth::user()->user_type == 1 ? 'data-id=' .$agent->id  : 'data-id=' .$agent->user->id }} data-username="{{ Auth::user()->user_type == 1 ? $agent->username : (Auth::user()->user_type == 3 ? $agent->user->username : (Auth::user()->user_type == 2 ? $agent->availedBy->username : '')) }}">
                                 <img
                                     src="https://images.pexels.com/photos/7841717/pexels-photo-7841717.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
