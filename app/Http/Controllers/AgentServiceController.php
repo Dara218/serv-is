@@ -25,7 +25,7 @@ class AgentServiceController extends Controller
     }
 
     public function createServiceDetails(){
-        return view('components.home_agent.update-service-details', [
+        return view('components.home-agent.update-service-details', [
             'services' => Service::all(),
             'agentservices' => AgentService::where('user_id', Auth::user()->id)->first()
         ]);

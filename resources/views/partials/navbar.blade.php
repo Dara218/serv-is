@@ -1,5 +1,5 @@
 
-<x-home_agent.banner :agentservice="$agentservice"/>
+<x-home-agent.banner :agentservice="$agentservice"/>
 
 <nav class="bg-slate-300 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto md:p-2 p4">
