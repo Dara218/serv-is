@@ -4,16 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\AdminRequest;
 use App\Models\Agenda;
-use App\Models\AgentService;
+use App\Models\AvailedPricingPlan;
 use App\Models\Category;
 use App\Models\Review;
-use App\Models\SentRequest;
 use App\Models\Service;
 use App\Models\ServiceAddress;
 use App\Models\Transaction;
 use App\Models\UserPhoto;
-use App\Models\ValidDocument;
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -31,17 +29,9 @@ class HomeController extends Controller
 
     public function indexAgent()
     {
-        // $agendas = Agenda::where('is_available', true)->with('sentRequest')->get();
-
-        // $sentRequest = '';
-
-        // foreach($agendas as $agenda){
-        //     $sentRequest = SentRequest::where('request_by', Auth::user()->id)->where('request_to', $agenda->user->id)->where('type', 1)->with('agenda')->get();
-        // }
-
         $user = Auth::user();
 
-        return view('components.home_agent.index',
+        return view('components.home-agent.index',
         [
             'balance' => $user->current_balance,
             'services' => Transaction::where('user_id', $user->id)->count(),
@@ -53,7 +43,13 @@ class HomeController extends Controller
                                         ->where('type', 1)
                                         ->where('is_accepted', false)
                                         ->exists(),
-            'reviews' => Review::where('user_id', $user->id)->with('user')->get(),
+            'reviews' => Review::where('employee_id', Auth::user()->id)->with('user.userPhoto')
+                                ->orderBy('created_at', 'DESC')
+                                ->get(),
+            'totalservices' => AvailedPricingPlan::where('availed_to_id', $user->id)->count(),
+            'finishedservice' => AvailedPricingPlan::where('availed_to_id', $user->id)
+                                                    ->where('is_expired', true)
+                                                    ->count()
         ]);
     }
 
