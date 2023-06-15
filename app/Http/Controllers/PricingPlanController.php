@@ -20,10 +20,11 @@ use Stripe\Stripe;
 
 class PricingPlanController extends Controller
 {
-    public function showPricingPlan(User $user){
+    public function index(User $user){
 
         $checkIfUserIsAvailed = AvailedPricingPlan::where('availed_to_id', $user->id)
                                                     ->where('availed_by_id', Auth::user()->id)
+                                                    ->where('is_expired', false)
                                                     ->exists();
 
         if(! $checkIfUserIsAvailed){
@@ -32,7 +33,7 @@ class PricingPlanController extends Controller
 
         return back();
     }
-    public function storePricing(Request $request){
+    public function store(Request $request){
 
         // basic = 1 advance = 2
 
@@ -61,6 +62,9 @@ class PricingPlanController extends Controller
                 'availed_by_id' => $customer->id,
                 'pricing_plan_type' => $request->plan
             ]);
+        }
+        else{
+            $this->updateAvailedPricingPlan($agent, $customer);
         }
 
         $transactionType = null;
@@ -103,6 +107,14 @@ class PricingPlanController extends Controller
 
         Alert::success('Success', 'Transaction successful.');
         return redirect()->route('index');
+    }
+
+    public function updateAvailedPricingPlan($agent, $customer){
+        AvailedPricingPlan::where('availed_to_id', $agent)
+                            ->where('availed_by_id', $customer->id)
+                            ->update([
+                                'is_expired' => false
+                            ]);
     }
 
     public function storeTransaction($customer, $transactionType, $pricingPlanBalance){
