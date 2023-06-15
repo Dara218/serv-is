@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileRequest;
 use App\Models\AdminRequest;
 use App\Models\Notification;
+use App\Models\Review;
 use App\Models\WalletHistory;
 use App\Models\Agenda;
 use App\Models\CheckInPrice;
@@ -104,7 +105,7 @@ class ProfileController extends Controller
 
     public function showEmployeeProfile(User $user)
     {
-        $agentService = AgentService::where('user_id', $user->id)->with('service', 'review.user')->first();
+        $agentService = AgentService::where('user_id', $user->id)->with('service', 'review.user.userPhoto')->first();
 
         return view('components.home.employee-profile',[
             'users' => User::where('id', $user->id)->with('userPhoto', 'agentService', 'serviceAddress')->get(),
