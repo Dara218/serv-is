@@ -20,13 +20,13 @@ class CommentRatingEvent implements ShouldBroadcastNow
     public $serviceTypeId;
     public $starRating;
     public $message;
-
     public $review;
+    public $user;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($userId, $agentId, $serviceTypeId, $starRating, $message, $review)
+    public function __construct($userId, $agentId, $serviceTypeId, $starRating, $message, $review, $user)
     {
         $this->userId = $userId;
         $this->agentId = $agentId;
@@ -34,6 +34,7 @@ class CommentRatingEvent implements ShouldBroadcastNow
         $this->starRating = $starRating;
         $this->message = $message;
         $this->review = $review;
+        $this->user = $user;
     }
 
     /**
