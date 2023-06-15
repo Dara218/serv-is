@@ -1,11 +1,41 @@
 import axios from 'axios'
 import './bootstrap'
+import 'overlayscrollbars/overlayscrollbars.css'
+import { 
+  OverlayScrollbars, 
+  ScrollbarsHidingPlugin, 
+  SizeObserverPlugin, 
+  ClickScrollPlugin 
+} from 'overlayscrollbars'
 
 $(document).ready(function(){
 
     const userId = $('#current-user-id').val()
-
     checkUserType()
+
+    OverlayScrollbars(document.body, {
+        scrollbars: {
+            // theme: 'os-theme-custom',
+        }
+    });
+    
+    const options = {
+        bottom: '20px', // default: '32px'
+        right: 'unset', // default: '32px'
+        left: '10px', // default: 'unset'
+        time: '0s', // default: '0.3s'
+        mixColor: '#fff', // default: '#fff'
+        backgroundColor: '#fff',  // default: '#fff'
+        buttonColorDark: '#100f2c',  // default: '#100f2c'
+        buttonColorLight: '#fff', // default: '#fff'
+        saveInCookies: true, // default: true,
+        label: '🌓', // default: ''
+        autoMatchOsTheme: true, // default: true
+    }
+    const darkmode = new Darkmode(options);
+    darkmode.showWidget();
+
+    darkmode.isActivated() ? document.documentElement.classList.add('dark-mode') : document.documentElement.classList.remove('dark-mode');
 
     $('.user_type-options').on('change', function(){
         checkUserType()
@@ -616,8 +646,6 @@ $(document).ready(function(){
         $('.services-container').html(results)
     }
 
-    // todo: reload chat modal to reload it instead of whole page.
-
     const username = $('#username-hidden')
     const message = $('#message')
     const receiver = $('#receiver-hidden')
@@ -627,13 +655,13 @@ $(document).ready(function(){
     {
         const username = $(this).data('username')
         receiver.val(username)
-
         const chatRoomId = $(this).data('chat-id')
         var receiverId = $(this).data('receiver')
         var senderId = $(this).data('sender')
 
         axios.put(`/update-message-read/${chatRoomId}`, {
-            receiverId: receiverId
+            receiverId: receiverId,
+            senderId: senderId
         })
         .then(function(response)
         {
@@ -705,12 +733,13 @@ $(document).ready(function(){
             sender: username.val()
         })
         .then(response => {
-            // console.log(response);
+            console.log(response);
             const responseData = response.data
             $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight)
             $('.message-container').empty()
             $('.chat-id').val(responseData.chatRoom.id)
             let messageToShow = 10
+            const inputMessage = $('.input-message')
 
             subscribeToChat()
 
@@ -722,60 +751,67 @@ $(document).ready(function(){
                         Admin chat.
                     </p>
                 `)
-                $('.input-message').prop('disabled', false)
+                inputMessage.prop('disabled', false)
             }
-            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == false && (responseData.confirmNotAgent == false || responseData.confirmNotAgent == true) && responseData.isAccepted == false){
+            if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && (! responseData.confirmNotAgent || responseData.confirmNotAgent) && ! responseData.isAccepted){
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                         Good day! Please wait for the agent to accept your booking. You'll get notified later on.
                     </p>
                 `)
-                $('.input-message').prop('disabled', true)
+                inputMessage.prop('disabled', true)
             }
-            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == false && responseData.confirmNotAgent == false && responseData.isAccepted == true)
+            if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && ! responseData.confirmNotAgent && responseData.isAccepted)
             {
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                         Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="/pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
                     </p>
                 `)
-                $('.input-message').prop('disabled', true)
+                inputMessage.prop('disabled', true)
             }
-            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == false && responseData.confirmNotAgent == true && responseData.isAccepted == true)
+            if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && responseData.confirmNotAgent && responseData.isAccepted)
             {
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                         Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
                     </p>
                 `)
-                $('.input-message').prop('disabled', true)
+                inputMessage.prop('disabled', true)
             }
-            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == true && responseData.confirmNotAgent == true && responseData.isAccepted == true)
+            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed && responseData.confirmNotAgent && responseData.isAccepted)
             {
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                         Welcome to Serv-is ${responseData.authenticatedUser}! Thank you for availing my service.
                     </p>
                 `)
-                $('.input-message').prop('disabled', false)
+                inputMessage.prop('disabled', false)
             }
-            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed == true && responseData.confirmNotAgent == false && responseData.isAccepted == true)
+            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed && ! responseData.confirmNotAgent && responseData.isAccepted)
             {
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                         Welcome to Serv-is ${responseData.authenticatedUser}! Thank you for availing my service.
                     </p>
                 `)
-                $('.input-message').prop('disabled', false)
+                inputMessage.prop('disabled', false)
             }
-            if(responseData.checkIfUserHasAvailed == true && (responseData.confirmNotAgent == false || responseData.confirmNotAgent == true) && responseData.isAccepted == true && responseData.isExpired == true)
+            if(responseData.checkIfUserHasAvailed && (! responseData.confirmNotAgent || responseData.confirmNotAgent) && responseData.isAccepted && responseData.isExpired)
             {
-                $('.message-container').append(`
-                    <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
-                        Good day! Your subscription for this plan has been expired. If you want to continue, <a href="employee-profile/${responseData.receiverUsername}" class="text-slate-800 font-semibold">subscribe another plan.</a>
-                    </p>
-                `)
-                $('.input-message').prop('disabled', true)
+                const messageContainer = $('.message-container')
+
+                let message = `Good day! Your subscription for this plan has been expired. If you want to continue, <a href="/pricing-plan/${$('.user-id-hidden').val()}" class="text-slate-800 font-semibold">subscribe another plan.</a>`
+
+                if(! responseData.confirmNotAgent){
+                    message = `Good day! The subscription has been expired.`
+                }
+
+                messageContainer.append(`
+                        <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">${message}</p>
+                    `)
+
+                inputMessage.prop('disabled', true)
             }
             else{
                 loadMoreMessage(responseData.userChat.reverse().slice(0, messageToShow))
@@ -1193,9 +1229,46 @@ $(document).ready(function(){
         chatHeadEl.append(`<span class="chat-badge-message bg-red-400 rounded-full p-1 text-xs text-white">new</span>`)
     })
 
-    // console.log(userId);
 
     Echo.private(`reviews.${userId}`).listen('.rating', (e) => {
-        console.log(e);
+        let userPhoto = undefined
+        let starsChecked = ''
+        let starsUnchecked = ''
+        const formattedDate = moment(e.review.created_at).format('D MMM');
+
+        for(let i = 0; i < e.starRating; i++){
+            starsChecked += `<svg aria-hidden="true" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>First star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`
+        }
+
+        for(let i = e.starRating; i < 5; i++){
+            starsUnchecked += `<svg aria-hidden="true" class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>First star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`
+        }
+
+        if(! e.user.user_photo){
+            userPhoto = `<img src="{{ asset('images/servis_logo.png') }}" alt="" class="h-[50px]">`
+        }
+        else{
+            userPhoto = `<img src="${e.user.user_photo.profile_picture}" alt="${e.user.user_photo.profile_picture}" class="h-[50px] rounded-full">`
+        }
+
+        const reviewEl =
+        `<div class="flex justify-between px-4">
+            <div class="flex gap-2">
+                ${userPhoto}
+                <div class="flex flex-col gap-2 mx-2">
+                    <div class="flex flex-col gap-1">
+                        <span>${e.user.username}</span>
+                        <div class="flex">
+                           ${starsChecked}
+                           ${starsUnchecked}
+                        </div>
+                    </div>
+                    <p>${e.message}</p>
+                </div>
+            </div>
+            <span>${formattedDate}</span>
+        </div>`
+
+        $('.user-review-el').prepend(reviewEl)
     })
 })
