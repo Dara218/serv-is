@@ -102,6 +102,10 @@ class MessageController extends Controller
         $sender = $request->receiverId;
         $receiver = Auth::user();
 
+        if($receiver->user_type == 2){
+            $sender = $request->senderId;
+        }
+
         ModelsMessage::where('receiver_id', $receiver->id)
                     ->where('chat_room_id', $request->id)
                     ->where('is_unread', true)
@@ -121,7 +125,7 @@ class MessageController extends Controller
 
         if($receiver->user_type == 2 || $receiver->user_type == 3)
         {
-            $deadline = Carbon::parse($availedPricingPlan->created_at)->addDay();
+            $deadline = Carbon::parse($availedPricingPlan->updated_at)->addDay();
             $remainingTime = Carbon::now()->diff($deadline);
 
             if($availedPricingPlan->is_expired == true)
