@@ -14,7 +14,7 @@ class AgentService extends Model
     }
 
     public function review(){
-        return $this->hasMany(Review::class, 'user_id');
+        return $this->hasMany(Review::class, 'agent_service_id');
     }
 
     public function service(){
