@@ -16,7 +16,6 @@
     "dependencies": {
         "flowbite": "^1.6.5",
         "laravel-echo": "^1.15.1",
-        "overlayscrollbars": "^2.2.0",
         "pusher-js": "^8.0.2",
         "sweetalert2": "^11.7.5"
     }
