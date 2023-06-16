@@ -17,12 +17,14 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(! Auth::check() || Auth::user()->user_type == 2 || Auth::user()->user_type == 3)
+        if(Auth::user()->user_type == 1)
         {
+            return $next($request);
+        }
+        else{
             Auth::logout();
             Alert::error('Failed', 'Invalid login details.');
             return redirect('/');
-        }
-        return $next($request);
+        }  
     }
 }
