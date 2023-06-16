@@ -1,41 +1,31 @@
 import axios from 'axios'
 import './bootstrap'
-import 'overlayscrollbars/overlayscrollbars.css'
-import { 
-  OverlayScrollbars, 
-  ScrollbarsHidingPlugin, 
-  SizeObserverPlugin, 
-  ClickScrollPlugin 
-} from 'overlayscrollbars'
 
 $(document).ready(function(){
 
     const userId = $('#current-user-id').val()
     checkUserType()
 
-    OverlayScrollbars(document.body, {
-        scrollbars: {
-            // theme: 'os-theme-custom',
-        }
-    });
-    
     const options = {
-        bottom: '20px', // default: '32px'
-        right: 'unset', // default: '32px'
-        left: '10px', // default: 'unset'
-        time: '0s', // default: '0.3s'
-        mixColor: '#fff', // default: '#fff'
-        backgroundColor: '#fff',  // default: '#fff'
-        buttonColorDark: '#100f2c',  // default: '#100f2c'
-        buttonColorLight: '#fff', // default: '#fff'
-        saveInCookies: true, // default: true,
-        label: '🌓', // default: ''
-        autoMatchOsTheme: true, // default: true
+        bottom: '10px',
+        right: 'unset',
+        left: '10px',
+        time: '0s',
+        mixColor: '#fff',
+        backgroundColor: '#fff',
+        buttonColorDark: '#100f2c',
+        buttonColorLight: '#fff',
+        saveInCookies: true,
+        label: '🌓',
+        autoMatchOsTheme: true,
     }
-    const darkmode = new Darkmode(options);
-    darkmode.showWidget();
 
-    darkmode.isActivated() ? document.documentElement.classList.add('dark-mode') : document.documentElement.classList.remove('dark-mode');
+    const darkmode = new Darkmode(options);
+    darkmode.showWidget()
+
+    darkmode.isActivated() ? document.documentElement.classList.add('dark-mode') : document.documentElement.classList.remove('dark-mode')
+
+    // new SimpleBar($('.simplebar')[0]);
 
     $('.user_type-options').on('change', function(){
         checkUserType()
@@ -674,8 +664,15 @@ $(document).ready(function(){
             if(response.data.remainingTime != 0)
             {
                 const date = response.data.remainingTime
-                $('.current-chat-name').text(`${username} ${date.days} day(s) ${date.h} hour(s) ${date.m} minute(s) remaining`)
-                $('.form-chat-head').submit()
+                let days = date.days
+                let daysText = `${days} day(s)`
+
+                if(days == 0){
+                    daysText = ''
+                }
+
+                $('.current-chat-name').html(`${username} <small class="ml-1">${daysText} ${date.h} hr(s) ${date.i} min(s) left</small>`)
+                $('.form-chat-head').submit() //check minutes always 0
             }
             else{
                 $('.current-chat-name').text(username)
@@ -733,7 +730,6 @@ $(document).ready(function(){
             sender: username.val()
         })
         .then(response => {
-            console.log(response);
             const responseData = response.data
             $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight)
             $('.message-container').empty()
@@ -753,7 +749,7 @@ $(document).ready(function(){
                 `)
                 inputMessage.prop('disabled', false)
             }
-            if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && (! responseData.confirmNotAgent || responseData.confirmNotAgent) && ! responseData.isAccepted){
+            else if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && (! responseData.confirmNotAgent || responseData.confirmNotAgent) && ! responseData.isAccepted){
                 $('.message-container').html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                         Good day! Please wait for the agent to accept your booking. You'll get notified later on.
