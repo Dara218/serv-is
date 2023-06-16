@@ -1,3 +1,7 @@
+:root {
+    --scrollbar-color: #2b8cb6;
+}
+
 #agent-list {
     display: flex;
     flex-wrap: nowrap;
@@ -7,14 +11,23 @@
     flex: 0 0 auto;
 }
 
-.dark-mode img {
-    filter: brightness(100%) !important; /* Adjust the filter properties as desired */
+.darkmode--activated img{
+    isolation: isolate !important;
 }
 
-.darkmode-layer, .darkmode-toggle {
-    z-index: initial !important;
-  }
-
-.os-scrollbar .os-theme-custom {
-    --os-track-bg: #2b8cb6 !important;
+.darkmode--activated .isolate-nightmode{
+    color: white;
 }
+
+.darkmode-toggle {
+    z-index: 500;
+}
+
+.darkmode--activated .btn-chat-open{
+    color: white;
+}
+
+.simplebar-scrollbar::before {
+    background-color: var(--scrollbar-color) !important;
+}
+
