@@ -36,7 +36,6 @@ class RegisterController extends Controller
             'email_address' => $userDetails['email_address'],
             'contact_no' => $userDetails['contact_no'],
             'password' => $userDetails['password'],
-            // 'address' => $userDetails['address'],
             'region' => $userDetails['region'],
             'user_type' => 3,
         ]);
@@ -63,8 +62,6 @@ class RegisterController extends Controller
             'email_address' => $userDetails['email_address'],
             'contact_no' => $userDetails['contact_no'],
             'password' => $userDetails['password'],
-            // 'address' => $userDetails['address'],
-
             'service' => $userDetails['service'],
             'region' => $userDetails['region'],
             'user_type' => 2,
