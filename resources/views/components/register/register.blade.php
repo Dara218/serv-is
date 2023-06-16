@@ -1,7 +1,7 @@
 <x-layout>
     <div class="flex flex-col items-center justify-center min-h-screen my-10">
         <div class="md:w-1/2 w-11/12 flex flex-col justify-center items-center">
-            <img src="{{ asset('images/servis logo uncropted.png') }}" alt="serv-is logo" style="height: auto; width: 120px;">
+            <img src="{{ asset('images/servis_logo.png') }}" class="hidden md:block h-8 mr-3" alt="Servis Logo" style="height: auto; width: 120px;">
 
             <p class="text-center my-8 font-medium text-slate-800">Create your account for better experience</p>
 
