@@ -1,5 +1,5 @@
 <span class="text-xl font-semibold mb-1">Agendas</span>
-<div class="grid sm:grid-cols-2 md:grid-cols-3 gap-3 -z-10">
+<div class="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
     @foreach ($agendas as $agenda)
         <div class="grid-cols-span-1">
             <div class="bg-slate-100 rounded-lg p-4 relative">
