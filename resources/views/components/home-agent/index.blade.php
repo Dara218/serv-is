@@ -45,9 +45,9 @@
                     <span class="text-xl font-semibold">Schedule</span>
                     <div inline-datepicker data-date="{{ date('m/d/y') }}"></div>
                 </div>
-                <div class="grid-cols-span-1 overflow-hidden border border-slate-300 rounded-md p-4">
-                    <div class="overflow-auto h-[400px] flex flex-col gap-5">
-                        <span class="text-xl font-semibold mb-4">Reviews</span>
+                <div class="isolate-nightmode grid-cols-span-1 overflow-hidden border border-slate-300 rounded-md p-4">
+                    <div data-simplebar data-simplebar-auto-hide="false" class="overflow-auto h-[400px] flex flex-col gap-5">
+                        <span class="text-xl font-semibold">Reviews</span>
                         <x-home-agent.reviews-home :reviews="$reviews"/>
                     </div>
                 </div>
