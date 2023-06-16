@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="{{ asset('css/servis.css') }}">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <link rel="stylesheet"href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
-
+        <link rel="stylesheet" href="https://unpkg.com/simplebar@6.2.5/dist/simplebar.css"/>
 
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -42,6 +42,7 @@
         @include('partials.chat')
         @include('partials.footer')
 
+        <script src="https://cdn.jsdelivr.net/npm/simplebar@6.2.5/dist/simplebar.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/datepicker.min.js"></script>
