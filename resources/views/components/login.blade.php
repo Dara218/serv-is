@@ -1,14 +1,14 @@
 <x-layout>
     <div class="flex flex-col items-center justify-center min-h-screen">
         <div class="md:w-1/2 w-11/12 flex flex-col justify-center items-center">
-            <img src="{{ asset('images/servis logo uncropted.png') }}" alt="serv-is logo" style="height: auto; width: 120px;">
+            <img src="{{ asset('images/servis_logo.png') }}" class="hidden md:block h-8 mr-3" alt="Servis Logo" style="height: auto; width: 120px;">
 
             <p class="text-center my-8 font-medium text-slate-800">Welcome Back, We’ve got You Serviced Booked.</p>
 
             <form action="{{ route('session.store') }}" method="post" class="form-login w-full">
                 @csrf
 
-                <x-inputs.user_type/>
+                {{-- <x-inputs.user_type/> --}}
 
                 <div class="mb-6">
                     <input type="text" id="username" class="bg-gray-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 border-none" placeholder="Username" name="username" value="{{ old('username') }}">
