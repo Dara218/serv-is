@@ -10,6 +10,7 @@ use App\Models\Review;
 use App\Models\Service;
 use App\Models\ServiceAddress;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Models\UserPhoto;
 
 use Illuminate\Support\Facades\Auth;
@@ -54,14 +55,20 @@ class HomeController extends Controller
     }
 
     public function indexAdmin(){
-        return view('components.home_admin.index');
+        return view('components.home-admin.index', [
+            'users' => User::where('user_type', '!=', 1)
+                            ->with('serviceAddress', 'userPhoto', 'serviceAddress', 'transaction', 'agenda', 'review', 'agentService')
+                            ->paginate(10)
+        ]);
     }
 
     public function showEditProfile(){
         return view('components.home.edit-profile',
             [
-                'users' => UserPhoto::where('user_id', Auth::user()->id)->get(),
-                'useraddress' => ServiceAddress::where('user_id', Auth::user()->id)->where('is_primary', true)->first()
+                'users' => User::where('id', Auth::user()->id)->with('userPhoto')->first(),
+                'useraddress' => ServiceAddress::where('user_id', Auth::user()->id)
+                                                ->where('is_primary', true)
+                                                ->first()
             ]);
     }
 
