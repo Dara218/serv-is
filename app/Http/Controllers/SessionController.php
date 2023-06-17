@@ -16,22 +16,27 @@ class SessionController extends Controller
             'password' => 'required'
         ]);
 
-        if (!Auth::attempt($userDetails)) {
+        if (! Auth::attempt($userDetails))
+        {
+            Auth::logout();
             Alert::error('Failed', 'Invalid login details.');
-            return back();
+            return redirect('/');
         }
+        else{
+            $userType = Auth::user()->user_type;
+            session()->regenerate();
 
-        session()->regenerate();
+            // when code starts on this line, error
 
-        if ($request->user_type === 'Customer' && User::where('username', $request->username)->where('user_type', 3)->exists()) {
-            return redirect()->route('index');
-        }
-
-        if ($request->user_type === 'Client' && User::where('username', $request->username)->where('user_type', 2)->exists()) {
-            if (User::where('username', $request->username)->where('user_type', 1)->exists()) {
+            if ($userType == 3) {
+                return redirect()->route('index');
+            }
+            else if ($userType == 2) {
+                return redirect()->route('indexAgent');
+            }
+            elseif ($userType == 1) {
                 return redirect()->route('indexAdmin');
             }
-            return redirect()->route('indexAgent');
         }
     }
     public function logout(){
