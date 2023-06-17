@@ -114,7 +114,7 @@ class AgentServiceController extends Controller
             - Add pagination on services
          */
 
-        return view('components.home_admin.confirm-agent', [
+        return view('components.home-admin.confirm-agent', [
             'notifications' => $notifications,
             'otherDocuments' => $otherUserDocuments
         ]);
@@ -133,7 +133,7 @@ class AgentServiceController extends Controller
         ->orderBy('created_at', 'DESC')
         ->paginate(3);
 
-        return view('components.home_admin.confirm-agent', [
+        return view('components.home-admin.confirm-agent', [
             'notifications' => $notifications,
             'otherDocuments' => $otherUserDocuments
         ]);
