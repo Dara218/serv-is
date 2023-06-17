@@ -24,10 +24,10 @@ class RedirectIfAuthenticated
                 if (Auth::user()->user_type == 3) {
                     return redirect(RouteServiceProvider::HOME);
                 }
-                if (Auth::user()->user_type == 2) {
+                else if (Auth::user()->user_type == 2) {
                     return redirect(RouteServiceProvider::HOMEAGENT);
                 }
-                if (Auth::user()->user_type == 1) {
+                else if (Auth::user()->user_type == 1) {
                     return redirect(RouteServiceProvider::HOMEADMIN);
                 }
             }
