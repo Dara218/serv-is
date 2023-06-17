@@ -19,12 +19,9 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::middleware(['guest'])->group(function()
 {
-    Route::get('/', function () {
-        return view('components.login');
-    })->name('login');
+    Route::view('/', 'components.login')->name('login');
 
     Route::prefix('register')->name('register.')->group(function(){
         Route::get('/register', [RegisterController::class, 'create'])->name('create');
@@ -34,15 +31,14 @@ Route::middleware(['guest'])->group(function()
 
     Route::prefix('session')->name('session.')->group(function(){
         Route::post('/login-store', [SessionController::class, 'store'])->name('store');
-        Route::post('/login-store-client', [SessionController::class, 'storeClient'])->name('storeClient');
     });
 });
 
-Route::post('/stripe-webhook', [CheckInController::class, 'handleWebhook'])->name('stripe.webhook');Route::post('/store-check-in', [CheckInController::class, 'storeCheckIn'])->name('storeCheckIn');
+Route::post('/stripe-webhook', [CheckInController::class, 'handleWebhook'])->name('stripe.webhook');
+Route::post('/store-check-in', [CheckInController::class, 'storeCheckIn'])->name('storeCheckIn');
 
 Route::middleware(['auth'])->group(function()
 {
-    // Route::prefix('home')->name('home.')->group(function(){
     Route::get('/edit-profile', [HomeController::class, 'showEditProfile'])->name('showEditProfile');
     Route::put('/edit-profile-process', [ProfileController::class, 'update'])->name('editProfile');
     Route::get('/my-wallet', [ProfileController::class, 'showWallet'])->name('showWallet');
@@ -72,7 +68,6 @@ Route::middleware(['auth'])->group(function()
     Route::get('/get-services', [AgendaController::class, 'getServices'])->name('getServices');
     Route::put('/update-agenda/{agenda}', [AgendaController::class, 'updateAgenda'])->name('updateAgenda');
     Route::delete('/agenda-destroy/{agenda}', [AgendaController::class, 'destroyAgenda'])->name('destroyAgenda');
-    // Route::get('/get-categories', [CategoryController::class, 'getCategories'])->name('getCategories');
     Route::get('/get-services', [ServiceController::class, 'getServices'])->name('getServices');
     Route::put('/update-notification-count/{id}', [NotificationController::class, 'updateNotificationCount'])->name('updateNotificationCount');
     Route::put('/update-notification-accept/{notification}', [NotificationController::class, 'updateNotificationAccept'])->name('updateNotificationAccept');
@@ -83,7 +78,6 @@ Route::middleware(['auth'])->group(function()
     Route::post('/get-sent-request', [SentRequestController::class, 'getSentRequest'])->name('getSentRequest');
     Route::post('/store-chat-after-negotiate', [MessageController::class, 'storeChatAfterNegotiate'])->name('storeChatAfterNegotiate');
     Route::put('/store-agent-updated-details/{id}', [AgentServiceController::class, 'storeAgentUpdatedDetails'])->name('storeAgentUpdatedDetails');
-    // Route::get('/get-agent-service', [ServiceController::class, 'getAgentService'])->name('getAgentService');
     Route::get('/get-all-agent-service', [ServiceController::class, 'getAllAgentService'])->name('getAllAgentService');
     Route::get('/get-search-agent-services', [SearchController::class, 'getSearchAgentService'])->name('getSearchAgentService');
     Route::get('/get-search-services', [SearchController::class, 'getSearchService'])->name('getSearchService');
@@ -91,36 +85,27 @@ Route::middleware(['auth'])->group(function()
     Route::get('/get-unread-messages', [MessageController::class, 'getUnreadMessages'])->name('getUnreadMessages');
     Route::post('/store-user-comment', [ReviewController::class, 'store'])->name('storeUserComment');
 
-    // });
-
     Route::prefix('session')->name('session.')->group(function(){
         Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
     });
-
 });
 
-Route::middleware(['customer'])->group(function()
+Route::middleware(['auth', 'user-access:3'])->group(function()
 {
-    // Route::prefix('home')->name('home.')->group(function(){
-        Route::get('/home', [HomeController::class, 'index'])->name('index');
-    // });
+    Route::get('/home', [HomeController::class, 'index'])->name('index');
 });
 
-Route::middleware(['agent'])->group(function()
+Route::middleware(['auth', 'user-access:2'])->group(function()
 {
-    // Route::prefix('home')->name('home.')->group(function(){
-        Route::get('/home-agent', [HomeController::class, 'indexAgent'])->name('indexAgent');
-        Route::put('/update-agent-services/{id}', [AgentServiceController::class, 'updateAgentService'])->name('updateAgentService');
-        Route::get('/update-service-details', [AgentServiceController::class, 'createServiceDetails'])->name('createServiceDetails');
-        Route::put('/update-service-details/{agentservices}', [AgentServiceController::class, 'updateServiceDetails'])->name('updateServiceDetails');
-    // });
+    Route::get('/home-agent', [HomeController::class, 'indexAgent'])->name('indexAgent');
+    Route::put('/update-agent-services/{id}', [AgentServiceController::class, 'updateAgentService'])->name('updateAgentService');
+    Route::get('/update-service-details', [AgentServiceController::class, 'createServiceDetails'])->name('createServiceDetails');
+    Route::put('/update-service-details/{agentservices}', [AgentServiceController::class, 'updateServiceDetails'])->name('updateServiceDetails');
 });
 
-Route::middleware(['admin'])->group(function()
+Route::middleware(['auth', 'user-access:1'])->group(function()
 {
-    // Route::prefix('home')->name('home.')->group(function(){
-        Route::get('/home-admin', [HomeController::class, 'indexAdmin'])->name('indexAdmin');
-        Route::get('/show-confirm-agent/{user}', [AgentServiceController::class, 'showConfirmAgent'])->name('showConfirmAgent');
-        Route::get('/show-confirm-agent-admin', [AgentServiceController::class, 'showConfirmAgentOnNav'])->name('showConfirmAgentOnNav');
-    // });
+    Route::get('/home-admin', [HomeController::class, 'indexAdmin'])->name('indexAdmin');
+    Route::get('/show-confirm-agent/{user}', [AgentServiceController::class, 'showConfirmAgent'])->name('showConfirmAgent');
+    Route::get('/show-confirm-agent-admin', [AgentServiceController::class, 'showConfirmAgentOnNav'])->name('showConfirmAgentOnNav');
 });
