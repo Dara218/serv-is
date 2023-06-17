@@ -10,11 +10,6 @@
                 <x-home.services-search :services="$services"/>
             </div>
 
-            {{--
-                TODO:
-                - Add only services from verified agents
-                - Add reject on admin for new agents, when rejected, new li appears on agent name request again
-            --}}
             <x-home.services/>
         </div>
 
