@@ -1,6 +1,6 @@
 @props(['type', 'number_type', 'userType'])
 
-<a href="#" class="p-10 h-auto grid-cols-span-1 border border-slate-300 rounded-xl text-center flex justify-between hover:border-slate-600">
+<div class="p-4 h-auto grid-cols-span-1 border cursor-pointer border-slate-300 rounded-xl text-center flex justify-between hover:border-slate-600">
     <div class="flex flex-col text-left ">
         <span class="font-bold text-2xl text-slate-600">{{ ucwords($type) }}</span>
         <span class="font-semibold text-xltext-slate-500">No. of {{ $type }}: {{ $number_type }}</span>
@@ -20,5 +20,4 @@
             </span>
         @endif
     </div>
-</a>
-
+</div>
