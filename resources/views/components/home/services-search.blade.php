@@ -3,7 +3,7 @@
         <label for="search-services" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Your Email</label>
 
         <button id="dropdown-services" data-dropdown-toggle="dropdown-search-ul-container" class="rounded-md flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600 w-auto md:w-48" type="button" data-service-type="All categories">
-            All categories
+            <span class="btn-dropdown-category">All Categories</span>
             <svg aria-hidden="true" class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
             </svg>
@@ -11,11 +11,11 @@
 
         <div id="dropdown-search-ul-container" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-services">
-                <li class="service-type-dropdown-item" data-service-type="All categories">
+                <li class="z-10 service-type-dropdown-item" data-service-type="All categories">
                     <button type="button" class="inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">All categories</button>
                 </li>
                 @foreach ($services as $service)
-                    <li class="service-type-dropdown-item" data-service-type="{{ $service->type }}">
+                    <li class="z-10 service-type-dropdown-item" data-service-type="{{ $service->type }}">
                         <button type="button" class="inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">{{ $service->type }}</button>
                     </li>
                 @endforeach
