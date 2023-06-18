@@ -23,7 +23,7 @@
 
                     @method('put')
 
-                    {{-- @dd($user) --}}
+                    {{-- @dd($users) --}}
 
                     @if ($users->count() == 0)
                         <div class="flex justify-center items-center gap-2 mb-6">
@@ -40,9 +40,7 @@
 
                         @else
                             <div class="flex justify-center items-center mb-6">
-                                @foreach ($users as $user)
-                                    <img src="{{ $user->profile_picture  }}" alt="User profile picture" class="user-profile-el rounded-full border-2 border-slate-500 w-32 h-auto">
-                                @endforeach
+                                <img src="{{ $users->userPhoto->profile_picture  }}" alt="User profile picture" class="user-profile-el rounded-full border-2 border-slate-500 w-32 h-auto">
                                 <label for="file-input">
                                     <span class="material-symbols-outlined">
                                         edit
@@ -53,7 +51,7 @@
 
                     @endif
 
-                    <x-register.register-inputs :useraddress="$useraddress"/>
+                    <x-register.register-inputs useraddress="{{ $useraddress->address }}" fullname="{{ $users->fullname }}" username="{{ $users->username }}" email_address="{{ $users->email_address }}" contact_no="{{ $users->contact_no }}" region="{{ $users->region }}"/>
 
                     <button type="submit" class="w-full text-white bg-slate-500 hover:bg-slate-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-slate-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Update Profile</button>
                 </form>
