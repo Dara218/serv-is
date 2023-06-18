@@ -553,7 +553,10 @@ $(document).ready(function(){
 
     $('.service-type-dropdown-item').on('click', function(){
         var serviceCategoryData = $(this).data('service-type')
-        $('#dropdown-services').text(serviceCategoryData)
+        $('#dropdown-services').html(`<span class="btn-dropdown-category">${serviceCategoryData}</span>
+        <svg aria-hidden="true" class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+        </svg>`)
 
         $.ajax({
             url: '/get-search-services',
@@ -574,7 +577,7 @@ $(document).ready(function(){
         $('.skeleton-loading').show()
 
         let searchValue = $(this).val()
-        let dropdownText = $('#dropdown-services').text()
+        let dropdownText = $('.btn-dropdown-category').text()
 
         if(searchValue.length > 0)
         {
@@ -1331,7 +1334,7 @@ $(document).ready(function(){
                     }
                     userRow +=
                     `
-                    <tr class="user-table-body bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <tr class="user-table-body bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-center">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             ${eachUser.fullname}
                         </th>
@@ -1345,11 +1348,19 @@ $(document).ready(function(){
                             ${isActive}
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <a href="#" data-modal-target="staticModal-${eachUser.username}" data-modal-toggle="staticModal-${eachUser.username}" class="font-medium text-blue-400 dark:text-blue-500 hover:underline">Manage</a>
-                            <x-home-admin.edit-user-modal :user="$user"/>
-                            <a href="#" class="font-medium text-slate-500 dark:text-blue-500 hover:underline">Delete</a>
+                            <span data-modal-target="staticModal-${eachUser.username}" data-modal-toggle="staticModal-${eachUser.username}" class="btn-modal-${eachUser.username} cursor-pointer font-medium text-blue-400 dark:text-blue-500 hover:underline">Manage</span>
+                            <span class="font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Delete</span>
                         </td>
                     </tr>`
+
+                    $('.user-table-body').on('click', `.btn-modal-${eachUser.username}`, function(){
+                        $(`#manage-admin-btn-${eachUser.username}`).show()
+                    })
+
+                    $(`#close-admin-modal-${eachUser.username}`).on('click', function(){
+                        console.log('hello');
+                        $(`#manage-admin-btn-${eachUser.username}`).hide()
+                    })
 
                     spinner.hide()
                     $('.no-user-search').hide()
@@ -1362,4 +1373,49 @@ $(document).ready(function(){
                 $('.no-user-search').show()
             }
     }
+
+    axios.get('api/get-customer-concerns')
+    .then((response) => {
+        let concernData = ''
+
+        if(response.data.concerns.length > 0)
+        {
+            response.data.concerns.forEach(concerns => {
+                let status = 'Unread'
+
+                if(concerns.is_unread == true){
+                    status = 'Read'
+                }
+                    concernData += `
+                    <tr class="concern-table-body bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            ${concerns.user.fullname}
+                        </th>
+                        <td class="px-6 py-4">
+                            ${concerns.subject}
+                        </td>
+                        <td class="px-6 py-4">
+                            ${concerns.message}
+                        </td>
+                        <td class="px-6 py-4">
+                            ${status}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex gap-2">
+                                <div class="flex items-center mb-4">
+                                    <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="default-checkbox" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Read</label>
+                                </div>
+                                <span class="font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Message</span>
+                            </div>
+                        </td>
+                    </tr>`
+                    $('.user-table-contact-us').html(concernData)
+            })
+        }
+        else{
+            $('.no-concern-search').show()
+        }
+    })
+    .catch((err) => console.error(err))
 })
