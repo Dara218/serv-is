@@ -27,3 +27,4 @@ Route::get('/get-categories', [CategoryController::class, 'getCategories'])->nam
 Route::get('/get-agent-service', [ServiceController::class, 'getAgentService'])->name('getAgentService');
 Route::get('/get-users', [SearchController::class, 'getUsers'])->name('getUsers');
 Route::get('/get-user-from-dropdown', [SearchController::class, 'getUsersFromDropdown'])->name('getUsersFromDropdown');
+Route::get('/get-customer-concerns', [SearchController::class, 'getCustomerConcerns'])->name('getCustomerConcerns');
