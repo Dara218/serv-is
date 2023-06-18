@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AgentService;
+use App\Models\ContactUs;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class SearchController extends Controller
     {
         $serviceType = Service::where('type', $request->dropdownText)->first();
 
-        if($request->dropdownText === 'All categories')
+        if($request->dropdownText === 'All Categories')
         {
              $searchAgentServiceResults = AgentService::where('title', 'LIKE', '%'. $request->searchValue .'%')
                                                     ->with('service', 'user.userPhoto', 'review')
@@ -103,5 +104,11 @@ class SearchController extends Controller
         }
 
         return response()->json(['users' => $users]);
+    }
+
+    public function getCustomerConcerns(){
+        $concerns = ContactUs::where('is_unread', true)->with('user')->get();
+
+        return response()->json(['concerns' => $concerns]);
     }
 }
