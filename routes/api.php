@@ -26,3 +26,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/get-categories', [CategoryController::class, 'getCategories'])->name('getCategories');
 Route::get('/get-agent-service', [ServiceController::class, 'getAgentService'])->name('getAgentService');
 Route::get('/get-users', [SearchController::class, 'getUsers'])->name('getUsers');
+Route::get('/get-user-from-dropdown', [SearchController::class, 'getUsersFromDropdown'])->name('getUsersFromDropdown');
