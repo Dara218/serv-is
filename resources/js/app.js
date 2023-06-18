@@ -1267,4 +1267,99 @@ $(document).ready(function(){
 
         $('.user-review-el').prepend(reviewEl)
     })
+
+    $('.user-type-btn').on('click', function(e){
+        let userType = $(this).data('user-type')
+
+        $('#dropdown-user-search').html(`<span class="btn-dropdown-title">${userType}</span>
+        <svg aria-hidden="true" class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`)
+
+        axios.get('/api/get-user-from-dropdown', {
+            params: {
+                userType: userType
+            }
+        })
+        .then((response) =>
+        {
+            userResultResponse(response)
+        })
+        .catch((err) => console.error(err))
+    })
+
+    const userType = $('.btn-dropdown-title').text()
+    const spinner = $('.spinner')
+
+    spinner.show()
+    getUsers(userType)
+
+    $('#search-users').on('input', function(){
+        $('.no-user-search').hide()
+        spinner.show()
+        const userType = $('.btn-dropdown-title').text()
+        getUsers(userType)
+    })
+
+    function getUsers(userType)
+    {
+        let searchValue = $('#search-users').val()
+
+        axios.get('api/get-users', {
+            params: {
+                searchValue: searchValue,
+                userType: userType
+            }
+        })
+        .then((response) =>
+        {
+            userResultResponse(response)
+        })
+        .catch((err) => console.error(err))
+    }
+
+    function userResultResponse(response){
+        let userRow = ''
+            const tableBody = $('.user-table-body')
+            let userResult = response.data.users
+
+            if(userResult.length > 0)
+            {
+                userResult.forEach(eachUser => {
+                    let isActive = `<span class="text-red-400 font-semibold">Inactive</span>`
+
+                    if(eachUser.is_active){
+                        isActive = `<span class="text-green-400 font-semibold">Active</span>`
+                    }
+                    userRow +=
+                    `
+                    <tr class="user-table-body bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            ${eachUser.fullname}
+                        </th>
+                        <td class="px-6 py-4">
+                            ${eachUser.username}
+                        </td>
+                        <td class="px-6 py-4">
+                            ${eachUser.contact_no}
+                        </td>
+                        <td class="px-6 py-4">
+                            ${isActive}
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <a href="#" data-modal-target="staticModal-${eachUser.username}" data-modal-toggle="staticModal-${eachUser.username}" class="font-medium text-blue-400 dark:text-blue-500 hover:underline">Manage</a>
+                            <x-home-admin.edit-user-modal :user="$user"/>
+                            <a href="#" class="font-medium text-slate-500 dark:text-blue-500 hover:underline">Delete</a>
+                        </td>
+                    </tr>`
+
+                    spinner.hide()
+                    $('.no-user-search').hide()
+                    tableBody.html(userRow)
+                })
+            }
+            else{
+                spinner.hide()
+                tableBody.empty()
+                $('.no-user-search').show()
+            }
+    }
 })
