@@ -23,6 +23,11 @@ class ContactUsController extends Controller
 
         Alert::success('Success', 'Message has been sent!');
         return back();
+    }
 
+    public function index(){
+        return view('components.home-admin.manage-customer-support', [
+            'contactUs' => ContactUs::where('is_unread', true)->with('user.userPhoto')->get()
+        ]);
     }
 }
