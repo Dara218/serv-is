@@ -54,22 +54,52 @@ class SearchController extends Controller
     {
         $userType = $request->userType;
         $searchValue = $request->searchValue;
-        $role = 1;
 
-        if($userType === "Agent"){
-            $role = 2;
-        }
-        else if($userType === "Customer"){
-            $role = 3;
+        if($userType === "Customer" || $userType === "Agent"){
+            if($userType === "Customer"){
+                $role = 3;
+            }
+            if($userType === "Agent"){
+                $role = 2;
+            }
+            $users = User::where(function ($query) use ($searchValue) {
+                $query->where('fullname', 'LIKE', '%' . $searchValue . '%')
+                    ->orWhere('username', 'LIKE', '%' . $searchValue . '%');
+            })->where('user_type', $role)->get();
         }
 
-        $users = User::where('fullname', 'LIKE' , '%'. $searchValue .'%')
-                    ->orWhere('username', 'LIKE' , '%'. $searchValue .'%')
-                    ->where('user_type', '!=', $role)
-                    ->get();
+        if($userType === "All Users"){
+            $role = [2, 3];
+            $users = User::where(function ($query) use ($searchValue) {
+                $query->where('fullname', 'LIKE', '%' . $searchValue . '%')
+                    ->orWhere('username', 'LIKE', '%' . $searchValue . '%');
+            })->whereIn('user_type', $role)->get();
+        }
 
         if($searchValue == null){
             $users = User::where('user_type', '!=', 1)->get();
+        }
+
+        return response()->json(['users' => $users]);
+    }
+
+    public function getUsersFromDropdown(Request $request)
+    {
+        $userType = $request->userType;
+
+        if($userType === "Customer" || $userType === "Agent"){
+            if($userType === "Customer"){
+                $role = 3;
+            }
+            if($userType === "Agent"){
+                $role = 2;
+            }
+            $users = User::where('user_type', $role)->get();
+        }
+
+        if($userType === "All Users"){
+            $role = [2, 3];
+            $users = User::whereIn('user_type', $role)->get();
         }
 
         return response()->json(['users' => $users]);
