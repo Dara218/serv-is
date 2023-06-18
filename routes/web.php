@@ -108,4 +108,5 @@ Route::middleware(['auth', 'user-access:1'])->group(function()
     Route::get('/home-admin', [HomeController::class, 'indexAdmin'])->name('indexAdmin');
     Route::get('/show-confirm-agent/{user}', [AgentServiceController::class, 'showConfirmAgent'])->name('showConfirmAgent');
     Route::get('/show-confirm-agent-admin', [AgentServiceController::class, 'showConfirmAgentOnNav'])->name('showConfirmAgentOnNav');
+    Route::get('/manage-customer-concern', [ContactUsController::class, 'index'])->name('showCustomerConcern');
 });
