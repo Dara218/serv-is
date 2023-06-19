@@ -10,8 +10,8 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class ContactUsController extends Controller
 {
-    public function storeContactMessage(ContactUsRequest $request){
-
+    public function storeContactMessage(ContactUsRequest $request)
+    {
         $contactUsDetails = $request->validated();
 
         ContactUs::create([
@@ -27,7 +27,23 @@ class ContactUsController extends Controller
 
     public function index(){
         return view('components.home-admin.manage-customer-support', [
-            'contactUs' => ContactUs::where('is_unread', true)->with('user.userPhoto')->get()
+            'contactUs' => ContactUs::with('user.userPhoto')->get()
         ]);
+    }
+
+    public function update($id)
+    {
+        $concern = ContactUs::find($id);
+        $status = true;
+
+        if($concern->is_unread) {
+            $status = false;
+        }
+
+        $concern->update([
+            'is_unread' => $status
+        ]);
+
+        return response()->json(['concern' => $concern]);
     }
 }
