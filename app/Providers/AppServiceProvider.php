@@ -85,25 +85,36 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('partials.chat', function($view){
 
-            if(Auth::check()){
-                if(Auth::user()->user_type == 3){
-                    // $agents = User::where('user_type', 2)->get();
-                    // $view->with('agents', $agents);
+            if(Auth::check())
+            {
+                $authUser = Auth::user();
+                $admins = User::where('user_type', 1)->with('chat')->get();
+                $adminIds = [];
 
-                    $agents = AvailedUser::where('availed_by', Auth::user()->id)->with('user.chat')->get();
-                    $view->with('agents', $agents);
+                foreach($admins as $admin)
+                {
+                    $adminIds[] = $admin->id;
                 }
 
-                if(Auth::user()->user_type == 2){
-                    $agents = AvailedUser::where('availed_to', Auth::user()->id)->with('user.chat', 'availedBy')->get();
-                    $view->with('agents', $agents);
-
-                    // $agents = User::where('user_type', 3)->get();
-                    // $view->with('agents', $agents);
+                if($authUser->user_type != 1)
+                {
+                    $adminChats = Chat::where('receiver_id', $authUser->id)->whereIn('sender_id', $adminIds)->with('sender.userPhoto')->get();
                 }
-                if(Auth::user()->user_type == 1){
-                    $agents = User::with('chat')->get();
-                    $view->with('agents', $agents);
+
+                if($authUser->user_type == 3)
+                {
+                    $agents = AvailedUser::where('availed_by', $authUser->id)->with('user.chat', 'user.userPhoto')->get();
+                    $view->with(['agents' => $agents, 'admins' => $adminChats]);
+                }
+                if($authUser->user_type == 2)
+                {
+                    $agents = AvailedUser::where('availed_to', $authUser->id)->with('user.chat', 'user.userPhoto', 'availedBy')->get();
+                    $view->with(['agents' => $agents, 'admins' => $adminChats]);
+                }
+                if($authUser->user_type == 1)
+                {
+                    $agents = Chat::where('sender_id', $authUser->id)->with('receiver.userPhoto')->get();
+                    $view->with(['agents' => $agents]);
                 }
             }
 
