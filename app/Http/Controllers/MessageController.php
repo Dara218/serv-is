@@ -44,12 +44,6 @@ class MessageController extends Controller
             $chatRoom->id
         ));
 
-        /*
-            ---1. make column on chat named has_unread
-            ---2. add if else on blade if has_unread is true, show new message badge
-            3. if new meesage, append it on chat head where sender == receiver and receiver == sender
-        */
-
         //toOthers() prevent sender from getting appends after sending.
         broadcast(new Message(
             $sender->username,
@@ -88,7 +82,6 @@ class MessageController extends Controller
             $authUserId
         ));
 
-
         SentRequest::create([
             'request_by' => $authUserId,
             'request_to' => $request->fromUserId,
@@ -123,10 +116,15 @@ class MessageController extends Controller
 
          $isExpired = false;
 
-        if($receiver->user_type == 2 || $receiver->user_type == 3)
+        if($receiver->user_type != 1 && $availedPricingPlan)
         {
             $deadline = Carbon::parse($availedPricingPlan->updated_at)->addDay();
             $remainingTime = Carbon::now()->diff($deadline);
+
+            if($deadline <= Carbon::now()){
+                $remainingTime = 0;
+                $isExpired = true;
+            }
 
             if($availedPricingPlan->is_expired == true)
             {
