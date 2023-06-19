@@ -189,14 +189,12 @@ $(document).ready(function(){
         var userId = $('#logged-user').val();
         var isChecked = $('.checkbox-secondary').is(':checked');
         var secondaryAddressId = $(e.target).data('id')
-        // console.log(secondaryAddressId);
 
         axios.put(`address-changed-secondary-update/${userId}`,{
             secondaryAddressId: secondaryAddressId,
             address: isChecked
         })
         .then(function(response){
-            // console.log(response);
             location.reload()
         })
         .catch(err => console.error(err))
@@ -276,9 +274,6 @@ $(document).ready(function(){
                     axios.put(`address-secondary-update/${secondaryAddressId}`,{
                         secondaryAddressId: secondaryAddressId,
                         secondaryAddress: secondaryAddress
-                    })
-                    .then(function(response){
-                        // console.log(response)
                     })
                     .catch(err => console.error(err))
 
@@ -658,7 +653,7 @@ $(document).ready(function(){
         })
         .then(function(response)
         {
-            $(this).find('.chat-badge-message').hide();
+            $('.receiver-el').find('.chat-badge-message').hide();
             $('.current-chat-name').show()
             $('.input-message').show()
             $('.user-id-hidden').val(receiverId)
@@ -743,10 +738,10 @@ $(document).ready(function(){
             subscribeToChat()
 
             // Load messages when chat room is clicked
-            if(responseData.checkIfChatHasAdmin)
+            if(responseData.checkIfChatHasAdmin && responseData.userChat.length == 0)
             {
-                $('.message-container').html(`
-                    <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
+                $('.message-container').prepend(`
+                    <p class="w-auto col-span-4 message-el bg-slate-300 rounded-full py-2 px-3">
                         Admin chat.
                     </p>
                 `)
@@ -1217,7 +1212,6 @@ $(document).ready(function(){
 
     Echo.private(`message-badge.${userId}`).listen('.message.badge', (e) =>
     {
-        console.log(response);
         $('.btn-chat-open').append(`<span class="chat-badge bg-red-400 rounded-full p-1 text-xs text-white">new</span>`)
 
         const chatRoomId = e.chatRoomId
@@ -1306,7 +1300,7 @@ $(document).ready(function(){
     {
         let searchValue = $('#search-users').val()
 
-        axios.get('api/get-users', {
+        axios.get('/api/get-users', {
             params: {
                 searchValue: searchValue,
                 userType: userType
@@ -1320,9 +1314,11 @@ $(document).ready(function(){
     }
 
     function userResultResponse(response){
-        let userRow = ''
+        // let userRow = ''
             const tableBody = $('.user-table-body')
             let userResult = response.data.users
+
+            tableBody.empty();
 
             if(userResult.length > 0)
             {
@@ -1332,8 +1328,8 @@ $(document).ready(function(){
                     if(eachUser.is_active){
                         isActive = `<span class="text-green-400 font-semibold">Active</span>`
                     }
-                    userRow +=
-                    `
+
+                    const userRow = `
                     <tr class="user-table-body bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-center">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             ${eachUser.fullname}
@@ -1353,18 +1349,17 @@ $(document).ready(function(){
                         </td>
                     </tr>`
 
+                    spinner.hide()
+                    $('.no-user-search').hide()
+                    tableBody.append(userRow)
+
                     $('.user-table-body').on('click', `.btn-modal-${eachUser.username}`, function(){
                         $(`#manage-admin-btn-${eachUser.username}`).show()
                     })
 
                     $(`#close-admin-modal-${eachUser.username}`).on('click', function(){
-                        console.log('hello');
                         $(`#manage-admin-btn-${eachUser.username}`).hide()
                     })
-
-                    spinner.hide()
-                    $('.no-user-search').hide()
-                    tableBody.html(userRow)
                 })
             }
             else{
@@ -1374,20 +1369,22 @@ $(document).ready(function(){
             }
     }
 
-    axios.get('api/get-customer-concerns')
+    axios.get('/api/get-customer-concerns')
     .then((response) => {
-        let concernData = ''
+        // let concernData = ''
 
         if(response.data.concerns.length > 0)
         {
             response.data.concerns.forEach(concerns => {
-                let status = 'Unread'
+                let status = 'Read'
+                let check = 'checked'
 
-                if(concerns.is_unread == true){
-                    status = 'Read'
+                if(concerns.is_unread){
+                    status = 'Unread'
+                    check = ''
                 }
-                    concernData += `
-                    <tr class="concern-table-body bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    const concernData = `
+                    <tr class="concern-table-body text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             ${concerns.user.fullname}
                         </th>
@@ -1397,20 +1394,68 @@ $(document).ready(function(){
                         <td class="px-6 py-4">
                             ${concerns.message}
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4" data-status-${concerns.id}>
                             ${status}
                         </td>
                         <td class="px-6 py-4">
-                            <div class="flex gap-2">
-                                <div class="flex items-center mb-4">
-                                    <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                    <label for="default-checkbox" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Read</label>
+                            <div class="flex items-center gap-2">
+                                <div class="flex items-center">
+                                
+                                    <input type="checkbox" ${check} value="" class="check-${concerns.id} w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+
+                                    <label for="check-${concerns.id}" data-concern-id="${concerns.id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Read</label>
+                                
                                 </div>
-                                <span class="font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Message</span>
+                                <span class="btn-reply-concern-${concerns.user.id} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Message</span>
                             </div>
                         </td>
                     </tr>`
-                    $('.user-table-contact-us').html(concernData)
+                    
+                    $('.user-table-contact-us').append(concernData)
+
+                    $(`.check-${concerns.id}`).on('click', function() {
+                        axios.put(`/update-concern-status/${concerns.id}`)
+                            .then((response) => {
+                                const trElement = $('.concern-table-body').find(`[data-status-${concerns.id}]`);
+                                let isUnread = response.data.concern.is_unread;
+                                const statusText = isUnread ? 'Unread' : 'Read';
+                    
+                                trElement.text(statusText);
+                            })
+                            .catch((err) => console.error(err));
+                    });
+                    
+                    $(`.btn-reply-concern-${concerns.user.id}`).on('click', function() {
+                        Swal.fire({
+                            title: 'Reply Concern',
+                            icon: 'info',
+                            input: 'text',
+                            inputLabel: 'Enter your message',
+                            inputPlaceholder: 'Message...',
+                            showConfirmButton: true,
+                            showCancelButton: true,
+                            inputValidator: (value) => {
+                                if (! value){
+                                    return 'You need to enter a message.'
+                                }
+                            }
+                        })
+                        .then((result) => {
+                            const message = result.value
+                            const username = 'Admin'
+                            const receiverHidden = concerns.user.username
+
+                            if(result.isConfirmed){
+                                axios.post('handle-message', {
+                                    message: message,
+                                    username: username,
+                                    receiver_hidden: receiverHidden,
+                                })
+                                .catch(err => console.error(err))
+                            }
+                        })
+                        .catch(err => console.error(err))
+                    })
             })
         }
         else{
