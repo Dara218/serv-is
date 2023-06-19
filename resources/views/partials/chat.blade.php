@@ -5,33 +5,74 @@
             <div class="overflow-x-auto overflow-y-hidden md:overflow-x-hidden">
                 <ol data-simplebar data-simplebar-auto-hide="false" class="flex md:flex-col gap-2 md:h-80" id="agent-list">
                     @foreach ($agents as $agent)
-                        @foreach ( Auth::user()->user_type == 1 ? $agent->chat : $agent->user->chat as $chat)
-                            <li class="flex items-center gap-1 p-1 receiver-el cursor-pointer shadow-md" data-chat-id="{{ $chat->id }}" data-sender="{{ $chat->sender_id }}" data-receiver="{{ $chat->receiver_id }}" {{ Auth::user()->user_type == 1 ? 'data-id=' .$agent->id  : 'data-id=' .$agent->user->id }} data-username="{{ Auth::user()->user_type == 1 ? $agent->username : (Auth::user()->user_type == 3 ? $agent->user->username : (Auth::user()->user_type == 2 ? $agent->availedBy->username : '')) }}">
+                        @if (Auth::user()->user_type == 1)
+                            <li class="flex items-center gap-1 p-1 receiver-el cursor-pointer shadow-md" 
+                                data-chat-id="{{ $agent->id }}"
+                                data-sender="{{ $agent->sender_id }}"
+                                data-receiver="{{ $agent->receiver_id }}"
+                                data-id="{{ $agent->receiver->id }}"
+                                data-username="{{ $agent->receiver->username }}">
+                                <img src="{{ $agent->receiver->userPhoto->profile_picture }}"
+                                    alt="user id photo"
+                                    class="h-8 w-8 receiver-chat-head-click"
+                                    style="border-radius: 50%"
+                                    data-chat-id="{{ $agent->id }}"
+                                    data-sender="{{ $agent->sender_id }}"
+                                    data-receiver="{{ $agent->receiver_id }}"
+                                    data-id="{{ $agent->receiver->id }}"
+                                    data-username="{{ $agent->receiver->username }}"
+                                >
+                                <span class="md:block hidden receiver-chat-heads">
+                                    {{ $agent->receiver->username }}
+                                </span>
+                            </li>
+                        @else
+                            @foreach ($agent->user->chat as $chat)
+                                <li class="flex items-center gap-1 p-1 receiver-el cursor-pointer shadow-md" 
+                                    data-chat-id="{{ $chat->id }}"
+                                    data-sender="{{ $chat->sender_id }}"
+                                    data-receiver="{{ $chat->receiver_id }}"
+                                    data-id="{{ $agent->user->id }}"
+                                    data-username="{{ Auth::user()->user_type == 3 ? $agent->user->username : ($agent->availedBy->username ?? '') }}">
+                                    <img src="{{ $agent->user->userPhoto->profile_picture }}"
+                                        alt="user id photo"
+                                        class="h-8 w-8 receiver-chat-head-click"
+                                        style="border-radius: 50%"
+                                        data-chat-id="{{ $chat->id }}"
+                                        data-sender="{{ $chat->sender_id }}"
+                                        data-receiver="{{ $chat->receiver_id }}"
+                                        data-id="{{ $agent->user->id }}"
+                                        data-username="{{ Auth::user()->user_type == 3 ? $agent->user->username : ($agent->availedBy->username ?? '') }}"
+                                    >
+                                    <span class="md:block hidden receiver-chat-heads">
+                                        {{ $agent->user->username }}
+                                    </span>
+                                </li>
+                            @endforeach
+                        @endif
+                    @endforeach
+
+                    @if (Auth::user()->user_type != 1 && $admins->count() > 0)
+                        @foreach ($admins as $chat)
+                            <li class="flex items-center gap-1 p-1 receiver-el cursor-pointer shadow-md" 
+                            data-chat-id="{{ $chat->id }}" data-sender="{{ $chat->sender_id }}" data-receiver="{{ $chat->receiver_id }}" {{ Auth::user()->user_type != 1 ? 'data-id=' .$chat->sender->id : 'data-id=' .$chat->receiver->id}} {{ Auth::user()->user_type != 1 ? 'data-username=' .$chat->sender->username : 'data-username=' .$chat->receiver->username}}>
                                 <img
-                                    src="https://images.pexels.com/photos/7841717/pexels-photo-7841717.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                    src="{{ $chat->sender->userPhoto->profile_picture }}"
                                     alt="user id photo"
                                     class="h-8 w-8 receiver-chat-head-click"
                                     style="border-radius: 50%"
                                     data-chat-id="{{ $chat->id }}"
                                     data-sender="{{ $chat->sender_id }}"
-                                    data-receiver="{{ $chat->receiver_id }}" {{ Auth::user()->user_type == 1 ? 'data-id=' .$agent->id  : 'data-id=' .$agent->user->id }}
-                                    data-username="{{ Auth::user()->user_type == 1 ? $agent->username : (Auth::user()->user_type == 3 ? $agent->user->username : (Auth::user()->user_type == 2 ? $agent->availedBy->username : '')) }}"
+                                    data-receiver="{{ $chat->receiver_id }}" 
+                                    {{ Auth::user()->user_type != 1 ? 'data-id=' .$chat->sender->id : 'data-id=' .$chat->receiver->id}} 
+                                    {{ Auth::user()->user_type != 1 ? 'data-username=' .$chat->sender->username : 'data-username=' .$chat->receiver->username}}
                                 >
                                 <span class="md:block hidden receiver-chat-heads">
-                                    {{
-                                    Auth::user()->user_type == 3
-                                        ? $agent->user->username
-                                        : (Auth::user()->user_type == 2
-                                        ? $agent->availedBy->username
-                                        : (Auth::user()->user_type == 1
-                                            ? $agent->username
-                                            : '')
-                                        )
-                                    }}
+                                    {{ Auth::user()->user_type != 1 ? $chat->sender->username : $chat->receiver->username}}
                                 </span>
                             </li>
-                        @endforeach
-                    @endforeach
+                        @endforeach 
+                    @endif
 
                     <form class="form-chat-head">
                         @csrf
