@@ -228,9 +228,9 @@ class ProfileController extends Controller
 
         $isExpired = false;
 
-        if($authUser->user_type == 2 || $authUser->user_type == 3)
+        if($authUser->user_type != 1)
         {
-            if($availedPricingPlan->is_expired == true)
+            if($availedPricingPlan && $availedPricingPlan->is_expired == true)
             {
                 $isExpired = true;
             }
