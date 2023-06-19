@@ -107,7 +107,7 @@ class SearchController extends Controller
     }
 
     public function getCustomerConcerns(){
-        $concerns = ContactUs::where('is_unread', true)->with('user')->get();
+        $concerns = ContactUs::with('user')->get();
 
         return response()->json(['concerns' => $concerns]);
     }
