@@ -76,3 +76,13 @@ Breadcrumbs::for('confirm-agents', function(BreadcrumbTrail $trail){
     $trail->parent('home');
     $trail->push('Confirm Agents', route('showConfirmAgentOnNav'));
 });
+
+Breadcrumbs::for('customer-concern', function(BreadcrumbTrail $trail){
+    $trail->parent('home');
+    $trail->push('Customer Concern', route('getCustomerConcerns'));
+});
+
+Breadcrumbs::for('manage-website', function(BreadcrumbTrail $trail){
+    $trail->parent('home');
+    $trail->push('Manage Website', route('showManageWebsite'));
+});
