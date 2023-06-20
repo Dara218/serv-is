@@ -1,6 +1,7 @@
 <x-layout>
     @include('partials.navbar')
         <div class="md:px-16 px-4 mt-16 md:mt-24 flex flex-col gap-8">
+            {{ Breadcrumbs::render('customer-concern') }}
             <div class="flex justify-center px-4">
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-gray-500 dark:text-gray-400">
@@ -23,9 +24,9 @@
                                 </th>
                             </tr>
                         </thead>
-                
+
                         <tbody class="user-table-contact-us"></tbody>
-                
+
                     </table>
                     <p class="no-conncern-search w-full font-semibold isolate-nightmode my-5 text-center hidden">No concerns found.</p>
                     <div class="isolate-nightmode my-5 text-center">
