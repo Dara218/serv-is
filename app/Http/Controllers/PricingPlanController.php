@@ -167,4 +167,8 @@ class PricingPlanController extends Controller
         Alert::success('Success', 'Kindly check your inbox');
         return redirect()->route('index');
     }
+
+    public function getPricingPlan(){
+        return response()->json(PricingPlan::all());
+    }
 }
