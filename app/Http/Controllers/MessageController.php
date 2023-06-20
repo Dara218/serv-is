@@ -31,7 +31,7 @@ class MessageController extends Controller
                           ->where('receiver_id', $sender->id);
                 })->first();
 
-        ModelsMessage::create([
+        $message = ModelsMessage::create([
             'sender_id' => $sender->id,
             'receiver_id' => $receiver->id,
             'message' => $request->message,
@@ -49,7 +49,8 @@ class MessageController extends Controller
             $sender->username,
             $request->message,
             $receiver->id,
-            $chatRoom->id
+            $chatRoom->id,
+            $message->created_at
         ));
 
         $appendMessageContent = [$request->message, $sender->username];

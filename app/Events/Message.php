@@ -19,16 +19,18 @@ class Message implements ShouldBroadcastNow
     public $message;
     public $receiverId;
     public $chatRoomId;
+    public $messageDateTime;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($username, $message, $receiverId, $chatRoomId)
+    public function __construct($username, $message, $receiverId, $chatRoomId, $messageDateTime)
     {
         $this->username = $username;
         $this->message = $message;
         $this->receiverId = $receiverId;
         $this->chatRoomId = $chatRoomId;
+        $this->messageDateTime = $messageDateTime;
     }
 
     /**
@@ -52,7 +54,8 @@ class Message implements ShouldBroadcastNow
         return [
             'username' => $this->username,
             'message' => $this->message,
-            'chatRoom' => $this->chatRoomId
+            'chatRoom' => $this->chatRoomId,
+            'date' => $this->messageDateTime
         ];
     }
 }
