@@ -25,8 +25,6 @@ $(document).ready(function(){
 
     darkmode.isActivated() ? document.documentElement.classList.add('dark-mode') : document.documentElement.classList.remove('dark-mode')
 
-    // new SimpleBar($('.simplebar')[0]);
-
     $('.user_type-options').on('change', function(){
         checkUserType()
     })
@@ -417,10 +415,10 @@ $(document).ready(function(){
                 data.slice(0, allCategories).forEach(function(eachData){
                     $('.categories-container').append(
                         `
-                        <div class="h-full w-full grid-cols-span-1 border border-slate-300 rounded-xl text-center">
+                        <div class="h-auto w-full grid-cols-span-1 border border-slate-300 rounded-xl text-center">
 
                             <div class="bg-slate-200 flex justify-center">
-                                <img src="${eachData.category_photo}" alt="${eachData.type}" class="h-auto w-6/12 py-6">
+                                <img src="${eachData.category_photo}" alt="${eachData.type}" class="h-auto py-6">
                             </div>
 
                             <div class="p-4">
@@ -454,8 +452,10 @@ $(document).ready(function(){
         }
     })
 
+    const serviceContainer = $('.services-container')
+
     $('.view-all-services').on('click', function(){
-        $('.services-container').hide()
+        serviceContainer.hide()
         $('.skeleton-loading').show()
         $.ajax({
             url: 'get-all-agent-service',
@@ -471,14 +471,35 @@ $(document).ready(function(){
     })
 
     function loadServices(data){
-        $('.services-container').show()
-        $('.services-container').empty()
+        serviceContainer.show()
+        serviceContainer.empty()
                 data.forEach(function(eachData)
                 {
-                    $('.services-container').append(
+                    const allReviewsCount = eachData.review.length
+                    let levelCount = 0
+                    let rating = 0
+
+                    $.each(eachData.review, (index, review) => {
+                        const userLevel = review.level
+                        levelCount += userLevel
+                    })
+
+                    rating = Math.floor(levelCount / allReviewsCount)
+
+                    let starRating = '';
+
+                    for (let i = 0; i < rating; i++) {
+                    starRating += `<svg aria-hidden="true" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>First star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+                    }
+
+                    for (let i = rating; i < 5; i++) {
+                    starRating += `<svg aria-hidden="true" class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>First star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+                    }
+
+                    serviceContainer.append(
                         `
                         <div class="p-4 flex flex-col gap-3 border border-slate-300 rounded-xl">
-                            <span>***** star rating here</span>
+                            <span class="flex">${starRating}</span>
                             <div class="flex flex-col">
                                 <span class="font-semibold">${eachData.title}</span>
                                 <small class="text-slate-500">${eachData.service.type.charAt(0).toUpperCase() + eachData.service.type.slice(1).toLowerCase()}</small>
@@ -631,21 +652,31 @@ $(document).ready(function(){
             $('.skeleton-loading').hide()
             results = '<span class="font-semibold text-slate-500">No results found.</span>'
         }
-        $('.services-container').html(results)
+        serviceContainer.html(results)
     }
 
     const username = $('#username-hidden')
     const message = $('#message')
     const receiver = $('#receiver-hidden')
+    const currentChatName = $('.current-chat-name')
+    const receiverChatHead = $('#receiver-chat-head')
+    const chatTextBox = $('.input-message')
+    const formChatHead = $('.form-chat-head')
+    const chatSpinner = $('.chat-spinner')
+    const messageContainer = $('.message-container')
 
     // Click the chat head
     $('.receiver-el').on('click', function(e)
     {
+        $('.initial-chat-text').hide()
+        messageContainer.empty()
+        chatSpinner.show()
+
         const username = $(this).data('username')
-        receiver.val(username)
         const chatRoomId = $(this).data('chat-id')
         var receiverId = $(this).data('receiver')
         var senderId = $(this).data('sender')
+        receiver.val(username)
 
         axios.put(`/update-message-read/${chatRoomId}`, {
             receiverId: receiverId,
@@ -654,10 +685,10 @@ $(document).ready(function(){
         .then(function(response)
         {
             $('.receiver-el').find('.chat-badge-message').hide();
-            $('.current-chat-name').show()
-            $('.input-message').show()
+            currentChatName.show()
+            chatTextBox.show()
             $('.user-id-hidden').val(receiverId)
-            $('#receiver-chat-head').val(username)
+            receiverChatHead.val(username)
 
             if(response.data.remainingTime != 0)
             {
@@ -669,12 +700,12 @@ $(document).ready(function(){
                     daysText = ''
                 }
 
-                $('.current-chat-name').html(`${username} <small class="ml-1">${daysText} ${date.h} hr(s) ${date.i} min(s) left</small>`)
-                $('.form-chat-head').submit() //check minutes always 0
+                currentChatName.html(`${username} <small class="ml-1">${daysText} ${date.h} hr(s) ${date.i} min(s) left</small>`)
+                formChatHead.submit() //check minutes always 0
             }
             else{
-                $('.current-chat-name').text(username)
-                $('.form-chat-head').submit()
+                currentChatName.text(username)
+                formChatHead.submit()
             }
         })
         .catch((err) => console.error(err))
@@ -682,19 +713,20 @@ $(document).ready(function(){
 
     $('.receiver-chat-head-click').on('click', function(e)
     {
+        chatSpinner.show()
         const username = $(this).data('username')
         receiver.val($(e.target).data('username'))
 
-        $('.current-chat-name').show()
-        $('.input-message').show()
+        currentChatName.show()
+        chatTextBox.show()
 
-        $('.current-chat-name').text(username)  // Username of current chat
-        $('#receiver-chat-head').val(username)
+        currentChatName.text(username)  // Username of current chat
+        receiverChatHead.val(username)
 
         var receiverId = $(this).data('receiver')
         $('.user-id-hidden').val(receiverId)
 
-        $('.form-chat-head').submit()
+        formChatHead.submit()
     })
 
     // Sends message
@@ -720,17 +752,17 @@ $(document).ready(function(){
     // Define a variable to keep track of the active chat room
     let activeChatRoom = null
 
-    $('.form-chat-head').on('submit', function(e) {
+    formChatHead.on('submit', function(e) {
         e.preventDefault()
-
+        chatSpinner.hide()
         axios.post('/get-user-chat', {
-            receiver: $('#receiver-chat-head').val(),
+            receiver: receiverChatHead.val(),
             sender: username.val()
         })
         .then(response => {
+
             const responseData = response.data
             $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight)
-            $('.message-container').empty()
             $('.chat-id').val(responseData.chatRoom.id)
             let messageToShow = 10
             const inputMessage = $('.input-message')
@@ -740,7 +772,7 @@ $(document).ready(function(){
             // Load messages when chat room is clicked
             if(responseData.checkIfChatHasAdmin && responseData.userChat.length == 0)
             {
-                $('.message-container').prepend(`
+                messageContainer.prepend(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-full py-2 px-3">
                         Admin chat.
                     </p>
@@ -748,7 +780,7 @@ $(document).ready(function(){
                 inputMessage.prop('disabled', false)
             }
             else if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && (! responseData.confirmNotAgent || responseData.confirmNotAgent) && ! responseData.isAccepted){
-                $('.message-container').html(`
+                messageContainer.html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                         Good day! Please wait for the agent to accept your booking. You'll get notified later on.
                     </p>
@@ -757,7 +789,7 @@ $(document).ready(function(){
             }
             if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && ! responseData.confirmNotAgent && responseData.isAccepted)
             {
-                $('.message-container').html(`
+                messageContainer.html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                         Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="/pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
                     </p>
@@ -766,7 +798,7 @@ $(document).ready(function(){
             }
             if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && responseData.confirmNotAgent && responseData.isAccepted)
             {
-                $('.message-container').html(`
+                messageContainer.html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                         Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
                     </p>
@@ -775,7 +807,7 @@ $(document).ready(function(){
             }
             if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed && responseData.confirmNotAgent && responseData.isAccepted)
             {
-                $('.message-container').html(`
+                messageContainer.html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                         Welcome to Serv-is ${responseData.authenticatedUser}! Thank you for availing my service.
                     </p>
@@ -784,7 +816,7 @@ $(document).ready(function(){
             }
             if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed && ! responseData.confirmNotAgent && responseData.isAccepted)
             {
-                $('.message-container').html(`
+                messageContainer.html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                         Welcome to Serv-is ${responseData.authenticatedUser}! Thank you for availing my service.
                     </p>
@@ -793,8 +825,6 @@ $(document).ready(function(){
             }
             if(responseData.checkIfUserHasAvailed && (! responseData.confirmNotAgent || responseData.confirmNotAgent) && responseData.isAccepted && responseData.isExpired)
             {
-                const messageContainer = $('.message-container')
-
                 let message = `Good day! Your subscription for this plan has been expired. If you want to continue, <a href="/pricing-plan/${$('.user-id-hidden').val()}" class="text-slate-800 font-semibold">subscribe another plan.</a>`
 
                 if(! responseData.confirmNotAgent){
@@ -889,10 +919,11 @@ $(document).ready(function(){
 
         Echo.join(`chat.${chatId}`)
         .listen('.message', (e) => {
+            const date = moment(e.date).fromNow()
             $('.message-container').append(`
                 <small class="font-semibold text-slate-400 mt-2">${e.username}</small>
                 <span class="w-auto col-span-4 message-el bg-slate-300 rounded-full py-2 px-3">${e.message}</span>
-                <small class="font-semibold text-slate-400">3/21/2000, 2 mins ago</small>
+                <small class="font-semibold text-slate-400">${date}</small>
             `)
 
             $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight)
@@ -1400,17 +1431,17 @@ $(document).ready(function(){
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-2">
                                 <div class="flex items-center">
-                                
+
                                     <input type="checkbox" ${check} value="" class="check-${concerns.id} w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
 
                                     <label for="check-${concerns.id}" data-concern-id="${concerns.id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Read</label>
-                                
+
                                 </div>
                                 <span class="btn-reply-concern-${concerns.user.id} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Message</span>
                             </div>
                         </td>
                     </tr>`
-                    
+
                     $('.user-table-contact-us').append(concernData)
 
                     $(`.check-${concerns.id}`).on('click', function() {
@@ -1419,12 +1450,12 @@ $(document).ready(function(){
                                 const trElement = $('.concern-table-body').find(`[data-status-${concerns.id}]`);
                                 let isUnread = response.data.concern.is_unread;
                                 const statusText = isUnread ? 'Unread' : 'Read';
-                    
+
                                 trElement.text(statusText);
                             })
                             .catch((err) => console.error(err));
                     });
-                    
+
                     $(`.btn-reply-concern-${concerns.user.id}`).on('click', function() {
                         Swal.fire({
                             title: 'Reply Concern',
@@ -1463,4 +1494,132 @@ $(document).ready(function(){
         }
     })
     .catch((err) => console.error(err))
+
+    const serviceTableBody = $('.service-table-body')
+    const categoriesTableBody = $('.categories-table-body')
+    let responseCount = 5
+
+    getServicesAdmin(responseCount)
+
+    function getServicesAdmin(responseCount)
+    {
+        axios.get('/api/get-services-admin')
+        .then((response) =>
+        {
+            let maxCount = response.data.length
+            const type = 'service'
+
+            serviceTableBody.empty()
+            tableResponse(response, responseCount, maxCount, type)
+        })
+        .catch((err) => console.error(err))
+    }
+
+    // getCategoriesAdmin(responseCount)
+
+    // function getCategoriesAdmin(responseCount){
+
+    //     axios.get('/api/get-categories')
+    //     .then((response) =>
+    //     {
+    //         let maxCount = response.data.length
+    //         const type = 'category'
+
+    //         categoriesTableBody.empty()
+    //         tableResponse(response, responseCount, maxCount, type)
+    //     })
+    //     .catch((err) => console.error(err))
+    // }
+
+    getPricingPlan(responseCount)
+    const pricingPlanTableBody = $('.pricing-plan-table-body')
+
+    function getPricingPlan(responseCount)
+    {
+        axios.get('/api/get-pricing-plan')
+        .then((response) =>
+        {
+            let maxCount = response.data.length
+            const type = 'pricing-plan'
+
+            pricingPlanTableBody.empty()
+            tableResponse(response, responseCount, maxCount, type)
+        })
+        .catch((err) => console.error(err))
+    }
+
+    getReward(responseCount)
+    const rewardTableBody = $('.rewards-table-body')
+
+    function getReward(responseCount)
+    {
+        axios.get('/api/get-rewards')
+        .then((response) =>
+        {
+            let maxCount = response.data.length
+            const type = 'rewards'
+
+            rewardTableBody.empty()
+            tableResponse(response, responseCount, maxCount, type)
+        })
+        .catch((err) => console.error(err))
+    }
+
+    function tableResponse(response, responseCount, maxCount, type)
+    {
+        $.each(response.data.slice(0, responseCount), (index, eachResponse) =>
+            {
+                let tableData = ''
+                if(type === 'rewards'){
+                    tableData = `
+                        <td class="text-center px-6 py-4">${eachResponse.points}</td>
+                        <td class="text-center px-6 py-4">${eachResponse.description}</td>`
+                }
+                const tableBody = `
+                    <tr class="${type}-table-body data-${type}-count="${maxCount}" text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            ${type === 'rewards' ? eachResponse.title : eachResponse.type}
+                        </th>
+                        ${tableData}
+                        <td class="text-center px-6 py-4">
+                            <div class="flex items-center justify-center gap-2">
+                                <span class="btn-edit-${type}-${eachResponse.id} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Edit</span>
+
+                                <span class="btn-delete-${type}-${eachResponse.id} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Delete</span>
+                            </div>
+                        </td>
+                    </tr>
+                    `
+                $(`.see-all-${type}-btn-parent`).html(`<span class="btn-see-all-${type} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">See All</span>`)
+
+                if(type === 'category'){
+                    categoriesTableBody.append(tableBody)
+                }
+                if(type === 'service'){
+                    serviceTableBody.append(tableBody)
+                }
+                if(type === 'pricing-plan'){
+                    pricingPlanTableBody.append(tableBody)
+                }
+                if(type === 'rewards'){
+                    rewardTableBody.append(tableBody)
+                }
+            })
+    }
+
+    $(document).on('click', '.btn-see-all-category', function() {
+        let maxCount = $('.category-table-body').data('category-count')
+        getCategoriesAdmin(maxCount)
+    })
+
+    $(document).on('click', '.btn-see-all-service', function() {
+        let maxCount = $('.service-table-body').data('service-count')
+        getServicesAdmin(maxCount)
+    })
+
+    $(document).on('click', '.btn-see-all-reward', function() {
+        let maxCount = $('.reward-table-body').data('reward-count')
+        getRewardsAdmin(maxCount)
+    })
+
 })
