@@ -3,10 +3,10 @@
         <div class="flex flex-col gap-1 col-span-1 bg-slate-200 p-3 shadow-md w-full overflow-hidden h-32 md:h-full">
             <span class="font-semibold">Chats</span>
             <div class="overflow-x-auto overflow-y-hidden md:overflow-x-hidden">
-                <ol data-simplebar data-simplebar-auto-hide="false" class="flex md:flex-col gap-2 md:h-80" id="agent-list">
+                <ol class="flex md:flex-col gap-2 md:h-80" id="agent-list">
                     @foreach ($agents as $agent)
                         @if (Auth::user()->user_type == 1)
-                            <li class="flex items-center gap-1 p-1 receiver-el cursor-pointer shadow-md" 
+                            <li class="flex items-center gap-1 p-1 receiver-el cursor-pointer shadow-md"
                                 data-chat-id="{{ $agent->id }}"
                                 data-sender="{{ $agent->sender_id }}"
                                 data-receiver="{{ $agent->receiver_id }}"
@@ -28,7 +28,7 @@
                             </li>
                         @else
                             @foreach ($agent->user->chat as $chat)
-                                <li class="flex items-center gap-1 p-1 receiver-el cursor-pointer shadow-md" 
+                                <li class="flex items-center gap-1 p-1 receiver-el cursor-pointer shadow-md"
                                     data-chat-id="{{ $chat->id }}"
                                     data-sender="{{ $chat->sender_id }}"
                                     data-receiver="{{ $chat->receiver_id }}"
@@ -54,7 +54,7 @@
 
                     @if (Auth::user()->user_type != 1 && $admins->count() > 0)
                         @foreach ($admins as $chat)
-                            <li class="flex items-center gap-1 p-1 receiver-el cursor-pointer shadow-md" 
+                            <li class="flex items-center gap-1 p-1 receiver-el cursor-pointer shadow-md"
                             data-chat-id="{{ $chat->id }}" data-sender="{{ $chat->sender_id }}" data-receiver="{{ $chat->receiver_id }}" {{ Auth::user()->user_type != 1 ? 'data-id=' .$chat->sender->id : 'data-id=' .$chat->receiver->id}} {{ Auth::user()->user_type != 1 ? 'data-username=' .$chat->sender->username : 'data-username=' .$chat->receiver->username}}>
                                 <img
                                     src="{{ $chat->sender->userPhoto->profile_picture }}"
@@ -63,15 +63,15 @@
                                     style="border-radius: 50%"
                                     data-chat-id="{{ $chat->id }}"
                                     data-sender="{{ $chat->sender_id }}"
-                                    data-receiver="{{ $chat->receiver_id }}" 
-                                    {{ Auth::user()->user_type != 1 ? 'data-id=' .$chat->sender->id : 'data-id=' .$chat->receiver->id}} 
+                                    data-receiver="{{ $chat->receiver_id }}"
+                                    {{ Auth::user()->user_type != 1 ? 'data-id=' .$chat->sender->id : 'data-id=' .$chat->receiver->id}}
                                     {{ Auth::user()->user_type != 1 ? 'data-username=' .$chat->sender->username : 'data-username=' .$chat->receiver->username}}
                                 >
                                 <span class="md:block hidden receiver-chat-heads">
                                     {{ Auth::user()->user_type != 1 ? $chat->sender->username : $chat->receiver->username}}
                                 </span>
                             </li>
-                        @endforeach 
+                        @endforeach
                     @endif
 
                     <form class="form-chat-head">
@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        <div data-simplebar data-simplebar-auto-hide="false" class="chat-container col-span-2 pb-12 overflow-y-auto overflow-x-hidden relative h-5/6 md:h-full p-2">
+        <div data-simplebar data-simplebar-auto-hide="false" class="chat-container col-span-2 pb-4 overflow-y-auto overflow-x-hidden relative h-5/6 md:h-full">
             <span class="font-semibold mb-2 sticky top-0 bg-slate-100 w-full shadow-md flex justify-center items-center current-chat-name py-2" style="display: none;">Name of current chat</span>
             <span class="font-semibold mb-2 sticky top-0 w-full flex justify-center items-center gap-1 cursor-pointer load-more" style="display: none;">
                 <span>Load More</span>
@@ -94,18 +94,20 @@
                     arrow_upward
                 </span>
             </span>
-            <div class="mt-6">
+            <div class="mt-6 h-96">
                 <div class="flex flex-col">
+                    @include('partials.chat-spinner')
                     <div class="flex flex-col message-container">
                         <span class="username-el"></span>
-                        <span class="w-auto col-span-4 message-el text-gray-500">Choose a conversation.
+
+                        <span class="initial-chat-text w-auto col-span-4 message-el text-gray-500">Choose a conversation.
                         </span>
                         {{-- <small class="font-semibold text-slate-400">3/21/2000, 2 mins ago</small> --}}
                     </div>
                 </div>
             </div>
 
-            <form class="w-full mt-6 sticky -bottom-10 form-chat">
+            <form class="bottom-4 form-chat mt-14 sticky w-auto">
                 @csrf
                 <div class="flex">
                     <input type="hidden" name="username" value="{{ Auth::user()->id }}">
