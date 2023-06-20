@@ -72,4 +72,8 @@ class HomeController extends Controller
             ]);
     }
 
+    public function showManageWebsite(){
+        return view('components.home-admin.manage-website');
+    }
+
 }
