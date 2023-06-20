@@ -57,25 +57,15 @@
 
                         <div class="border border-slate-500 w-full my-8"></div>
 
-                        <div class="flex flex-col gap-4">
-                            <span class="font-bold text-2xl text-slate-500">FaQs</span>
+                        @foreach ($faqs as $faq)
+                            <div class="flex flex-col gap-4">
+                                <span class="font-bold text-2xl text-slate-500">{{ $faq->ques_title }}</span>
 
-                            {{-- Foreach here --}}
-                            <div class="border border-slate rounded-md p-5 flex flex-col gap-3">
-                                <span class="font-semibold text-slate-600">Can I modify or cancel my bookings?</span>
-                                <p>Yes, you can modify or cancel your booking on our service booking application. Simply go to your account, locate your booking, and follow the prompts to modify or cancel it.</p>
+                                <div class="border border-slate rounded-md p-5 flex flex-col gap-3">
+                                    <span class="font-semibold text-slate-600">{{ $faq->answer }}</p>
+                                </div>
                             </div>
-
-                            <div class="border border-slate rounded-md p-5 flex flex-col gap-3">
-                                <span class="font-semibold text-slate-600">What types of services are available on the application?</span>
-                                <p>We offer a wide range of services on our service booking application such as home cleaning, plumbing, electrical, painting, and many more. You can browse our services and choose the one that best fits your needs.</p>
-                            </div>
-
-                            <div class="border border-slate rounded-md p-5 flex flex-col gap-3">
-                                <span class="font-semibold text-slate-600">Are there any additional charges or fees associated with my booking?</span>
-                                <p>Any additional charges or fees associated with your booking will be clearly stated during the booking process. You can review the charges and fees before finalizing your booking.</p>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
