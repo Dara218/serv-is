@@ -18,7 +18,7 @@
                     </button>
                 </div>
 
-                <form action="{{ route('editProfile') }}" method="post" class="w-full md:w-1/2" enctype="multipart/form-data">
+                <form action="{{ route('updateProfile') }}" method="post" class="w-full md:w-1/2" enctype="multipart/form-data">
                     @csrf
 
                     @method('put')
