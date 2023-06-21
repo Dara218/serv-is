@@ -406,7 +406,8 @@ $(document).ready(function(){
     getCategories()
 
     let allCategories = 6
-    async function getCategories(){
+    function getCategories()
+    {
         $.ajax({
             url: '/api/get-categories',
             method: 'get',
@@ -415,10 +416,10 @@ $(document).ready(function(){
                 data.slice(0, allCategories).forEach(function(eachData){
                     $('.categories-container').append(
                         `
-                        <div class="h-auto w-full grid-cols-span-1 border border-slate-300 rounded-xl text-center">
+                        <div class="overflow-hidden h-auto w-full grid-cols-span-1 border border-slate-300 rounded-xl text-center">
 
-                            <div class="bg-slate-200 flex justify-center">
-                                <img src="${eachData.category_photo}" alt="${eachData.type}" class="h-auto py-6">
+                            <div class="mix bg-slate-200 flex justify-center">
+                                <img src="${eachData.category_photo}" alt="${eachData.type}" class="logo h-auto py-6">
                             </div>
 
                             <div class="p-4">
@@ -470,49 +471,6 @@ $(document).ready(function(){
         })
     })
 
-    function loadServices(data){
-        serviceContainer.show()
-        serviceContainer.empty()
-                data.forEach(function(eachData)
-                {
-                    const allReviewsCount = eachData.review.length
-                    let levelCount = 0
-                    let rating = 0
-
-                    $.each(eachData.review, (index, review) => {
-                        const userLevel = review.level
-                        levelCount += userLevel
-                    })
-
-                    rating = Math.floor(levelCount / allReviewsCount)
-
-                    let starRating = '';
-
-                    for (let i = 0; i < rating; i++) {
-                    starRating += `<svg aria-hidden="true" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>First star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
-                    }
-
-                    for (let i = rating; i < 5; i++) {
-                    starRating += `<svg aria-hidden="true" class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>First star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
-                    }
-
-                    serviceContainer.append(
-                        `
-                        <div class="p-4 flex flex-col gap-3 border border-slate-300 rounded-xl">
-                            <span class="flex">${starRating}</span>
-                            <div class="flex flex-col">
-                                <span class="font-semibold">${eachData.title}</span>
-                                <small class="text-slate-500">${eachData.service.type.charAt(0).toUpperCase() + eachData.service.type.slice(1).toLowerCase()}</small>
-                            </div>
-                            <div class="flex gap-2 items-center">
-                                <img src="${eachData.user.user_photo.profile_picture}" alt="" class="h-[50px] rounded-full">
-                                <span class="text-slate-500">${eachData.user.fullname.charAt(0).toUpperCase() + eachData.user.fullname.slice(1).toLowerCase()}</span>
-                            </div>
-                        </div>
-                    `)
-                })
-    }
-
     $('.btn-add-service-title').on('click', function()
     {
         const agentServiceId = $('#current-user-id').data('user-service')
@@ -559,13 +517,7 @@ $(document).ready(function(){
         .catch((err) => console.error(err))
     })
 
-    $('.btn-update-service').on('click', function(){
-
-    })
-
-    Fancybox.bind('[data-fancybox="valid-photos-gallery"]', {
-        // custom options
-    });
+    Fancybox.bind('[data-fancybox="valid-photos-gallery"]');
 
     $('.service-type-dropdown-item').on('click', function(){
         var serviceCategoryData = $(this).data('service-type')
@@ -631,28 +583,62 @@ $(document).ready(function(){
     function showSearchResults(response,  results){
         if(response.agentService.length > 0)
         {
-            response.agentService.forEach(function(eachAgentService)
-            {
-                results += `
-                    <div class="p-4 flex flex-col gap-3 border border-slate-300 rounded-xl">
-                        <span>***** star rating here</span>
-                        <div class="flex flex-col">
-                            <span class="font-semibold">${eachAgentService.title}</span>
-                            <small class="text-slate-500">${eachAgentService.service.type}</small>
-                        </div>
-                        <div class="flex gap-2 items-center">
-                                <img src="${eachAgentService.user.user_photo.profile_picture}" alt="" class="h-[50px] rounded-full">
-                                <span class="text-slate-500">${eachAgentService.user.fullname.charAt(0).toUpperCase() + eachAgentService.user.fullname.slice(1).toLowerCase()}</span>
-                        </div>
-                    </div>
-                `
-            })
+            loadServices(response.agentService)
         }
         else{
             $('.skeleton-loading').hide()
-            results = '<span class="font-semibold text-slate-500">No results found.</span>'
+            serviceContainer.html('<span class="font-semibold text-slate-500">No results found.</span>')
         }
-        serviceContainer.html(results)
+    }
+
+    function showStarRating(eachData, allReviewsCount)
+    {
+        let levelCount = 0
+        let rating = 0
+
+        $.each(eachData.review, (index, review) => {
+            const userLevel = review.level
+            levelCount += userLevel
+        })
+
+        rating = Math.floor(levelCount / allReviewsCount)
+
+        let starRating = '';
+
+        for (let i = 0; i < rating; i++) {
+            starRating += `<svg aria-hidden="true" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>First star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+        }
+
+        for (let i = rating; i < 5; i++) {
+            starRating += `<svg aria-hidden="true" class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>First star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+        }
+
+        serviceContainer.append(
+            `
+            <div class="p-4 flex flex-col gap-3 border border-slate-300 rounded-xl">
+                <span class="flex">${starRating}</span>
+                <div class="flex flex-col">
+                    <span class="font-semibold">${eachData.title}</span>
+                    <small class="text-slate-500">${eachData.service.type.charAt(0).toUpperCase() + eachData.service.type.slice(1).toLowerCase()}</small>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <img src="${eachData.user.user_photo.profile_picture}" alt="" class="-z-10 h-[50px] rounded-full">
+                    <span class="text-slate-500">${eachData.user.fullname.charAt(0).toUpperCase() + eachData.user.fullname.slice(1).toLowerCase()}</span>
+                </div>
+            </div>
+        `)
+    }
+
+    function loadServices(data)
+    {
+        serviceContainer.show()
+        serviceContainer.empty()
+
+        data.forEach(function(eachData)
+        {
+            const allReviewsCount = eachData.review.length
+            showStarRating(eachData, allReviewsCount)
+        })
     }
 
     const username = $('#username-hidden')
@@ -1572,12 +1558,16 @@ $(document).ready(function(){
                 let tableData = ''
                 if(type === 'rewards'){
                     tableData = `
-                        <td class="text-center px-6 py-4">${eachResponse.points}</td>
-                        <td class="text-center px-6 py-4">${eachResponse.description}</td>`
+                        <td id="${eachResponse.type}-${eachResponse.id}-tr2" class="text-center px-6 py-4">${eachResponse.description}</td>
+                        <td id="${eachResponse.type}-${eachResponse.id}-tr3" class="text-center px-6 py-4">${eachResponse.points}</td>`
                 }
+                if(type === 'pricing-plan'){
+                    tableData = `<td id="${eachResponse.type}-${eachResponse.id}-tr2" class="text-center px-6 py-4">${eachResponse.price}</td>`
+                }
+
                 const tableBody = `
                     <tr class="${type}-table-body data-${type}-count="${maxCount}" text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        <th scope="row" id="${eachResponse.type}-${eachResponse.id}" class="isolate-nightmode px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             ${type === 'rewards' ? eachResponse.title : eachResponse.type}
                         </th>
                         ${tableData}
@@ -1588,9 +1578,86 @@ $(document).ready(function(){
                                 <span class="btn-delete-${type}-${eachResponse.id} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Delete</span>
                             </div>
                         </td>
-                    </tr>
-                    `
+                    </tr>`
+
                 $(`.see-all-${type}-btn-parent`).html(`<span class="btn-see-all-${type} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">See All</span>`)
+
+                $(`.${type}-table-body`).on('click', `.btn-edit-${type}-${eachResponse.id}`, function()
+                {
+                    let htmlInput = ''
+
+                    if(type !== 'rewards'){
+                        if(type === 'pricing-plan'){
+                            htmlInput =
+                            `<input id="input-1" class="swal2-input" placeholder="Enter new value" value="${eachResponse.type}">`+
+                            `<input id="input-2" class="swal2-input" placeholder="Enter new value" value="${eachResponse.price}">`
+                        }
+                        else{
+                            htmlInput = `<input id="input-1" class="swal2-input" placeholder="Enter new value" value="${eachResponse.type}">`
+                        }
+                    }
+                    else{
+                        htmlInput =
+                        `<input id="input-1" class="swal2-input" placeholder="Enter new value" value="${eachResponse.title}">`+
+                        `<input id="input-2" class="swal2-input" placeholder="Enter new value" value="${eachResponse.description}">`+
+                        `<input id="input-3" class="swal2-input" placeholder="Enter new value" value="${eachResponse.points}">`
+                    }
+
+                    const input1Value = $(`#input-1`).val();
+                    const input2Value = $(`#input-2`).val();
+                    const input3Value = $(`#input-3`).val();
+
+                    Swal.fire({
+                        icon: 'info',
+                        title: `Update ${type}`,
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        focusConfirm: true,
+                        html: htmlInput,
+                        preConfirm: () => {
+                            if (input1Value == '' || input2Value == '' || input3Value == '') {
+                                swal.showValidationMessage("Enter a value in both fields")
+                            }
+                        }
+                    })
+                    .then(result => {
+                        if(result.isConfirmed)
+                        {
+                            const data = {
+                                title: $(`#input-1`).val(),
+                                description: $(`#input-2`).val(),
+                                points: $(`#input-3`).val(),
+                                type: type
+                            }
+
+                            axios.put(`/update-${type}/${eachResponse.id}`, data)
+                            .then(response => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: `${type} successfully updated`,
+                                    showConfirmButton: true
+                                })
+                                .then(result => {
+                                    let type = response.data.type
+                                    if(type === 'service'){
+                                        $(`#${eachResponse.type}-${eachResponse.id}`).text(response.data.title)
+                                    }
+                                    if(type === 'pricing-plan'){
+                                        $(`#${eachResponse.type}-${eachResponse.id}`).text(response.data.title)
+                                        $(`#${eachResponse.type}-${eachResponse.id}-tr2`).text(response.data.description)
+                                    }
+                                    if(type === 'rewards'){
+                                        $(`#${eachResponse.type}-${eachResponse.id}`).text(response.data.title)
+                                        $(`#${eachResponse.type}-${eachResponse.id}-tr2`).text(response.data.description)
+                                        $(`#${eachResponse.type}-${eachResponse.id}-tr3`).text(response.data.points)
+                                    }
+                                })
+                                .catch(err => console.error(err))
+                            })
+                            .catch(err => console.error(err))
+                        }
+                    })
+                })
 
                 if(type === 'category'){
                     categoriesTableBody.append(tableBody)
