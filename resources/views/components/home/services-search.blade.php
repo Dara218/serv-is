@@ -15,7 +15,7 @@
                     <button type="button" class="inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">All categories</button>
                 </li>
                 @foreach ($services as $service)
-                    <li class="z-10 service-type-dropdown-item" data-service-type="{{ $service->type }}">
+                    <li class="service-type-dropdown-item" data-service-type="{{ $service->type }}">
                         <button type="button" class="inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">{{ $service->type }}</button>
                     </li>
                 @endforeach
