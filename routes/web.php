@@ -13,6 +13,7 @@ use App\Http\Controllers\PricingPlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\RewardController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SentRequestController;
 use App\Http\Controllers\ServiceController;
@@ -40,7 +41,7 @@ Route::post('/store-check-in', [CheckInController::class, 'storeCheckIn'])->name
 Route::middleware(['auth'])->group(function()
 {
     Route::get('/edit-profile', [HomeController::class, 'showEditProfile'])->name('showEditProfile');
-    Route::put('/edit-profile-process', [ProfileController::class, 'update'])->name('editProfile');
+    Route::put('/edit-profile-process', [ProfileController::class, 'update'])->name('updateProfile');
     Route::get('/my-wallet', [ProfileController::class, 'showWallet'])->name('showWallet');
     Route::get('/service-provider', [ProfileController::class, 'showServiceProvider'])->name('showServiceProvider');
     Route::get('/employee-profile/{user:username}', [ProfileController::class, 'showEmployeeProfile'])->name('showEmployeeProfile');
@@ -111,4 +112,7 @@ Route::middleware(['auth', 'user-access:1'])->group(function()
     Route::get('/manage-customer-concern', [ContactUsController::class, 'index'])->name('showCustomerConcern');
     Route::put('/update-concern-status/{id}', [ContactUsController::class, 'update'])->name('updateConcernStatus');
     Route::get('/manage-website', [HomeController::class, 'showManageWebsite'])->name('showManageWebsite');
+    Route::put('/update-service/{id}', [ServiceController::class, 'updateService'])->name('updateService');
+    Route::put('/update-pricing-plan/{id}', [PricingPlanController::class, 'updatePricingPlan'])->name('updatePricingPlan');
+    Route::put('/update-rewards/{id}', [RewardController::class, 'updateReward'])->name('updateReward');
 });
