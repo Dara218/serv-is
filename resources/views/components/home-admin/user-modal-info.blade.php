@@ -1,6 +1,6 @@
-@props(['type', 'number_type', 'userType'])
+@props(['type', 'number_type', 'userType', 'user'])
 
-<div class="p-4 h-auto grid-cols-span-1 border cursor-pointer border-slate-300 rounded-xl text-center flex justify-between hover:border-slate-600">
+<div data-modal-target="{{ $type }}-modal" data-modal-toggle="{{ $type }}-modal" class="p-4 h-auto grid-cols-span-1 border cursor-pointer border-slate-300 rounded-xl text-center flex justify-between hover:border-slate-600">
     <div class="flex flex-col text-left ">
         <span class="font-bold text-2xl text-slate-600">{{ ucwords($type) }}</span>
         <span class="font-semibold text-xltext-slate-500">No. of {{ $type }}: {{ $number_type }}</span>
@@ -21,3 +21,5 @@
         @endif
     </div>
 </div>
+
+<x-home-admin.user-2nd-modal :user="$user" type="{{ $type }}" number_type="{{ $number_type }}" userType="{{ $userType }}"/>
