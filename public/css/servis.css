@@ -11,8 +11,16 @@
     flex: 0 0 auto;
 }
 
+.darkmode--activated .logo{
+    mix-blend-mode: normal !important;
+}
+
+.darkmode--activated .mix{
+    mix-blend-mode: difference !important;
+}
+
 .darkmode--activated img{
-    isolation: isolate !important;
+    mix-blend-mode: difference;
 }
 
 .darkmode--activated .isolate-nightmode{
