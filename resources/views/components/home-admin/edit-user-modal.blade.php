@@ -16,11 +16,11 @@
             <div class="p-6 space-y-6 grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div class="grid-cols-span-1 flex flex-col gap-4">
                     @if($user->user_type != 2)
-                        <x-home-admin.user-modal-info userType="{{ $user->user_type }}" type="transaction" number_type="{{ $user->transaction->count() }}"/>
-                        <x-home-admin.user-modal-info userType="{{ $user->user_type }}" type="review" number_type="{{ $user->review->count() }}"/>
-                        <x-home-admin.user-modal-info userType="{{ $user->user_type }}" type="agenda" number_type="{{ $user->agenda->count() }}"/>
+                        <x-home-admin.user-modal-info :user="$user" userType="{{ $user->user_type }}" type="transaction" number_type="{{ $user->transaction->count() }}"/>
+                        <x-home-admin.user-modal-info :user="$user" userType="{{ $user->user_type }}" type="review" number_type="{{ $user->review->count() }}"/>
+                        <x-home-admin.user-modal-info :user="$user" userType="{{ $user->user_type }}" type="agenda" number_type="{{ $user->agenda->count() }}"/>
                     @else
-                        <x-home-admin.user-modal-info userType="{{ $user->user_type }}" type="transaction" number_type="{{ $user->transaction->count() }}"/>
+                        <x-home-admin.user-modal-info :user="$user" userType="{{ $user->user_type }}" type="transaction" number_type="{{ $user->transaction->count() }}"/>
 
                         <a href="#" class="p-10 h-auto grid-cols-span-1 border border-slate-300 rounded-xl text-center flex justify-between hover:border-slate-600">
                             <div class="flex flex-col text-left ">
@@ -34,13 +34,9 @@
                     @endif
                 </div>
                 <div class="grid-cols-span-1">
-                    <x-register.register-inputs useraddress="{{ $user->serviceAddress->address }}" fullname="{{ $user->fullname }}" username="{{ $user->username }}" email_address="{{ $user->email_address }}" contact_no="{{ $user->contact_no }}" region="{{ $user->region }}"/>
-                        <div class="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
-                            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Update</button>
-                            <button type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Cancel</button>
-                        </div>
+                    <x-register.register-inputs fromAdmin="{{ true }}" useraddress="{{ $user->serviceAddress->address }}" fullname="{{ $user->fullname }}" username="{{ $user->username }}" email_address="{{ $user->email_address }}" contact_no="{{ $user->contact_no }}" region="{{ $user->region }}"/>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
 </div>
