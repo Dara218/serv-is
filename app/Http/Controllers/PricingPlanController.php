@@ -171,4 +171,13 @@ class PricingPlanController extends Controller
     public function getPricingPlan(){
         return response()->json(PricingPlan::all());
     }
+
+    public function updatePricingPlan($id, Request $request){
+        PricingPlan::find($id)->update([
+            'type' => $request->title,
+            'price' => $request->description
+        ]);
+
+        return response()->json($request);
+    }
 }
