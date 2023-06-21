@@ -9,7 +9,7 @@
             (Auth::user()->user_type == 1 ? route('indexAdmin') : ''))}}"
             class="flex items-center">
 
-            <img src="{{ asset('images/servis_logo.png') }}" class="h-8 mr-3" alt="Flowbite Logo">
+            <img src="{{ asset('images/servis_logo.png') }}" class="logo h-8 mr-3" alt="Serv-is Logo">
             <span class="hidden md:block self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Serv &#9679; is</span>
         </a>
         <div class="flex md:order-2">
