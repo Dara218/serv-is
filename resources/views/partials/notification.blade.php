@@ -1,13 +1,13 @@
 <div class="flex gap-1">
 
-        <span id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="notification-bell relative material-symbols-outlined focus:ring-4 focus:outline-none font-medium rounded-lg px-4 py-2.5 text-center inline-flex items-center cursor-pointer" type="button">
-            notifications
-            @if ($notificationCount >= 1)
-                <span class="notif-count absolute top-0 right-1 bg-red-600 text-white p-1 rounded-full" style="font-size:0.5rem;">{{ $notificationCount }}</span>
-            @endif
+    <span id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="notification-bell relative material-symbols-outlined focus:ring-4 focus:outline-none font-medium rounded-lg px-4 py-2.5 text-center inline-flex items-center cursor-pointer" type="button">
+        notifications
+        @if ($notificationCount >= 1)
+            <span class="notif-count absolute top-0 right-1 bg-red-600 text-white p-1 rounded-full" style="font-size:0.5rem;">{{ $notificationCount }}</span>
+        @endif
 
-            <span class="notif-count-hidden hidden absolute top-0 right-1 bg-red-600 text-white p-1 rounded-full" style="font-size:0.5rem;">{{ $notificationCount }}</span>
-        </span>
+        <span class="notif-count-hidden hidden absolute top-0 right-1 bg-red-600 text-white p-1 rounded-full" style="font-size:0.5rem;">{{ $notificationCount }}</span>
+    </span>
 
     <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">{{ ucwords(Auth::user()->fullname) }}<svg class="w-5 h-5 ml-1" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button>
 
@@ -16,7 +16,6 @@
         <ul class="flex flex-col gap-2 w-full p-2 text-sm text-gray-700 dark:text-gray-200 notification-parent h-auto" aria-labelledby="dropdownDefaultButton">
 
             @foreach ($notifications as $notification)
-            {{-- <span>{{ $notification->from_user_id }}</span> --}}
 
                 @if ($notification->status == 1 && ($notification->type == 1 || $notification->type == 4))
                     <li class="notif-item flex justify-between py-4 px-2 {{ $notification->is_unread == true ? 'bg-slate-100' : 'bg-slate-200' }}">
@@ -43,7 +42,7 @@
                             </div>
                         </div>
                         <div class="flex gap-4 justify-center">
-                            <span data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" data-from-user-id="{{ $notification->from_user_id }}" data-to-user-id="{{ $notification->user_id }}" data-type="{{ $notification->type }}" class="material-symbols-outlined cursor-pointer bnt-accept-notif">
+                            <span data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" data-from-user-id="{{ $notification->from_user_id }}" data-to-user-id="{{ $notification->user_id }}" data-type="{{ $notification->type }}" class="material-symbols-outlined cursor-pointer btn-accept-notif">
                                 check_circle
                             </span>
                             <span data-id="{{ $notification->id }}" data-username="{{ $notification->username }}" data-message="{{ $notification->message }}" data-from-user-id="{{ $notification->from_user_id }}" data-to-user-id="{{ $notification->user_id }}" data-type="{{ $notification->type }}" class="material-symbols-outlined cursor-pointer btn-reject-notif">
