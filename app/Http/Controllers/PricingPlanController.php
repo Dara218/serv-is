@@ -6,6 +6,7 @@ use App\Events\NotificationEvent;
 use App\Events\NotificationMessageBadgeEvent;
 use App\Models\AvailedPricingPlan;
 use App\Models\AvailedUser;
+use App\Models\Chat;
 use App\Models\Notification;
 use App\Models\PricingPlan;
 use App\Models\SentRequest;
@@ -131,6 +132,15 @@ class PricingPlanController extends Controller
         $notificationMessage = "$authUser->username requested to avail your service.";
         $notificationType = 1;
 
+        $checkAlreadyAvailedUser = AvailedUser::where('availed_by', $authUser->id)
+                                            ->where('availed_to', $user->id)
+                                            ->exists();
+
+        if($checkAlreadyAvailedUser){
+            Alert::info('Subscription', 'You have already availed this agent. Try updating your subscription.');
+            return back();
+        }
+
         $notification = Notification::create([
             'user_id' => $user->id,
             'from_user_id' => $authUser->id,
@@ -149,6 +159,11 @@ class PricingPlanController extends Controller
             $notification->id,
             $authUser->id
         ));
+
+        Chat::create([
+            'sender_id' => $user->id,
+            'receiver_id' => $authUser->id
+        ]);
 
         AvailedUser::create([
             'availed_by' => $authUser->id,
@@ -174,6 +189,15 @@ class PricingPlanController extends Controller
 
     public function updatePricingPlan($id, Request $request){
         PricingPlan::find($id)->update([
+            'type' => $request->title,
+            'price' => $request->description
+        ]);
+
+        return response()->json($request);
+    }
+
+    public function storePricingPlan(Request $request){
+        PricingPlan::create([
             'type' => $request->title,
             'price' => $request->description
         ]);
