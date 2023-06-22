@@ -115,4 +115,7 @@ Route::middleware(['auth', 'user-access:1'])->group(function()
     Route::put('/update-service/{id}', [ServiceController::class, 'updateService'])->name('updateService');
     Route::put('/update-pricing-plan/{id}', [PricingPlanController::class, 'updatePricingPlan'])->name('updatePricingPlan');
     Route::put('/update-rewards/{id}', [RewardController::class, 'updateReward'])->name('updateReward');
+    Route::post('/store-service', [ServiceController::class, 'storeService'])->name('storeService');
+    Route::post('/store-pricing-plan', [PricingPlanController::class, 'storePricingPlan'])->name('storePricingPlan');
+    Route::post('/store-rewards', [RewardController::class, 'storeReward'])->name('storeReward');
 });
