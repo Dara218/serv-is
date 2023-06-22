@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Events\CommentRatingEvent;
 use App\Events\NotificationEvent;
+use App\Models\AvailedPricingPlan;
 use App\Models\Notification;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ReviewController extends Controller
 {
@@ -41,6 +43,7 @@ class ReviewController extends Controller
 
         $notificationMessage = "$user->username has posted a review on your service.";
         $notificationType = 2;
+
         $notification = Notification::create([
             'user_id' => $request->agent_id, // to
             'from_user_id' => $user->id, // from
@@ -60,6 +63,17 @@ class ReviewController extends Controller
             $user->id
         ));
 
+        $this->updateReview($request, $user);
+
+        Alert::success('Success', 'Review successfully added.');
         return back();
+    }
+
+    public function updateReview($request, $user){
+        AvailedPricingPlan::where('availed_to_id', $request->agent_id)
+                            ->where('availed_by_id', $user->id)
+                            ->update([
+                                'has_review' => true
+                            ]);
     }
 }
