@@ -9,9 +9,8 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class AddressController extends Controller
 {
-    public function storeAddress(Request $request){
-        // add delete function on secondary address
-        // add what to see when no address is present
+    public function storeAddress(Request $request)
+    {
         ServiceAddress::create([
             'user_id' => Auth::user()->id,
             'address' => $request->address,
@@ -23,8 +22,8 @@ class AddressController extends Controller
         return back();
     }
 
-    public function updateChangeAddress(Request $request){
-
+    public function updateChangeAddress(Request $request)
+    {
         $primaryAddress = ServiceAddress::where('user_id', Auth::user()->id)
                                             ->where('is_primary', 1)
                                             ->first();
@@ -33,7 +32,8 @@ class AddressController extends Controller
                                             ->where('is_primary', 0)
                                             ->first();
 
-        if ($request->address == false){
+        if ($request->address == false)
+        {
             $primaryAddress->update([
                 'is_primary' => 0,
                 'is_active' => 0
@@ -48,17 +48,15 @@ class AddressController extends Controller
         return response()->json($request->address);
     }
 
-    public function updateChangeSecondaryAddress(Request $request){
-
+    public function updateChangeSecondaryAddress(Request $request)
+    {
         $primaryAddress = ServiceAddress::where('user_id', Auth::user()->id)
-                                            ->where('is_primary', 1)
-                                            ;
+                                            ->where('is_primary', 1);
 
         $secondaryAddress = ServiceAddress::where('id', $request->secondaryAddressId)
                                             ->where('user_id', Auth::user()->id)
                                             ->where('is_primary', 0)
                                             ->first();
-
 
         if ($request->address == true){
             $primaryAddress->update([
@@ -75,7 +73,8 @@ class AddressController extends Controller
         return response()->json($secondaryAddress);
     }
 
-    public function updatePrimaryAddress(Request $request){
+    public function updatePrimaryAddress(Request $request)
+    {
         ServiceAddress::where('id', $request->primaryAddressId)->first()->update([
             'address' => $request->primaryAddress
         ]);
@@ -83,7 +82,8 @@ class AddressController extends Controller
         return response()->json($request);
     }
 
-    public function updateSecondaryAddress(Request $request){
+    public function updateSecondaryAddress(Request $request)
+    {
         ServiceAddress::where('id', $request->secondaryAddressId)->first()->update([
             'address' => $request->secondaryAddress
         ]);
@@ -91,7 +91,8 @@ class AddressController extends Controller
         return response()->json($request);
     }
 
-    public function updateToPrimaryAddress(Request $request){
+    public function updateToPrimaryAddress(Request $request)
+    {
         ServiceAddress::where('is_primary', 0)->first()->update([
             'is_primary' => 1,
             'is_active' => 1
@@ -100,14 +101,15 @@ class AddressController extends Controller
         return response()->json($request->secondaryAddressId);
     }
 
-    public function destroyAddress(Request $request){
+    public function destroyAddress(Request $request)
+    {
         ServiceAddress::destroy($request->id);
 
         return response()->json($request->id);
     }
 
-    public function updateToSecondaryAddress(Request $request){
-
+    public function updateToSecondaryAddress(Request $request)
+    {
         $checkPrimaryAddress = ServiceAddress::where('user_id', Auth::user()->id)
                         ->where('is_primary', 1)
                         ->exists();
