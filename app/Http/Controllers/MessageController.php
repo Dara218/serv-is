@@ -58,9 +58,14 @@ class MessageController extends Controller
         return [$appendMessageContent];
     }
 
-    public function storeChatAfterNegotiate(Request $request){
+    public function storeChatAfterNegotiate(Request $request)
+    {
+        $notificationMessage = "Your rejected $request->username's offer.";
 
-        $notificationMessage = "You can now pay $request->username. Kindly check your inbox.";
+        if($request->is_Accepted){
+            $notificationMessage = "You can now pay $request->username. Kindly check your inbox.";
+        }
+        
         $notificationType = 2;
         $authUserId = $request->currentUserId;
 
@@ -76,12 +81,24 @@ class MessageController extends Controller
 
         event(new NotificationEvent(
             'Ser-is Assistant',
-            $authUserId, // wrong
+            $authUserId,
             $notificationMessage,
             $notificationType,
             $notification->id,
             $authUserId
         ));
+
+        Chat::create([
+            'sender_id' => $request->fromUserId,
+            'receiver_id' => $authUserId
+        ]);
+
+        AvailedUser::create([
+            'availed_by' => $authUserId,
+            'availed_to' => $request->fromUserId,
+            'is_accepted' => false,
+            'notification_id' => $notification->id
+        ]);
 
         SentRequest::create([
             'request_by' => $authUserId,
