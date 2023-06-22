@@ -53,9 +53,9 @@
                             <li>
                                 <a href="{{ route('showAgenda') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Agenda</a>
                             </li>
-                            <li>
+                            {{-- <li>
                                 <a href="{{ route('showChat') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Chat</a>
-                            </li>
+                            </li> --}}
                         @endif
                         @if (Auth::user()->user_type == 2 && $agentservice)
                             <li>
