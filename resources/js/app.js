@@ -406,27 +406,44 @@ $(document).ready(function(){
     getCategories()
 
     let allCategories = 6
+
+    $('.view-all-categories').on('click', function(){
+        getCategories(allCategories = $('.category-holder').data('category-count'))
+    })
+
     function getCategories()
     {
         $.ajax({
             url: '/api/get-categories',
             method: 'get',
-            success: function(data){
+            success: function(data)
+            {
                 $('.categories-container').empty()
-                data.slice(0, allCategories).forEach(function(eachData){
+
+                data.slice(0, allCategories).forEach(function(eachData)
+                {
+                    let allCategoriesCount = data.length
+                    let photo = ''
+
+                    if(eachData.category_photo == null){
+                        photo =`<class="logo h-auto py-6">`
+                    }
+                    else{
+                        photo = `<img src="${eachData.category_photo}" alt="${eachData.type}" class="logo h-auto py-6">`
+                    }
+
                     $('.categories-container').append(
-                        `
-                        <div class="overflow-hidden h-auto w-full grid-cols-span-1 border border-slate-300 rounded-xl text-center">
+                        `<div data-category-count="${allCategoriesCount}" class="category-holder overflow-hidden h-auto w-full grid-cols-span-1 border border-slate-300 rounded-xl text-center">
 
                             <div class="mix bg-slate-200 flex justify-center">
-                                <img src="${eachData.category_photo}" alt="${eachData.type}" class="logo h-auto py-6">
+                                ${photo}
                             </div>
 
                             <div class="p-4">
                                 <span class="font-semibold">${eachData.type.charAt(0).toUpperCase() + eachData.type.slice(1).toLowerCase()}</span>
                             </div>
-                        </div>
-                    `)
+                        </div>`
+                    )
                 })
             },
             error: function(error){
@@ -434,10 +451,6 @@ $(document).ready(function(){
             }
         })
     }
-
-    $('.view-all-categories').on('click', function(){
-        getCategories(allCategories = 9)
-    })
 
     $('.skeleton-loading').show()
 
@@ -935,10 +948,10 @@ $(document).ready(function(){
                         </div>
                     </div>
                     <div class="flex gap-4 justify-center">
-                        <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer bnt-accept-notif">
+                        <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer btn-accept-notif">
                             check_circle
                         </a>
-                        <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer bnt-reject-notif">
+                        <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer btn-reject-notif">
                             cancel
                         </a>
                     </div>
@@ -957,10 +970,10 @@ $(document).ready(function(){
                         </div>
                     </div>
                     <div class="flex gap-4 justify-center">
-                        <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer bnt-accept-notif">
+                        <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer btn-accept-notif">
                             check_circle
                         </a>
-                        <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer bnt-reject-notif">
+                        <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer btn-reject-notif">
                             cancel
                         </a>
                     </div>
@@ -986,13 +999,13 @@ $(document).ready(function(){
 
     $('.notification-bell').on('click', function(){
 
-        $('.notif-count-hidden').hide()
+        $('.notif-count').hide()
 
         axios.put(`/update-notification-count/${userId}`)
         .catch((err) => console.error(err))
     })
 
-    $('.notification-parent').on('click', '.bnt-accept-notif', function(e)
+    $('.notification-parent').on('click', '.btn-accept-notif', function(e)
     {
         const notificationId = $(this).data('id')
         const notificationItem = $(this).closest('li')
@@ -1061,8 +1074,13 @@ $(document).ready(function(){
                         toUserId: toUserId,
                         username: username,
                         currentUserId: userId,
-                        notificationType: notificationType
+                        notificationType: notificationType,
+                        is_Accepted
                     })
+                    .then(response => {
+                        location.reload()
+                    })
+                    .catch((err) => console.error(err))
                 }
                 if (notificationType == 1)
                 {
@@ -1072,8 +1090,13 @@ $(document).ready(function(){
                         toUserId: fromUserId,
                         username: username,
                         currentUserId: fromUserId,
-                        notificationType: notificationType
+                        notificationType: notificationType,
+                        is_Accepted
                     })
+                    .then(response => {
+                        location.reload()
+                    })
+                    .catch((err) => console.error(err))
                 }
             }
             if (notificationType == 4)
@@ -1255,10 +1278,10 @@ $(document).ready(function(){
         }
 
         if(! e.user.user_photo){
-            userPhoto = `<img src="{{ asset('images/servis_logo.png') }}" alt="" class="h-[50px]">`
+            userPhoto = `<img src="{{ asset('images/servis_logo.png') }}" alt="${e.user.username}" class="logo h-[50px]">`
         }
         else{
-            userPhoto = `<img src="${e.user.user_photo.profile_picture}" alt="${e.user.user_photo.profile_picture}" class="h-[50px] rounded-full">`
+            userPhoto = `<img src="${e.user.user_photo.profile_picture}" alt="${e.user.user_photo.profile_picture}" class="logo h-[50px] rounded-full">`
         }
 
         const reviewEl =
@@ -1573,18 +1596,36 @@ $(document).ready(function(){
                         ${tableData}
                         <td class="text-center px-6 py-4">
                             <div class="flex items-center justify-center gap-2">
-                                <span class="btn-edit-${type}-${eachResponse.id} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Edit</span>
+                                <span class="btn-update-${type}-${eachResponse.id} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Update</span>
 
                                 <span class="btn-delete-${type}-${eachResponse.id} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Delete</span>
                             </div>
                         </td>
                     </tr>`
 
-                $(`.see-all-${type}-btn-parent`).html(`<span class="btn-see-all-${type} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">See All</span>`)
+                $(`.see-all-${type}-btn-parent`).html(`
+                    <div class="flex gap-2">
+                        <span class="btn-see-all-${type} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">See All</span>
+                        <span>|</span>
+                        <span class="btn-add-${type} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Add ${type}</span>
+                    </div>
+                `)
 
-                $(`.${type}-table-body`).on('click', `.btn-edit-${type}-${eachResponse.id}`, function()
+                $(`.btn-add-${type}`).on('click', function(){
+                    const manageType = 'store'
+                    updateAddTableValue(manageType)
+                })
+
+                $(`.${type}-table-body`).on('click', `.btn-update-${type}-${eachResponse.id}`, function()
+                {
+                    const manageType = 'update'
+                    updateAddTableValue(manageType)
+                })
+
+                function updateAddTableValue(manageType)
                 {
                     let htmlInput = ''
+                    let method = ''
 
                     if(type !== 'rewards'){
                         if(type === 'pricing-plan'){
@@ -1609,7 +1650,7 @@ $(document).ready(function(){
 
                     Swal.fire({
                         icon: 'info',
-                        title: `Update ${type}`,
+                        title: `${manageType} ${type}`,
                         showConfirmButton: true,
                         showCancelButton: true,
                         focusConfirm: true,
@@ -1630,34 +1671,52 @@ $(document).ready(function(){
                                 type: type
                             }
 
-                            axios.put(`/update-${type}/${eachResponse.id}`, data)
-                            .then(response => {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: `${type} successfully updated`,
-                                    showConfirmButton: true
-                                })
-                                .then(result => {
-                                    let type = response.data.type
-                                    if(type === 'service'){
-                                        $(`#${eachResponse.type}-${eachResponse.id}`).text(response.data.title)
-                                    }
-                                    if(type === 'pricing-plan'){
-                                        $(`#${eachResponse.type}-${eachResponse.id}`).text(response.data.title)
-                                        $(`#${eachResponse.type}-${eachResponse.id}-tr2`).text(response.data.description)
-                                    }
-                                    if(type === 'rewards'){
-                                        $(`#${eachResponse.type}-${eachResponse.id}`).text(response.data.title)
-                                        $(`#${eachResponse.type}-${eachResponse.id}-tr2`).text(response.data.description)
-                                        $(`#${eachResponse.type}-${eachResponse.id}-tr3`).text(response.data.points)
-                                    }
+                            if (manageType === 'update') {
+                                axios.put(`/${manageType}-${type}/${eachResponse.id}`, data)
+                                .then(response => {
+                                    methodProcess(manageType, response)
                                 })
                                 .catch(err => console.error(err))
-                            })
-                            .catch(err => console.error(err))
+                            }
+                            else{
+                                axios.post(`/${manageType}-${type}`, data)
+                                .then(response => {
+                                    methodProcess(manageType, response)
+                                })
+                                .catch(err => console.error(err))
+                            }
                         }
                     })
-                })
+                }
+
+                function methodProcess(manageType, response){
+                    Swal.fire({
+                        icon: 'success',
+                        title: `${type} successfully ${manageType}ed`,
+                        showConfirmButton: true
+                    })
+                    .then(result => {
+                        let type = response.data.type
+                        if(manageType === 'update'){
+                            if(type === 'service'){
+                                $(`#${eachResponse.type}-${eachResponse.id}`).text(response.data.title)
+                            }
+                            if(type === 'pricing-plan'){
+                                $(`#${eachResponse.type}-${eachResponse.id}`).text(response.data.title)
+                                $(`#${eachResponse.type}-${eachResponse.id}-tr2`).text(response.data.description)
+                            }
+                            if(type === 'rewards'){
+                                $(`#${eachResponse.type}-${eachResponse.id}`).text(response.data.title)
+                                $(`#${eachResponse.type}-${eachResponse.id}-tr2`).text(response.data.description)
+                                $(`#${eachResponse.type}-${eachResponse.id}-tr3`).text(response.data.points)
+                            }
+                        }
+                        else{
+                            location.reload()
+                        }
+                    })
+                    .catch(err => console.error(err))
+                }
 
                 if(type === 'category'){
                     categoriesTableBody.append(tableBody)
@@ -1687,6 +1746,11 @@ $(document).ready(function(){
     $(document).on('click', '.btn-see-all-reward', function() {
         let maxCount = $('.reward-table-body').data('reward-count')
         getRewardsAdmin(maxCount)
+    })
+
+    $('.btn-not-interested').on('click', function(){
+        console.log($(this).closest($('.service-provider-parent')));
+        $(this).closest($('.service-provider-parent')).hide()
     })
 
 })
