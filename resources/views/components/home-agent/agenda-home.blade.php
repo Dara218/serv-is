@@ -5,7 +5,7 @@
             <div class="bg-slate-100 rounded-lg p-4 relative">
                 <div class="flex justify-between gap-2">
 
-                    <img src="{{ (empty($agenda->userPhoto) ? asset('images/servis_logo.png') : $agenda->userPhoto->profile_picture) }}" alt="user id photo" class="h-1/2 w-16 rounded-full">
+                    <img src="{{ (empty($agenda->userPhoto) ? asset('images/servis_logo.png') : $agenda->userPhoto->profile_picture) }}" alt="user id photo" class="logo h-1/2 w-16 rounded-full">
 
                     <div class="flex flex-col w-full items-start gap-2">
                         <span class="font-semibold">{{ ucwords($agenda->user->fullname) }}</span>
@@ -30,7 +30,7 @@
                         <span class="flex items-center gap-2">
                             <span>Deadline: </span>
                             {{ date('m/d/Y', strtotime($agenda->deadline)) }}
-                        </span>                        
+                        </span>
                     </div>
                 </div>
 
