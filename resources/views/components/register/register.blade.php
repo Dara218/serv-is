@@ -10,7 +10,7 @@
 
                 <x-inputs.user_type/>
 
-                <x-register.register-inputs/>
+                <x-register.register-inputs fromAdmin="{{ false }}"/>
 
                 <div class="id-imgs">
                     <div class="mb-5">
