@@ -21,4 +21,14 @@ class RewardController extends Controller
 
         return response()->json($request);
     }
+
+    public function storeReward(Request $request){
+        Reward::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'points' => $request->points
+        ]);
+
+        return response()->json($request);
+    }
 }
