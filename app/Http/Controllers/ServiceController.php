@@ -35,8 +35,21 @@ class ServiceController extends Controller
 
     public function updateService($id, Request $request)
     {
-        Service::where('id', $id)->update(['type' => $request->title]);
-        Category::where('type', $request->title)->update(['type' => $request->title]);
+        $service = Service::where('id', $id)->first();
+        Category::where('type', $service->type)->update(['type' => $request->title]);
+        $service->update(['type' => $request->title]);
+
+        return response()->json($request);
+    }
+
+    public function storeService(Request $request){
+        Service::create([
+            'type' => $request->title
+        ]);
+
+        Category::create([
+            'type' => $request->title
+        ]);
 
         return response()->json($request);
     }
