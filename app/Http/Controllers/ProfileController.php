@@ -99,26 +99,41 @@ class ProfileController extends Controller
     public function showServiceProvider()
     {
         return view('components.home.service-provider',[
-            'employees' => User::where('user_type', 2)->with('userPhoto', 'serviceAddress')->get()
+            'employees' => User::where('user_type', 2)
+                                ->with('userPhoto', 'serviceAddress')
+                                ->inRandomOrder()
+                                ->get()
         ]);
     }
 
     public function showEmployeeProfile(User $user)
     {
         $agentService = AgentService::where('user_id', $user->id)->with('service', 'review.user.userPhoto')->first();
+        $agentServiceOverAllRating = Review::where('employee_id', $user->id)->get();
+        $ratings = [];
 
-        return view('components.home.employee-profile',[
+        foreach($agentServiceOverAllRating as $overallRating){
+            $ratings[] = $overallRating->level;
+        }
+
+        $sumOfOverallRating = array_sum($ratings);
+
+        $averageRating = $sumOfOverallRating / $agentServiceOverAllRating->count();
+
+        return view('components.home.employee-profile', [
             'users' => User::where('id', $user->id)->with('userPhoto', 'agentService', 'serviceAddress')->get(),
             'service' => $agentService,
-            'authuser' => User::where('id', Auth::user()->id)->with('userPhoto')->first()
+            'authuser' => User::where('id', Auth::user()->id)->with('userPhoto', 'availedPricingPlan')->first(),
+            'averageRating' => $averageRating
         ]);
     }
 
     public function showServiceAddress()
     {
-        return view('components.home.service-address',
-        ['primaryAddress' => ServiceAddress::where('user_id', Auth::user()->id)->where('is_primary', 1)->first(),
-        'secondaryAddresses' => ServiceAddress::where('user_id', Auth::user()->id)->where('is_primary', 0)->get()]);
+        return view('components.home.service-address', [
+            'primaryAddress' => ServiceAddress::where('user_id', Auth::user()->id)->where('is_primary', 1)->first(),
+            'secondaryAddresses' => ServiceAddress::where('user_id', Auth::user()->id)->where('is_primary', 0)->get()
+        ]);
     }
 
     public function showRewards(){
@@ -126,7 +141,9 @@ class ProfileController extends Controller
     }
 
     public function showTransactionHistory(){
-        return view('components.home.transaction-history', ['transactions' => Transaction::where('user_id', Auth::user()->id)->paginate(10)]);
+        return view('components.home.transaction-history', [
+            'transactions' => Transaction::where('user_id', Auth::user()->id)->paginate(10)
+        ]);
     }
 
     public function showFaqs(){
@@ -135,9 +152,10 @@ class ProfileController extends Controller
 
     public function showAgenda()
     {
-        return view('components.home.agenda',
-        ['services' => Service::all(),
-        'agendas' => Agenda::where('user_id', Auth::user()->id)->with('user', 'userPhoto')->get()]);
+        return view('components.home.agenda', [
+            'services' => Service::all(),
+            'agendas' => Agenda::where('user_id', Auth::user()->id)->with('user', 'userPhoto')->get()
+        ]);
     }
 
     public function showChat(){
