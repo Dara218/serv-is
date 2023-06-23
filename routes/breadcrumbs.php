@@ -62,9 +62,9 @@ Breadcrumbs::for('agenda', function(BreadcrumbTrail $trail){
     $trail->push('Agenda', route('showAgenda'));
 });
 
-Breadcrumbs::for('pricing-plan', function(BreadcrumbTrail $trail, User $user){
+Breadcrumbs::for('pricing-plan', function(BreadcrumbTrail $trail, $id){
     $trail->parent('home');
-    $trail->push('Pricing Plan', route('showPricingPlan', ['user' => $user]));
+    $trail->push('Pricing Plan', route('showPricingPlan', ['id' => $id]));
 });
 
 Breadcrumbs::for('update-service-details', function(BreadcrumbTrail $trail){
