@@ -53,7 +53,7 @@ Route::middleware(['auth'])->group(function()
     Route::get('/chat', [ProfileController::class, 'showChat'])->name('showChat');
     Route::post('/get-user-chat', [ProfileController::class, 'getUserChat'])->name('getUserChat');
     Route::post('/handle-message', [MessageController::class, 'handleMessage'])->name('handleMessage');
-    Route::get('/pricing-plan/{user}', [PricingPlanController::class, 'index'])->name('showPricingPlan');
+    Route::get('/pricing-plan/{id}', [PricingPlanController::class, 'index'])->name('showPricingPlan');
     Route::post('/pricing-plan-store', [PricingPlanController::class, 'store'])->name('storePricing');
     Route::post('/pricing-plan-add-chat/{user}', [PricingPlanController::class, 'storeChat'])->name('storeChat');
     Route::post('/store-address', [AddressController::class, 'storeAddress'])->name('storeAddress');
