@@ -15,49 +15,47 @@
 
                     @foreach ($employees as $employee)
 
-                    {{-- @dd($employee) --}}
+                        <div class="service-provider-parent bg-slate-100 rounded-lg p-4 relative">
 
-                    <div class="bg-slate-100 rounded-lg p-4 relative">
+                            <span class="dots material-symbols-outlined absolute top-2 right-2 cursor-pointer ">
+                                more_horiz
+                            </span>
 
-                        <span class="dots material-symbols-outlined absolute top-2 right-2 cursor-pointer ">
-                            more_horiz
-                        </span>
+                            <a href="{{ route('showEmployeeProfile', ['user' => $employee->username]) }}" class="view-profile hidden bg-white rounded w-1/2 h-auto p-2 absolute top-8 right-2 cursor-pointer shadow-md hover:bg-gray-50">
+                                <span>View Profile</span>
+                            </a>
 
-                        <a href="{{ route('showEmployeeProfile', ['user' => $employee->username]) }}" class="view-profile hidden bg-white rounded w-1/2 h-auto p-2 absolute top-8 right-2 cursor-pointer shadow-md hover:bg-gray-50">
-                            <span>View Profile</span>
-                        </a>
-
-                        <div class="flex justify-between gap-2">
-                            <img src="{{ $employee->userPhoto->profile_picture }}" alt="user id photo" class="h-1/2 w-16 rounded-full">
-                            <div class="flex flex-col w-full items-start gap-2">
-                                <span class="font-semibold">{{ ucwords($employee->fullname) }}</span>
-                                <span class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined">
-                                        mail
+                            <div class="flex justify-between gap-2">
+                                <img src="{{ $employee->userPhoto->profile_picture }}" alt="user id photo" class="h-1/2 w-16 rounded-full">
+                                <div class="flex flex-col w-full items-start gap-2">
+                                    <span class="font-semibold">{{ ucwords($employee->fullname) }}</span>
+                                    <span class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined">
+                                            mail
+                                        </span>
+                                        {{ $employee->email_address }}
                                     </span>
-                                    {{ $employee->email_address }}
-                                </span>
-                                <span class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined">
-                                        location_on
+                                    <span class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined">
+                                            location_on
+                                        </span>
+                                        {{ $employee->serviceAddress->address }}
                                     </span>
-                                    {{ $employee->serviceAddress->address }}
-                                </span>
-                                <span class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined">
-                                        phone_in_talk
+                                    <span class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined">
+                                            phone_in_talk
+                                        </span>
+                                        {{ $employee->contact_no }}
                                     </span>
-                                    {{ $employee->contact_no }}
-                                </span>
+                                </div>
                             </div>
-                        </div>
 
-                        <form method="post" action="{{ route('storeChat', ['user' => $employee->id]) }}" class="flex justify-evenly mt-6">
-                            @csrf
-                            <button type="submit" class="bg-slate-600 text-white rounded cursor-pointer py-2 px-4 hover:bg-slate-800">Add Provider</button>
-                            <button type="button" class="bg-white rounded cursor-pointer py-2 px-4 hover:bg-gray-200">Not Interested</button>
-                        </form>
-                    </div>
+                            <form method="post" action="{{ route('storeChat', ['user' => $employee->id]) }}" class="flex justify-evenly mt-6">
+                                @csrf
+                                <button type="submit" class="bg-slate-600 text-white rounded cursor-pointer py-2 px-4 hover:bg-slate-800">Add Provider</button>
+                                <button type="button" class="btn-not-interested bg-white rounded cursor-pointer py-2 px-4 hover:bg-gray-200">Not Interested</button>
+                            </form>
+                        </div>
                     @endforeach
                 </div>
             </div>
