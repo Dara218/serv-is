@@ -13,7 +13,7 @@
             </div>
         </a>
 
-        <a href="{{ route('showTransactionHistory') }}" class="p-10 h-auto grid-cols-span-1 border border-slate-300 rounded-xl text-center flex justify-between hover:border-slate-600"">
+        <a href="{{ route('showTransactionHistory') }}" class="p-10 h-auto grid-cols-span-1 border border-slate-300 rounded-xl text-center flex justify-between hover:border-slate-600">
             <div class="flex flex-col text-left">
                 <span class="font-bold text-2xl text-slate-600">{{ $transaction }}</span>
                 <span class="font-semibold text-xltext-slate-500">Total Transaction</span>
