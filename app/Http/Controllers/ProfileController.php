@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileRequest;
-use App\Models\AdminRequest;
-use App\Models\Notification;
 use App\Models\Review;
 use App\Models\WalletHistory;
 use App\Models\Agenda;
@@ -21,7 +19,6 @@ use App\Models\ServiceAddress;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserPhoto;
-use App\Models\ValidDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -173,51 +170,48 @@ class ProfileController extends Controller
 
     public function getUserChat(Request $request)
     {
-        $user = User::where('username', $request->receiver)->first();
+        $user = User::where('id', $request->fromUserId)->first();
+        $sender = $request->sender;
         $authUser = Auth::user();
 
-        $userChat = Message::where(function ($query) use ($authUser, $user){
-                    $query->where('sender_id', $authUser->id)
+        $userChat = Message::where(function ($query) use ($sender, $user){
+                    $query->where('sender_id', $sender)
                           ->where('receiver_id', $user->id);
-                })->orWhere(function ($query) use ($authUser, $user){
+                })->orWhere(function ($query) use ($sender, $user){
                     $query->where('sender_id', $user->id)
-                          ->where('receiver_id', $authUser->id);
+                          ->where('receiver_id', $sender);
                 })
                 ->with('sender', 'receiver')
                 ->get();
 
-        $chatRoom = Chat::where(function ($query) use ($authUser, $user){
-                    $query->where('sender_id', $authUser->id)
-                          ->where('receiver_id', $user->id);
-                })->orWhere(function ($query) use ($authUser, $user){
-                    $query->where('sender_id', $user->id)
-                          ->where('receiver_id', $authUser->id);
-                })
-                ->first();
+        $chatRoom = Chat::where('id', $request->chatId)->first();
+        $checkChatRoom = Chat::where('id', $request->chatId)->exists();
 
-        if(! $chatRoom)
+        if(! $checkChatRoom)
         {
-            $chatRoom = Chat::create([
+            $checkChatRoom = Chat::create([
                 'sender_id' => Auth::user()->id,
                 'receiver_id' => $user->id
             ]);
         }
 
-        $checkIfUserHasAvailed = AvailedPricingPlan::where(function($query) use($user, $authUser){
-            $query->where('availed_to_id', $user->id)
-                    ->where('availed_by_id', $authUser->id);
-        })->orWhere(function($query) use ($user, $authUser){
-            $query->where('availed_to_id', $authUser->id)
-                    ->where('availed_by_id', $user->id);
+        $fromUserId = $request->fromUserId;
+
+        $checkIfUserHasAvailed = AvailedPricingPlan::where(function($query) use($fromUserId, $sender){
+            $query->where('availed_to_id', $fromUserId)
+                    ->where('availed_by_id', $sender);
+        })->orWhere(function($query) use ($fromUserId, $sender){
+            $query->where('availed_to_id', $sender)
+                    ->where('availed_by_id', $fromUserId);
         })
         ->exists();
 
-        $checkIsAccepted = AvailedUser::where(function($query) use($user, $authUser){
+        $checkIsAccepted = AvailedUser::where(function($query) use($user, $sender){
             $query->where('availed_to', $user->id)
-                    ->where('availed_by', $authUser->id)
+                    ->where('availed_by', $sender)
                     ->where('is_accepted', true);
-                })->orWhere(function($subQuery) use ($user, $authUser){
-            $subQuery->where('availed_to', $authUser->id)
+                })->orWhere(function($subQuery) use ($user, $sender){
+            $subQuery->where('availed_to', $sender)
                     ->where('availed_by', $user->id)
                     ->where('is_accepted', true);
         })
@@ -225,21 +219,23 @@ class ProfileController extends Controller
 
         $checkIfAgentOrAdmin = User::find($authUser->id);
         $confirmNotAgent = false;
-        $isAccepted = false;
 
         if($checkIfAgentOrAdmin->user_type == 3)
         {
             $confirmNotAgent = true;
         }
+
+        $isAccepted = false;
+
         if($checkIsAccepted){
             $isAccepted = true;
         }
 
-        $availedPricingPlan = AvailedPricingPlan::where(function($query) use($user, $authUser){
+        $availedPricingPlan = AvailedPricingPlan::where(function($query) use($user, $sender){
             $query->where('availed_to_id', $user->id)
-                    ->where('availed_by_id', $authUser->id);
-                })->orWhere(function($subQuery) use ($user, $authUser){
-            $subQuery->where('availed_to_id', $authUser->id)
+                    ->where('availed_by_id', $sender);
+                })->orWhere(function($subQuery) use ($user, $sender){
+            $subQuery->where('availed_to_id', $sender)
                     ->where('availed_by_id', $user->id);
         })
         ->first();
@@ -255,6 +251,7 @@ class ProfileController extends Controller
         }
 
         $checkIfChatHasAdmin = false;
+
         if($authUser->user_type == 1 || $user->user_type == 1){
             $checkIfChatHasAdmin = true;
         }
@@ -269,7 +266,9 @@ class ProfileController extends Controller
             'sender' => $request->sender, // 6
             'isExpired' => $isExpired,
             'checkIfChatHasAdmin' => $checkIfChatHasAdmin,
-            'receiverUsername' => $user->username
+            'receiverUsername' => $user->username,
+            'user1' => $fromUserId,
+            'user2' => $sender
         ];
 
         return response()->json($responseData);
