@@ -8,7 +8,7 @@
         @endif
 
         <div class="flex flex-col gap-2 mx-2">
-            <div class="flex flex-col gap-1">
+            <div class="flex flex-col gap-1 text-left">
                 <span>{{ $review->user->fullname }}</span>
 
                 <div class="flex">
