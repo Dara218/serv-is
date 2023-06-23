@@ -15,14 +15,13 @@
             <!-- Modal body -->
             <div class="p-6 space-y-6 grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div class="grid-cols-span-1 flex flex-col gap-4">
-                    @if($user->user_type != 2)
-                        <x-home-admin.user-modal-info :user="$user" userType="{{ $user->user_type }}" type="transaction" number_type="{{ $user->transaction->count() }}"/>
-                        <x-home-admin.user-modal-info :user="$user" userType="{{ $user->user_type }}" type="review" number_type="{{ $user->review->count() }}"/>
-                        <x-home-admin.user-modal-info :user="$user" userType="{{ $user->user_type }}" type="agenda" number_type="{{ $user->agenda->count() }}"/>
-                    @else
-                        <x-home-admin.user-modal-info :user="$user" userType="{{ $user->user_type }}" type="transaction" number_type="{{ $user->transaction->count() }}"/>
+                    <x-home-admin.user-modal-info :user="$user" userType="{{ $user->user_type }}" type="transaction" numberType="{{ $user->transaction->count() }}"/>
 
-                        <a href="#" class="p-10 h-auto grid-cols-span-1 border border-slate-300 rounded-xl text-center flex justify-between hover:border-slate-600">
+                    @if($user->user_type != 2)
+                        <x-home-admin.user-modal-info :user="$user" userType="{{ $user->user_type }}" type="review" numberType="{{ $user->review->count() }}"/>
+                        <x-home-admin.user-modal-info :user="$user" userType="{{ $user->user_type }}" type="agenda" numberType="{{ $user->agenda->count() }}"/>
+                    @else
+                        <div data-modal-target="service-${{ $user->username }}-modal" data-modal-toggle="service-${{ $user->username }}-modal"  class="p-4 h-auto grid-cols-span-1 border cursor-pointer border-slate-300 rounded-xl text-center flex justify-between hover:border-slate-600">
                             <div class="flex flex-col text-left ">
                                 <span class="font-bold text-2xl text-slate-600">{{ ucwords($user->agentService->title) }}</span>
                                 <span class="font-semibold text-xltext-slate-500">Service name</span>
@@ -30,7 +29,8 @@
                             <span class="material-symbols-outlined">
                                 engineering
                             </span>
-                        </a>
+                        </div>
+                        <x-home-admin.user-2nd-modal :user="$user" type="service" numberType="1" userType="{{ $user->user_type }}"/>
                     @endif
                 </div>
                 <div class="grid-cols-span-1">
