@@ -34,15 +34,17 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('components.layout', function($view)
         {
-            if(Auth::check()){
+            if(Auth::check())
+            {
                 $hasNewChats = Message::where('receiver_id', Auth::user()->id)->where('is_unread', true)->exists();
                 $agentServiceId = null;
 
-                if(Auth::user()->user_type == 2){
+                if(Auth::user()->user_type == 2)
+                {
                     $agentService = AgentService::where('user_id', Auth::user()->id)->with('service', 'review.user')->first();
                     $agentServiceId = $agentService->id;
                 }
-                
+
                 $view->with(['hasNewChats'=> $hasNewChats, 'agentServiceId' => $agentServiceId]);
             }
         });
@@ -76,22 +78,15 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
-        // View::composer('partials.banner', function($view){
-        //     $agentService = AgentService::where('user_id', Auth::user()->id)
-        //                                     ->where('title', 'NA')
-        //                                     ->exists();
-        //     $view->with('agentservice', $agentService);
-        // });
-
         View::composer('partials.chat', function($view){
 
             if(Auth::check())
             {
                 $authUser = Auth::user();
-                $admins = User::where('user_type', 1)->with('chat')->get();
+                $allAdmin = User::where('user_type', 1)->with('chat')->get();
                 $adminIds = [];
 
-                foreach($admins as $admin)
+                foreach($allAdmin as $admin)
                 {
                     $adminIds[] = $admin->id;
                 }
@@ -99,17 +94,19 @@ class AppServiceProvider extends ServiceProvider
                 if($authUser->user_type != 1)
                 {
                     $adminChats = Chat::where('receiver_id', $authUser->id)->whereIn('sender_id', $adminIds)->with('sender.userPhoto')->get();
-                }
 
-                if($authUser->user_type == 3)
-                {
-                    $agents = AvailedUser::where('availed_by', $authUser->id)->with('user.chat', 'user.userPhoto')->get();
-                    $view->with(['agents' => $agents, 'admins' => $adminChats]);
-                }
-                if($authUser->user_type == 2)
-                {
-                    $agents = AvailedUser::where('availed_to', $authUser->id)->with('user.chat', 'user.userPhoto', 'availedBy')->get();
-                    $view->with(['agents' => $agents, 'admins' => $adminChats]);
+                    if($authUser->user_type == 3)
+                    {
+                        $agents = AvailedUser::where('availed_by', $authUser->id)->with('user.chat', 'user.userPhoto')->get();
+                        $view->with(['agents' => $agents, 'admins' => $adminChats]);
+                    }
+                    if($authUser->user_type == 2)
+                    {
+                        $agents = AvailedUser::where('availed_to', $authUser->id)
+                                            ->with('user.chat', 'user.userPhoto', 'availedBy')
+                                            ->get();
+                        $view->with(['agents' => $agents, 'admins' => $adminChats]);
+                    }
                 }
                 if($authUser->user_type == 1)
                 {
