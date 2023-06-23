@@ -60,12 +60,12 @@ class MessageController extends Controller
 
     public function storeChatAfterNegotiate(Request $request)
     {
-        $notificationMessage = "Your rejected $request->username's offer.";
+        $notificationMessage = "You rejected $request->username's offer.";
 
         if($request->is_Accepted){
             $notificationMessage = "You can now pay $request->username. Kindly check your inbox.";
         }
-        
+
         $notificationType = 2;
         $authUserId = $request->currentUserId;
 
@@ -88,18 +88,6 @@ class MessageController extends Controller
             $authUserId
         ));
 
-        Chat::create([
-            'sender_id' => $request->fromUserId,
-            'receiver_id' => $authUserId
-        ]);
-
-        AvailedUser::create([
-            'availed_by' => $authUserId,
-            'availed_to' => $request->fromUserId,
-            'is_accepted' => false,
-            'notification_id' => $notification->id
-        ]);
-
         SentRequest::create([
             'request_by' => $authUserId,
             'request_to' => $request->fromUserId,
@@ -110,8 +98,7 @@ class MessageController extends Controller
 
     public function updateMessageRead(Request $request)
     {
-        $sender = $request->receiverId;
-        $receiver = Auth::user();
+        $receiver = User::where('id', $request->senderId)->first();
 
         if($receiver->user_type == 2){
             $sender = $request->senderId;
@@ -124,17 +111,17 @@ class MessageController extends Controller
                         'is_unread' => false
                     ]);
 
-        $availedPricingPlan = AvailedPricingPlan::where(function ($query) use ($sender, $receiver) {
-            $query->where('availed_to_id', $sender)
-                    ->where('availed_by_id', $receiver->id);
-        })->orWhere(function ($query) use ($sender, $receiver) {
-            $query->where('availed_to_id', $receiver->id)
-                    ->where('availed_by_id', $sender);
-        })->first();
+        $availedPricingPlan = AvailedPricingPlan::where('availed_to_id', $request->senderId)
+                                                ->where('availed_by_id', $request->receiverId)
+                                                ->first();
 
-         $isExpired = false;
+        $checkAvailedPricingPlan = AvailedPricingPlan::where('availed_to_id', $request->senderId)
+                                                    ->where('availed_by_id', $request->receiverId)
+                                                    ->exists();
 
-        if($receiver->user_type != 1 && $availedPricingPlan)
+        $isExpired = false;
+
+        if($receiver->user_type != 1 && $checkAvailedPricingPlan)
         {
             $deadline = Carbon::parse($availedPricingPlan->updated_at)->addDay();
             $remainingTime = Carbon::now()->diff($deadline);
@@ -147,15 +134,19 @@ class MessageController extends Controller
             if($availedPricingPlan->is_expired == true)
             {
                 $isExpired = true;
+                $remainingTime = 0;
             }
         }
         else{
             $remainingTime = 0;
             $isExpired = false;
         }
+
         return response()->json([
             'remainingTime' => $remainingTime,
-            'isExpired' => $isExpired
+            'isExpired' => $isExpired,
+            'user1' => $request->senderId,
+            'user2' => $request->receiverId
         ]);
     }
 
