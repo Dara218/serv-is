@@ -21,21 +21,12 @@ use Stripe\Stripe;
 
 class PricingPlanController extends Controller
 {
-    public function index(User $user){
-
-        $checkIfUserIsAvailed = AvailedPricingPlan::where('availed_to_id', $user->id)
-                                                    ->where('availed_by_id', Auth::user()->id)
-                                                    ->where('is_expired', false)
-                                                    ->exists();
-
-        if(! $checkIfUserIsAvailed){
-            return view('components.home.pricing-plan', ['clientToBeAvailed' => $user]);
-        }
-
-        return back();
+    public function index($id)
+    {
+        return view('components.home.pricing-plan', ['clientToBeAvailed' => User::where('id', $id)->first()]);
     }
-    public function store(Request $request){
-
+    public function store(Request $request)
+    {
         // basic = 1 advance = 2
 
         $agent = $request->clientToBeAvailed;
@@ -48,7 +39,8 @@ class PricingPlanController extends Controller
                                     ->where('availed_by_id', $customer->id)
                                     ->exists();
 
-        if($userBalance < $pricingPlanBalance->price){
+        if($userBalance < $pricingPlanBalance->price)
+        {
             Alert::error('Cannot Avail Service', 'Insufficient balance.');
             return back();
         }
@@ -101,10 +93,6 @@ class PricingPlanController extends Controller
             $notification->id,
             Auth::user()->id
         ));
-
-        // event(new NotificationMessageBadgeEvent(
-        //     $agent,
-        // ));
 
         Alert::success('Success', 'Transaction successful.');
         return redirect()->route('index');
