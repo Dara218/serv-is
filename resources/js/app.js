@@ -138,7 +138,8 @@ $(document).ready(function(){
         initialInputValues[input.attr('id')] = input.val()
     })
 
-    $('input:not([type="password"])').on('input', function(){
+    $('input:not([type="password"])').on('input', function()
+    {
         var input = $(this)
         var inputId = input.attr('id')
 
@@ -150,8 +151,8 @@ $(document).ready(function(){
         }
     })
 
-    $('.form-pricing').on('submit', function(e){
-
+    $('.form-pricing').on('submit', function(e)
+    {
         const basicEl = $('#basic')
         const advanceEl = $('#advance')
         const errorEl = $('.error-pricing-plan')
@@ -166,7 +167,8 @@ $(document).ready(function(){
         }
     })
 
-    $('#checkbox-primary').on('click', function() {
+    $('#checkbox-primary').on('click', function()
+    {
         $('.form-primary-address-checkbox').submit()
 
         var userId = $('#logged-user').val();
@@ -181,7 +183,8 @@ $(document).ready(function(){
         .catch(err => console.error(err))
     })
 
-    $('.checkbox-secondary').on('click', function(e) {
+    $('.checkbox-secondary').on('click', function(e)
+    {
         $('.form-secondary-address-checkbox').submit()
 
         var userId = $('#logged-user').val();
@@ -198,7 +201,8 @@ $(document).ready(function(){
         .catch(err => console.error(err))
     })
 
-    $('.edit-primary-address').on('click', function(){
+    $('.edit-primary-address').on('click', function()
+    {
         const primaryAddressId = $('.primary-address').data('id')
 
         Swal.fire({
@@ -654,7 +658,9 @@ $(document).ready(function(){
         })
     }
 
-    const username = $('#username-hidden')
+    let usernameId = $('#username-hidden')
+    let fromUserId = $('#receiver_id')
+    let chatId = $('.chat-id')
     const message = $('#message')
     const receiver = $('#receiver-hidden')
     const currentChatName = $('.current-chat-name')
@@ -677,6 +683,10 @@ $(document).ready(function(){
         var senderId = $(this).data('sender')
         receiver.val(username)
 
+        usernameId.val(senderId)
+        fromUserId.val(receiverId)
+        chatId.val(chatRoomId)
+
         axios.put(`/update-message-read/${chatRoomId}`, {
             receiverId: receiverId,
             senderId: senderId
@@ -684,8 +694,10 @@ $(document).ready(function(){
         .then(function(response)
         {
             $('.receiver-el').find('.chat-badge-message').hide();
+
             currentChatName.show()
             chatTextBox.show()
+            
             $('.user-id-hidden').val(receiverId)
             receiverChatHead.val(username)
 
@@ -714,7 +726,9 @@ $(document).ready(function(){
     {
         chatSpinner.show()
         const username = $(this).data('username')
+        const chatRoomId = $(this).data('chat-id')
         receiver.val($(e.target).data('username'))
+        let senderId = $(this).data('sender')
 
         currentChatName.show()
         chatTextBox.show()
@@ -724,6 +738,10 @@ $(document).ready(function(){
 
         var receiverId = $(this).data('receiver')
         $('.user-id-hidden').val(receiverId)
+
+        fromUserId.val(receiverId)
+        usernameId.val(senderId)
+        chatId.val(chatRoomId)
 
         formChatHead.submit()
     })
@@ -738,31 +756,32 @@ $(document).ready(function(){
 
         axios.post('handle-message', {
             message: message.val(),
-            username: username.val(),
             receiver_hidden: receiver.val(),
-            chatId: $('.chat-id').val()
         })
         .catch(err => console.error(err))
 
         message.val('')
     })
 
-    // Sends info to server, displays chats
-    // Define a variable to keep track of the active chat room
     let activeChatRoom = null
 
-    formChatHead.on('submit', function(e) {
+    formChatHead.on('submit', function(e)
+    {
         e.preventDefault()
-        chatSpinner.hide()
+
         axios.post('/get-user-chat', {
             receiver: receiverChatHead.val(),
-            sender: username.val()
+            sender: usernameId.val(),
+            chatId: chatId.val(),
+            fromUserId: fromUserId.val()
         })
         .then(response => {
-
+            chatSpinner.hide()
             const responseData = response.data
+
             $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight)
             $('.chat-id').val(responseData.chatRoom.id)
+
             let messageToShow = 10
             const inputMessage = $('.input-message')
 
@@ -786,25 +805,16 @@ $(document).ready(function(){
                 `)
                 inputMessage.prop('disabled', true)
             }
-            if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && ! responseData.confirmNotAgent && responseData.isAccepted)
+            else if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && (! responseData.confirmNotAgent || responseData.confirmNotAgent) && responseData.isAccepted)
             {
                 messageContainer.html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
-                        Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="/pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
+                        Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="/pricing-plan/${responseData.user2}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
                     </p>
                 `)
                 inputMessage.prop('disabled', true)
             }
-            if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && responseData.confirmNotAgent && responseData.isAccepted)
-            {
-                messageContainer.html(`
-                    <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
-                        Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="pricing-plan/${$('.user-id-hidden').val()}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
-                    </p>
-                `)
-                inputMessage.prop('disabled', true)
-            }
-            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed && responseData.confirmNotAgent && responseData.isAccepted)
+            else if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed && (responseData.confirmNotAgent || ! responseData.confirmNotAgent) && responseData.isAccepted && ! responseData.isExpired)
             {
                 messageContainer.html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
@@ -813,27 +823,18 @@ $(document).ready(function(){
                 `)
                 inputMessage.prop('disabled', false)
             }
-            if(responseData.userChat.length == 0 && responseData.checkIfUserHasAvailed && ! responseData.confirmNotAgent && responseData.isAccepted)
+            else if(responseData.checkIfUserHasAvailed && responseData.isAccepted && responseData.isExpired)
             {
-                messageContainer.html(`
-                    <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
-                        Welcome to Serv-is ${responseData.authenticatedUser}! Thank you for availing my service.
-                    </p>
-                `)
-                inputMessage.prop('disabled', false)
-            }
-            if(responseData.checkIfUserHasAvailed && (! responseData.confirmNotAgent || responseData.confirmNotAgent) && responseData.isAccepted && responseData.isExpired)
-            {
-                let message = `Good day! Your subscription for this plan has been expired. If you want to continue, <a href="/pricing-plan/${$('.user-id-hidden').val()}" class="text-slate-800 font-semibold">subscribe another plan.</a>`
+                let message = ``
 
-                if(! responseData.confirmNotAgent){
-                    message = `Good day! The subscription has been expired.`
+                if(responseData.confirmNotAgent){
+                    message = `Good day! Your subscription for this plan has been expired. If you want to continue, <a href="/pricing-plan/${responseData.user2}" class="text-slate-800 font-semibold">subscribe another plan.</a>`
                 }
-
-                messageContainer.append(`
-                        <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">${message}</p>
-                    `)
-
+                else{
+                    message = `The subscription of this user has been expired.`
+                }
+                
+                messageContainer.append(`<p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">${message}</p>`)
                 inputMessage.prop('disabled', true)
             }
             else{
@@ -948,12 +949,12 @@ $(document).ready(function(){
                         </div>
                     </div>
                     <div class="flex gap-4 justify-center">
-                        <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer btn-accept-notif">
+                        <span data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer btn-accept-notif">
                             check_circle
-                        </a>
-                        <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer btn-reject-notif">
+                        </span>
+                        <span data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer btn-reject-notif">
                             cancel
-                        </a>
+                        </span>
                     </div>
                 </li>
             `)
@@ -970,12 +971,12 @@ $(document).ready(function(){
                         </div>
                     </div>
                     <div class="flex gap-4 justify-center">
-                        <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer btn-accept-notif">
+                        <span data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer btn-accept-notif">
                             check_circle
-                        </a>
-                        <a href="#" data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer btn-reject-notif">
+                        </span>
+                        <span data-id="${e.notificationId}" data-username="${e.username}" data-message="${e.notificationMessage}" data-from-user-id="${e.fromUserId}" data-to-user-id="${e.userIdToReceive}" data-type="${e.notificationType}" class="material-symbols-outlined cursor-pointer btn-reject-notif">
                             cancel
-                        </a>
+                        </span>
                     </div>
                 </li>
             `)
@@ -1117,7 +1118,8 @@ $(document).ready(function(){
             }
     }
 
-    function buttonChangeAfterRejectOrAccept(confirmRejectParentEl, is_Accepted){
+    function buttonChangeAfterRejectOrAccept(confirmRejectParentEl, is_Accepted)
+    {
         confirmRejectParentEl.hide()
 
         if(! is_Accepted)
@@ -1152,7 +1154,8 @@ $(document).ready(function(){
             .catch((err) => console.error(err))
         }
 
-    function updateNotificationItem(notificationItem, username, message, status){
+    function updateNotificationItem(notificationItem, username, message, status)
+    {
         let color = undefined
         if(status == 1)
         {
@@ -1177,7 +1180,8 @@ $(document).ready(function(){
         `)
     }
 
-    $('.btn-negotiate-agenda').on('click', function(e){
+    $('.btn-negotiate-agenda').on('click', function(e)
+    {
         const userId = $(e.target).data('userid')
         const username = $(e.target).data('username')
         const type = 1 // negotiate
@@ -1218,7 +1222,8 @@ $(document).ready(function(){
         })
     })
 
-    $('.btn-task-me-agenda').on('click', function(e){
+    $('.btn-task-me-agenda').on('click', function(e)
+    {
         const userId = $(e.target).data('userid')
         const username = $(e.target).data('username')
         const type = 2 // task me
@@ -1305,7 +1310,8 @@ $(document).ready(function(){
         $('.user-review-el').prepend(reviewEl)
     })
 
-    $('.user-type-btn').on('click', function(e){
+    $('.user-type-btn').on('click', function(e)
+    {
         let userType = $(this).data('user-type')
 
         $('#dropdown-user-search').html(`<span class="btn-dropdown-title">${userType}</span>
@@ -1329,7 +1335,8 @@ $(document).ready(function(){
     spinner.show()
     getUsers(userType)
 
-    $('#search-users').on('input', function(){
+    $('#search-users').on('input', function()
+    {
         $('.no-user-search').hide()
         spinner.show()
         const userType = $('.btn-dropdown-title').text()
@@ -1353,8 +1360,8 @@ $(document).ready(function(){
         .catch((err) => console.error(err))
     }
 
-    function userResultResponse(response){
-        // let userRow = ''
+    function userResultResponse(response)
+    {
             const tableBody = $('.user-table-body')
             let userResult = response.data.users
 
@@ -1411,8 +1418,6 @@ $(document).ready(function(){
 
     axios.get('/api/get-customer-concerns')
     .then((response) => {
-        // let concernData = ''
-
         if(response.data.concerns.length > 0)
         {
             response.data.concerns.forEach(concerns => {
@@ -1749,8 +1754,6 @@ $(document).ready(function(){
     })
 
     $('.btn-not-interested').on('click', function(){
-        console.log($(this).closest($('.service-provider-parent')));
         $(this).closest($('.service-provider-parent')).hide()
     })
-
 })
