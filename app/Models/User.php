@@ -73,7 +73,11 @@ class User extends Authenticatable
     }
 
     public function chat(){
-        return $this->hasMany(Chat::class, 'id');
+        return $this->hasMany(Chat::class, 'sender_id');
+    }
+
+    public function chatFromAgent(){
+        return $this->hasMany(Chat::class, 'receiver_id');
     }
 
     public function agenda(){
@@ -98,5 +102,9 @@ class User extends Authenticatable
 
     public function serviceAddress(){
         return $this->hasOne(ServiceAddress::class, 'user_id');
+    }
+
+    public function availedPricingPlan(){
+        return $this->hasMany(AvailedPricingPlan::class, 'availed_by_id');
     }
 }
