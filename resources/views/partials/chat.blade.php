@@ -27,13 +27,15 @@
                                 </span>
                             </li>
                         @else
+
                             @foreach ($agent->user->chat as $chat)
+                             {{-- <span>{{ $agent }}</span> --}}
                                 <li class="flex items-center gap-1 p-1 receiver-el cursor-pointer shadow-md"
                                     data-chat-id="{{ $chat->id }}"
                                     data-sender="{{ $chat->sender_id }}"
                                     data-receiver="{{ $chat->receiver_id }}"
                                     data-id="{{ $agent->user->id }}"
-                                    data-username="{{ Auth::user()->user_type == 3 ? $agent->user->username : ($agent->availedBy->username ?? '') }}">
+                                    data-username="{{ Auth::user()->user_type == 3 ? $agent->user->username : $agent->availedBy->username }}">
                                     <img src="{{ $agent->user->userPhoto->profile_picture }}"
                                         alt="user id photo"
                                         class="h-8 w-8 receiver-chat-head-click"
@@ -42,10 +44,10 @@
                                         data-sender="{{ $chat->sender_id }}"
                                         data-receiver="{{ $chat->receiver_id }}"
                                         data-id="{{ $agent->user->id }}"
-                                        data-username="{{ Auth::user()->user_type == 3 ? $agent->user->username : ($agent->availedBy->username ?? '') }}"
-                                    >
+                                        data-username="{{ Auth::user()->user_type == 3 ? $agent->user->username : $agent->availedBy->username }}">
+
                                     <span class="md:block hidden receiver-chat-heads">
-                                        {{ $agent->user->username }}
+                                        {{ Auth::user()->user_type == 2 ? $agent->availedBy->username : $agent->user->username }}
                                     </span>
                                 </li>
                             @endforeach
@@ -55,7 +57,11 @@
                     @if (Auth::user()->user_type != 1 && $admins->count() > 0)
                         @foreach ($admins as $chat)
                             <li class="flex items-center gap-1 p-1 receiver-el cursor-pointer shadow-md"
-                            data-chat-id="{{ $chat->id }}" data-sender="{{ $chat->sender_id }}" data-receiver="{{ $chat->receiver_id }}" {{ Auth::user()->user_type != 1 ? 'data-id=' .$chat->sender->id : 'data-id=' .$chat->receiver->id}} {{ Auth::user()->user_type != 1 ? 'data-username=' .$chat->sender->username : 'data-username=' .$chat->receiver->username}}>
+                            data-chat-id="{{ $chat->id }}"
+                            data-sender="{{ $chat->sender_id }}"
+                            data-receiver="{{ Auth::user()->user_id == 2 ? $chatFromAgent->id : $chat->receiver_id }}"
+                            data-id="{{ Auth::user()->user_type != 1 ? $chat->sender->id : $chat->receiver->id}}"
+                            data-username="{{ Auth::user()->user_type != 1 ? $chat->sender->username : $chat->receiver->username }}">
                                 <img
                                     src="{{ $chat->sender->userPhoto->profile_picture }}"
                                     alt="user id photo"
@@ -64,8 +70,8 @@
                                     data-chat-id="{{ $chat->id }}"
                                     data-sender="{{ $chat->sender_id }}"
                                     data-receiver="{{ $chat->receiver_id }}"
-                                    {{ Auth::user()->user_type != 1 ? 'data-id=' .$chat->sender->id : 'data-id=' .$chat->receiver->id}}
-                                    {{ Auth::user()->user_type != 1 ? 'data-username=' .$chat->sender->username : 'data-username=' .$chat->receiver->username}}
+                                    data-id="{{ Auth::user()->user_type != 1 ? $chat->sender->id : $chat->receiver->id}}"
+                                    data-username="{{ Auth::user()->user_type != 1 ? $chat->sender->username : $chat->receiver->username }}"
                                 >
                                 <span class="md:block hidden receiver-chat-heads">
                                     {{ Auth::user()->user_type != 1 ? $chat->sender->username : $chat->receiver->username}}
@@ -77,6 +83,7 @@
                     <form class="form-chat-head">
                         @csrf
                         <input type="hidden" name="user_id" class="user-id-hidden">
+                        <input type="hidden" name="receiver_id" id="receiver_id">
                         <input type="hidden" name="username" id="username-hidden" value="{{ Auth::user()->id }}">
                         <input type="hidden" name="chatId" class="chat-id">
                         <input type="hidden" name="receiver_hidden" id="receiver-chat-head">
