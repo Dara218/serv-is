@@ -17,7 +17,12 @@
                     <th scope="col" class="px-6 py-3">
                         Points
                     </th>
+                @elseif ($type === 'pricing-plan')
+                    <th scope="col" class="px-6 py-3">
+                        Price
+                    </th>
                 @endif
+
                 <th scope="col" class="px-6 py-3">
                     {{ $column2 }}
                 </th>
