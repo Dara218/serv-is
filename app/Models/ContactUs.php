@@ -10,6 +10,6 @@ class ContactUs extends Model
     use HasFactory;
 
     public function user(){
-        return $this->belongsTo(User::class, 'id');
+        return $this->hasMany(User::class, 'id');
     }
 }
