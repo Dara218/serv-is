@@ -25,7 +25,7 @@
 
                     {{-- @dd($users) --}}
 
-                    @if ($users->count() == 0)
+                    @if (empty($users->userPhoto))
                         <div class="flex justify-center items-center gap-2 mb-6">
                             <img src="" alt="User profile picture" class="hidden user-profile-el rounded-full border-2 border-slate-500 w-32 h-auto">
                             <small class="upload-profile-text">Upload a profile picture.</small>
@@ -51,7 +51,7 @@
 
                     @endif
 
-                    <x-register.register-inputs useraddress="{{ $useraddress->address }}" fullname="{{ $users->fullname }}" username="{{ $users->username }}" email_address="{{ $users->email_address }}" contact_no="{{ $users->contact_no }}" region="{{ $users->region }}"/>
+                    <x-register.register-inputs useraddress="{{ $useraddress->address }}" fullname="{{ $users->fullname }}" username="{{ $users->username }}" email_address="{{ $users->email_address }}" contact_no="{{ $users->contact_no }}" region="{{ $users->region }}" fromAdmin="{{ false }}"/>
 
                     <button type="submit" class="w-full text-white bg-slate-500 hover:bg-slate-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-slate-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Update Profile</button>
                 </form>
