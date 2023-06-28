@@ -88,6 +88,18 @@ class MessageController extends Controller
             $authUserId
         ));
 
+        Chat::create([
+            'sender_id' => $request->fromUserId,
+            'receiver_id' => $authUserId
+        ]);
+
+        AvailedUser::create([
+            'availed_by' => $authUserId,
+            'availed_to' => $request->fromUserId,
+            'is_accepted' => true,
+            'notification_id' => $notification->id
+        ]);
+
         SentRequest::create([
             'request_by' => $authUserId,
             'request_to' => $request->fromUserId,
