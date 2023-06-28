@@ -43,7 +43,8 @@ class RegisterController extends Controller
         ServiceAddress::create([
             'user_id' => $user->id,
             'address' => $userDetails['address'],
-            'is_active' => true
+            'is_active' => true,
+            'is_primary' => true
         ]);
 
         Alert::success('Success', 'Registration completed.');
