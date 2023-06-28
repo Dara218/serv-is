@@ -23,12 +23,12 @@
         <tbody class="user-table-body"></tbody>
 
         @foreach ($users as $user)
-            <div data-simplebar data-simplebar-auto-hide="false" id="manage-admin-btn-{{ $user->username }}" class="-translate-x-1/2 -translate-y-1/2 fixed h-[calc(100%-1rem)] hidden left-1/2 manage-admin-btn-dara218 max-h-full overflow-x-hidden overflow-y-auto top-1/2 transform w-full z-50">
+            <div data-simplebar data-simplebar-auto-hide="false" class="-translate-x-1/2 -translate-y-1/2 fixed h-[calc(100%-1rem)] hidden left-1/2 manage-admin-btn-{{ $user->username }} max-h-full overflow-x-hidden overflow-y-auto top-1/2 transform w-full z-50">
                 @include('components.home-admin.edit-user-modal', ['users' => $users])
             </div>
         @endforeach
     </table>
-    
+
     <p class="no-user-search w-full font-semibold isolate-nightmode my-5 text-center hidden">No user found.</p>
     <div class="isolate-nightmode my-5 text-center ">
         @include('partials.spinner')
