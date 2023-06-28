@@ -26,7 +26,9 @@
                             </a>
 
                             <div class="flex justify-between gap-2">
-                                <img src="{{ $employee->userPhoto->profile_picture }}" alt="user id photo" class="h-1/2 w-16 rounded-full">
+                                @if (! empty($employee->userPhoto))
+                                    <img src="{{ $employee->userPhoto->profile_picture }}" alt="user id photo" class="h-1/2 w-16 rounded-full">
+                                @endif
                                 <div class="flex flex-col w-full items-start gap-2">
                                     <span class="font-semibold">{{ ucwords($employee->fullname) }}</span>
                                     <span class="flex items-center gap-2">
@@ -39,7 +41,10 @@
                                         <span class="material-symbols-outlined">
                                             location_on
                                         </span>
-                                        {{ $employee->serviceAddress->address }}
+                                        @if (! empty($employee->serviceAddress))
+                                            {{ $employee->serviceAddress->address }}
+                                        @endif
+
                                     </span>
                                     <span class="flex items-center gap-2">
                                         <span class="material-symbols-outlined">
