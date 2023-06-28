@@ -13,7 +13,7 @@ class AgendaController extends Controller
     public function storeAgenda(AgendaRequest $request)
     {
         $agendaDetails = $request->validated();
-        $dateTime = new DateTime();
+        $dateTime = new DateTime($agendaDetails['deadline']);
 
         Agenda::create([
             'user_id' => Auth::user()->id,
@@ -30,7 +30,7 @@ class AgendaController extends Controller
     public function updateAgenda(Agenda $agenda, AgendaRequest $request)
     {
         $agendaDetails = $request->validated();
-        $dateTime = new DateTime();
+        $dateTime = new DateTime($agendaDetails['deadline']);
 
         Agenda::where('id', $agenda->id)->update([
             'message' => $agendaDetails['message'],
