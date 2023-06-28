@@ -597,7 +597,8 @@ $(document).ready(function(){
         }
     })
 
-    function showSearchResults(response,  results){
+    function showSearchResults(response,  results)
+    {
         if(response.agentService.length > 0)
         {
             loadServices(response.agentService)
@@ -622,17 +623,18 @@ $(document).ready(function(){
 
         let starRating = '';
 
-        for (let i = 0; i < rating; i++) {
-            starRating += `<svg aria-hidden="true" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>First star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
-        }
-
-        for (let i = rating; i < 5; i++) {
-            starRating += `<svg aria-hidden="true" class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>First star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+        for (let i = 0; i < 5; i++)
+        {
+            if (i < rating) {
+                starRating += `<svg aria-hidden="true" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>First star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+            } else {
+                starRating += `<svg aria-hidden="true" class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>First star</title><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+            }
         }
 
         serviceContainer.append(
             `
-            <div class="p-4 flex flex-col gap-3 border border-slate-300 rounded-xl">
+            <a href="/employee-profile/${eachData.user.username}" class="shadow-md p-4 flex flex-col gap-3 border border-slate-300 rounded-xl">
                 <span class="flex">${starRating}</span>
                 <div class="flex flex-col">
                     <span class="font-semibold">${eachData.title}</span>
@@ -642,7 +644,7 @@ $(document).ready(function(){
                     <img src="${eachData.user.user_photo.profile_picture}" alt="" class="-z-10 h-[50px] rounded-full">
                     <span class="text-slate-500">${eachData.user.fullname.charAt(0).toUpperCase() + eachData.user.fullname.slice(1).toLowerCase()}</span>
                 </div>
-            </div>
+            </a>
         `)
     }
 
@@ -697,7 +699,7 @@ $(document).ready(function(){
 
             currentChatName.show()
             chatTextBox.show()
-            
+
             $('.user-id-hidden').val(receiverId)
             receiverChatHead.val(username)
 
@@ -776,6 +778,8 @@ $(document).ready(function(){
             fromUserId: fromUserId.val()
         })
         .then(response => {
+
+            console.log(response);
             chatSpinner.hide()
             const responseData = response.data
 
@@ -805,11 +809,20 @@ $(document).ready(function(){
                 `)
                 inputMessage.prop('disabled', true)
             }
-            else if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && (! responseData.confirmNotAgent || responseData.confirmNotAgent) && responseData.isAccepted)
+            else if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && responseData.confirmNotAgent && responseData.isAccepted)
             {
                 messageContainer.html(`
                     <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
                         Good day, to avail my service, payment is a must to be able to  connect with me. You can booked my service by clicking this <a href="/pricing-plan/${responseData.user2}" class="font-semibold text-blue-600">Avail service</a> to be directed at the payment method field.
+                    </p>
+                `)
+                inputMessage.prop('disabled', true)
+            }
+            else if(responseData.userChat.length == 0 && ! responseData.checkIfUserHasAvailed && ! responseData.confirmNotAgent && responseData.isAccepted)
+            {
+                messageContainer.html(`
+                    <p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">
+                        Good day, please wait for the customer to pay for the service.
                     </p>
                 `)
                 inputMessage.prop('disabled', true)
@@ -833,7 +846,7 @@ $(document).ready(function(){
                 else{
                     message = `The subscription of this user has been expired.`
                 }
-                
+
                 messageContainer.append(`<p class="w-auto col-span-4 message-el bg-slate-300 rounded-md py-2 px-3">${message}</p>`)
                 inputMessage.prop('disabled', true)
             }
@@ -963,7 +976,7 @@ $(document).ready(function(){
         {
             $('.notification-parent').prepend(`
                 <li class="flex flex-col py-4 px-2 bg-slate-200">
-                    <a href="{{ route('showConfirmAgent') }}" class="text-slate-500 absolute top-2 right-3">See details</a>
+                    <a href="/show-confirm-agent/${e.username}" class="text-slate-500 absolute top-2 right-3">See details</a>
                     <div class="flex gap-2">
                         <div class="flex flex-col gap-1 justify-center w-full">
                             <span class="font-bold">${e.username}</span>
@@ -1401,11 +1414,12 @@ $(document).ready(function(){
                     tableBody.append(userRow)
 
                     $('.user-table-body').on('click', `.btn-modal-${eachUser.username}`, function(){
-                        $(`#manage-admin-btn-${eachUser.username}`).show()
+                        console.log('open');
+                        $(`.manage-admin-btn-${eachUser.username}`).show()
                     })
 
                     $(`#close-admin-modal-${eachUser.username}`).on('click', function(){
-                        $(`#manage-admin-btn-${eachUser.username}`).hide()
+                        $(`.manage-admin-btn-${eachUser.username}`).hide()
                     })
                 })
             }
@@ -1418,50 +1432,53 @@ $(document).ready(function(){
 
     axios.get('/api/get-customer-concerns')
     .then((response) => {
+        
+
         if(response.data.concerns.length > 0)
         {
-            response.data.concerns.forEach(concerns => {
+            response.data.concerns.forEach(concern => {
+                console.log(concern);
                 let status = 'Read'
                 let check = 'checked'
 
-                if(concerns.is_unread){
+                if(concern.is_unread){
                     status = 'Unread'
                     check = ''
                 }
                     const concernData = `
                     <tr class="concern-table-body text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            ${concerns.user.fullname}
+                            ${concern.email}
                         </th>
                         <td class="px-6 py-4">
-                            ${concerns.subject}
+                            ${concern.subject}
                         </td>
                         <td class="px-6 py-4">
-                            ${concerns.message}
+                            ${concern.message}
                         </td>
-                        <td class="px-6 py-4" data-status-${concerns.id}>
+                        <td class="px-6 py-4" data-status-${concern.id}>
                             ${status}
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-2">
                                 <div class="flex items-center">
 
-                                    <input type="checkbox" ${check} value="" class="check-${concerns.id} w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <input type="checkbox" ${check} value="" class="check-${concern.id} w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
 
-                                    <label for="check-${concerns.id}" data-concern-id="${concerns.id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Read</label>
+                                    <label for="check-${concern.id}" data-concern-id="${concern.id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Read</label>
 
                                 </div>
-                                <span class="btn-reply-concern-${concerns.user.id} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Message</span>
+                                <span class="btn-reply-concern-${concern.user.id} font-medium text-slate-500 dark:text-blue-500 hover:underline cursor-pointer">Message</span>
                             </div>
                         </td>
                     </tr>`
 
                     $('.user-table-contact-us').append(concernData)
 
-                    $(`.check-${concerns.id}`).on('click', function() {
-                        axios.put(`/update-concern-status/${concerns.id}`)
+                    $(`.check-${concern.id}`).on('click', function() {
+                        axios.put(`/update-concern-status/${concern.id}`)
                             .then((response) => {
-                                const trElement = $('.concern-table-body').find(`[data-status-${concerns.id}]`);
+                                const trElement = $('.concern-table-body').find(`[data-status-${concern.id}]`);
                                 let isUnread = response.data.concern.is_unread;
                                 const statusText = isUnread ? 'Unread' : 'Read';
 
@@ -1470,7 +1487,7 @@ $(document).ready(function(){
                             .catch((err) => console.error(err));
                     });
 
-                    $(`.btn-reply-concern-${concerns.user.id}`).on('click', function() {
+                    $(`.btn-reply-concern-${concern.user.id}`).on('click', function() {
                         Swal.fire({
                             title: 'Reply Concern',
                             icon: 'info',
@@ -1488,7 +1505,7 @@ $(document).ready(function(){
                         .then((result) => {
                             const message = result.value
                             const username = 'Admin'
-                            const receiverHidden = concerns.user.username
+                            const receiverHidden = concern.user.username
 
                             if(result.isConfirmed){
                                 axios.post('handle-message', {
