@@ -109,13 +109,20 @@ class ProfileController extends Controller
         $agentServiceOverAllRating = Review::where('employee_id', $user->id)->get();
         $ratings = [];
 
-        foreach($agentServiceOverAllRating as $overallRating){
+        foreach($agentServiceOverAllRating as $overallRating)
+        {
             $ratings[] = $overallRating->level;
         }
 
         $sumOfOverallRating = array_sum($ratings);
 
-        $averageRating = $sumOfOverallRating / $agentServiceOverAllRating->count();
+        $averageRating = 0;
+
+        if($sumOfOverallRating > 0)
+        {
+            $averageRating = $sumOfOverallRating / $agentServiceOverAllRating->count();
+        }
+
 
         return view('components.home.employee-profile', [
             'users' => User::where('id', $user->id)->with('userPhoto', 'agentService', 'serviceAddress')->get(),
